@@ -7,11 +7,7 @@
 <form name="RegistrationForm" method="post" action="../controller">
     ${param.wrong_data_message}<br/>
     <input type="hidden" name="command" value="registration"/>
-    <input type="hidden" name="role" value="CLIENT"/>
-    <input type="hidden" name="status" value="NEW"/>
-    <input type="hidden" name="balance" value="0"/>
-    <input type="hidden" name="discount_id" value="1"/>
-    Login:<br/>
+    Login (email):<br/>
     <input type="text" name="login" value=""/><br/>
     Password:<br/>
     <input type="text" name="password" value=""/><br/>

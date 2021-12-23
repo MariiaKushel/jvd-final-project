@@ -7,7 +7,7 @@
 <form name ="LoginForm" method="post" action="../controller">
     ${param.wrong_login_password_message}<br/>
     <input type="hidden" name="command" value="log_in"/>
-    Login:<br/>
+    Login (email):<br/>
     <input type="text" name="login" value=""/> <br/>
     Password:<br/>
     <input type="text" name="password" value=""/> <br/><br/>

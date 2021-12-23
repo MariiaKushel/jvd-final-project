@@ -1,6 +1,7 @@
 package by.javacourse.hotel.controller.command;
 
 import by.javacourse.hotel.controller.command.impl.*;
+import command.impl.*;
 
 import java.util.HashMap;
 import java.util.Map;
