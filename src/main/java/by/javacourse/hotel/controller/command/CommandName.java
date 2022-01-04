@@ -1,14 +1,19 @@
 package by.javacourse.hotel.controller.command;
 
-public final class CommandName {
-    public static final String LOG_IN = "log_in";
-    public static final String REGESTRATION = "registration";
+public enum CommandName {
+    CHANGE_LOCALE("change_locale"),
 
-    public static final String GO_TO_WELCOME_PAGE = "go_to_welcome_page";
-    public static final String GO_TO_LOG_IN_PAGE = "go_to_log_in_page";
-    public static final String GO_TO_REGESTRATION_PAGE = "go_to_registration_page";
+    SING_IN("sing_in"),
+    CREATE_NEW_ACCOUNT("create_new_account"),
 
-    private CommandName(){
+    GO_TO_MAIN_PAGE("go_to_main_page"),
+    GO_TO_SING_IN_PAGE("go_to_sing_in_page"),
+    GO_TO_CREATE_NEW_ACCOUNT_PAGE("go_to_create_new_account_page");
 
+    private String webCommandName;
+
+    private CommandName(String webCommandName) {
+        this.webCommandName = webCommandName;
     }
+
 }

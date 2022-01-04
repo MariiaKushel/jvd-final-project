@@ -5,7 +5,9 @@ import by.javacourse.hotel.exception.DaoException;
 import static by.javacourse.hotel.model.dao.ColumnName.*;
 
 import by.javacourse.hotel.model.dao.UserDao;
-import by.javacourse.hotel.model.entity.User;
+import by.javacourse.hotel.entity.User;
+import by.javacourse.hotel.model.dao.mapper.Mapper;
+import by.javacourse.hotel.model.dao.mapper.impl.UserMapper;
 import by.javacourse.hotel.model.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,30 +18,29 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserDaoImpl implements UserDao {
-    private static Logger logger = LogManager.getLogger();
+    static Logger logger = LogManager.getLogger();
 
-    private static final String SQL_INSERT_USER =
-            "INSERT INTO hotel.users (login, password, role, name, phone_number, status, discount_id, balance)"
-                    + " VALUES (?,?,?,?,?,?,?,?)";
-
-    private static final String SQL_SELECT_USER =
-            "SELECT user_id, login, password, role, name, phone_number, status, discount_id, balance"
-                    + " FROM hotel.users";
-    private static final String BY_LOGIN = " WHERE login=? LIMIT 1";
-    private static final String BY_LOGIN_AND_PASSWORD = " WHERE login=? AND password=? LIMIT 1";
+    private static final String SQL_INSERT_USER = """
+            INSERT INTO hotel.users (email, role, name, phone_number, status, discount_id, balance) 
+            VALUES (?,?,?,?,?,?,?)""";
+    private static final String SQL_UPDATE_PASSWORD =
+            "UPDATE hotel.users SET password=? WHERE email=?";
+    private static final String SQL_SELECT_USER = """
+            SELECT user_id, email, role, name, phone_number, status, discount_id, balance 
+            FROM hotel.users""";
+    private static final String BY_EMAIL = " WHERE email=? LIMIT 1";
+    private static final String BY_EMAIL_AND_PASSWORD = " WHERE email=? AND password=? LIMIT 1";
     private static final String BY_ID = " WHERE user_id=? LIMIT 1";
 
     @Override
     public List<User> findAll() throws DaoException {
         List<User> users = new ArrayList<>();
+        Mapper mapper = UserMapper.getInstance();
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(SQL_SELECT_USER)) {
-            while (resultSet.next()) {
-                User user = createUserFromResultSet(resultSet);
-                users.add(user);
-            }
+            users = mapper.retrieve(resultSet);
         } catch (SQLException e) {
             logger.error("SQL request findAll from table hotel.users was failed " + e);
             throw new DaoException("SQL request findAll from table hotel.users was failed", e);
@@ -55,42 +56,40 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean create(User user) throws DaoException {
-        int rowsInsert = 0;
+        int rowsInserted = 0;
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_INSERT_USER)) {
-            statement.setString(1, user.getLogin());
-            statement.setString(2, user.getPassword());
-            statement.setString(3, user.getRole().toString());
-            statement.setString(4, user.getName());
-            statement.setString(5, user.getPhoneNumber());
-            statement.setString(6, user.getStatus().toString());
-            statement.setLong(7, user.getDiscountId());
-            statement.setBigDecimal(8, user.getBalance());
-            rowsInsert = statement.executeUpdate();
+            statement.setString(1, user.getEmail());
+            statement.setString(2, user.getRole().toString());
+            statement.setString(3, user.getName());
+            statement.setString(4, user.getPhoneNumber());
+            statement.setString(5, user.getStatus().toString());
+            statement.setLong(6, user.getDiscountId());
+            statement.setBigDecimal(7, user.getBalance());
+            rowsInserted = statement.executeUpdate();
         } catch (SQLException e) {
             logger.error("SQL request create from table hotel.users was failed" + e);
             throw new DaoException("SQL request create from table hotel.users was failed", e);
         }
-        return rowsInsert == 1;
+        return rowsInserted == 1;
     }
 
     @Override
     public Optional<User> update(User user) throws DaoException {
         Optional<User> oldUser = Optional.empty();
+        Mapper mapper = UserMapper.getInstance();
         ConnectionPool pool = ConnectionPool.getInstance();
-
         try (Connection connection = pool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_USER + BY_ID, //TODO can use "" + "" ?
-                     ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
-            statement.setLong(1, user.getId());
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_USER + BY_ID,
+                     ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) { // FIXME need TYPE_SCROLL_INSENSITIVE?
+            statement.setLong(1, user.getEntityId());
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     //get old user
-                    oldUser = Optional.of(createUserFromResultSet(resultSet));
+                    oldUser = mapper.retrieve(resultSet).stream().findFirst();
                     //update user
-                    resultSet.updateString(LOGIN, user.getLogin());
-                    resultSet.updateString(PASSWORD, user.getPassword());
+                    resultSet.updateString(EMAIL, user.getEmail());
                     resultSet.updateString(ROLE, user.getRole().toString());
                     resultSet.updateString(NAME, user.getName());
                     resultSet.updateString(PHONE_NUMBER, user.getPhoneNumber());
@@ -109,53 +108,77 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean isLoginExsist(String login) throws DaoException {
-        boolean isUse = false;
+    public boolean isEmailExist(String email) throws DaoException {
+        boolean isExist = false;
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_USER + BY_LOGIN)) { //TODO can use "" + "" ?
-            statement.setString(1, login);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                isUse = true;
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_USER + BY_EMAIL)) { //TODO can use "" + "" ?
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    isExist = true;
+                }
             }
         } catch (SQLException e) {
-            logger.error("SQL request isLoginExsist from table hotel.users was failed");
-            throw new DaoException("SQL request isLoginExsist from table hotel.users was failed", e);
+            logger.error("SQL request isEmailExist from table hotel.users was failed");
+            throw new DaoException("SQL request isEmailExist from table hotel.users was failed", e);
         }
-        return isUse;
+        return isExist;
     }
 
     @Override
-    public boolean isUserExsist(String login, String password) throws DaoException {
-        boolean isExsist = false;
+    public boolean isUserExist(String email, String password) throws DaoException {
+        boolean isExist = false;
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_USER + BY_LOGIN_AND_PASSWORD)) { //TODO can use "" + "" ?
-            statement.setString(1, login);
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_USER + BY_EMAIL_AND_PASSWORD)) {
+            statement.setString(1, email);
             statement.setString(2, password);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                isExsist = true;
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    isExist = true;
+                }
             }
         } catch (SQLException e) {
-            logger.error("SQL request isUserExsist from table hotel.users was failed " + e);
-            throw new DaoException("SQL request isUserExsist from table hotel.users was failed", e);
+            logger.error("SQL request isUserExist from table hotel.users was failed " + e);
+            throw new DaoException("SQL request isUserExist from table hotel.users was failed", e);
         }
-        return isExsist;
+        return isExist;
     }
 
-    private User createUserFromResultSet(ResultSet resultSet) throws SQLException { //TODO make separate class or inner/nested class
-        User user = new User();
-        user.setId(resultSet.getLong(USER_ID));
-        user.setLogin(resultSet.getString(LOGIN));
-        user.setPassword(resultSet.getString(PASSWORD));
-        user.setRole(User.Role.valueOf(resultSet.getString(ROLE).toUpperCase()));
-        user.setName(resultSet.getString(NAME));
-        user.setPhoneNumber(resultSet.getString(PHONE_NUMBER));
-        user.setStatus(User.Status.valueOf(resultSet.getString(USER_STATUS).toUpperCase()));
-        user.setDiscountId(resultSet.getLong(DISCOUNT_ID));
-        user.setBalance(resultSet.getBigDecimal(BALANCE));
+    @Override
+    public Optional<User> findUserByEmailAndPassword(String email, String password) throws DaoException {
+        Optional<User> user = Optional.empty();
+        Mapper mapper = UserMapper.getInstance();
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_USER + BY_EMAIL_AND_PASSWORD)) {
+            statement.setString(1, email);
+            statement.setString(2, password);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                user = mapper.retrieve(resultSet).stream().findFirst();
+            }
+        } catch (SQLException e) {
+            logger.error("SQL request findUserByEmailAndPassword from table hotel.users was failed " + e);
+            throw new DaoException("SQL request findUserByEmailAndPassword from table hotel.users was failed", e);
+        }
         return user;
     }
+
+    @Override
+    public boolean changePassword(String email, String newPassword) throws DaoException {//FIXME rename
+        int rowsUpdated = 0;
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_PASSWORD)) {
+            statement.setString(1, newPassword);
+            statement.setString(2, email);
+            rowsUpdated = statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("SQL request changePassword from table hotel.users was failed " + e);
+            throw new DaoException("SQL request changePassword from table hotel.users was failed", e);
+        }
+        return rowsUpdated == 1;
+    }
+
 }

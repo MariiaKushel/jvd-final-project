@@ -1,24 +1,40 @@
 package by.javacourse.hotel.controller.command;
 
 import by.javacourse.hotel.controller.command.impl.*;
-import command.impl.*;
+import by.javacourse.hotel.controller.command.impl.relocation.GoToCreateNewAccountPageCommand;
+import by.javacourse.hotel.controller.command.impl.relocation.GoToMainPageCommand;
+import by.javacourse.hotel.controller.command.impl.relocation.GoToSingInPageCommand;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
 
 public final class CommandProvider {
-    private static Map<String, Command> commands = new HashMap<>(); //TODO static ok?
+    static Logger logger = LogManager.getLogger();
 
-    static { //TODO static ok?
-        commands.put(CommandName.LOG_IN, new LogInCommand());
-        commands.put(CommandName.REGESTRATION, new RegistrationCommand());
-        commands.put(CommandName.GO_TO_WELCOME_PAGE, new GoToWelcomPageCommand());
-        commands.put(CommandName.GO_TO_LOG_IN_PAGE, new GoToLogInPageCommand());
-        commands.put(CommandName.GO_TO_REGESTRATION_PAGE, new GoToRegistrationPageCommand());
+    private static EnumMap<CommandName, Command> commands = new EnumMap<>(CommandName.class);
+
+    static {
+        commands.put(CommandName.CHANGE_LOCALE, new ChangeLocaleCommand());
+
+        commands.put(CommandName.SING_IN, new SingInCommand());
+        commands.put(CommandName.CREATE_NEW_ACCOUNT, new CreateNewAccountCommand());
+
+        commands.put(CommandName.GO_TO_MAIN_PAGE, new GoToMainPageCommand());
+        commands.put(CommandName.GO_TO_SING_IN_PAGE, new GoToSingInPageCommand());
+        commands.put(CommandName.GO_TO_CREATE_NEW_ACCOUNT_PAGE, new GoToCreateNewAccountPageCommand());
+
     }
 
-    public static Command getCommand(String commandName) { //TODO static ok?
-        Command currentCommand = commands.get(commandName);
-        return currentCommand != null ? currentCommand : new DefaultCommand();
+    public static Command getCommand(String commandName) {
+        Command currentCommand;
+        try {
+            System.out.println(commandName.toUpperCase());
+            currentCommand = commands.get(CommandName.valueOf(commandName.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            logger.error("Command: " + commandName + ", is not present " + e);
+            currentCommand = new DefaultCommand();
+        }
+        return currentCommand;
     }
 }

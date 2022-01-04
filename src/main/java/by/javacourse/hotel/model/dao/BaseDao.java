@@ -1,7 +1,7 @@
 package by.javacourse.hotel.model.dao;
 
 import by.javacourse.hotel.exception.DaoException;
-import by.javacourse.hotel.model.entity.Entity;
+import by.javacourse.hotel.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,7 +28,7 @@ public interface BaseDao<K, T extends Entity> {
                 statment.close();
             }
         } catch (SQLException e) {
-            logger.error("Try to close statment was failed");
+            logger.error("Try to close statement was failed");
         }
     }
 

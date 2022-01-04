@@ -1,14 +1,15 @@
 package by.javacourse.hotel.model.service;
 
 import by.javacourse.hotel.exception.ServiceException;
-import by.javacourse.hotel.model.entity.User;
+import by.javacourse.hotel.entity.User;
 
+import java.util.Map;
 import java.util.Optional;
 
 public interface UserService {
-    boolean register(User user) throws ServiceException;
+    Optional<User> createNewAccount(Map<String, String> userData, String password) throws ServiceException;
 
-    boolean authenticate(String login, String password) throws ServiceException; // TODO return User or boolean?
+    Optional<User> authenticate(String email, String password) throws ServiceException;
 
-    Optional<User> updatePersonalData(User user) throws ServiceException;
+    Optional<User> updatePersonalData(User user, String password) throws ServiceException;
 }

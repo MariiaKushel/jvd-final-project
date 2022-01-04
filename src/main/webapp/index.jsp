@@ -5,7 +5,7 @@
     <title>Index</title>
 </head>
 <body>
-<jsp:forward page="controller?command=go_to_welcome_page"></jsp:forward>
+<jsp:forward page="controller?command=go_to_main_page"></jsp:forward>
 </body>
 </html>
 

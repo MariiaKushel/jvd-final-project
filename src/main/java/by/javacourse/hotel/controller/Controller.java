@@ -1,10 +1,12 @@
 package by.javacourse.hotel.controller;
 
 import java.io.*;
+import java.util.Locale;
 
 import by.javacourse.hotel.controller.command.Command;
 import by.javacourse.hotel.controller.command.CommandProvider;
 import by.javacourse.hotel.controller.command.CommandResult;
+import by.javacourse.hotel.controller.command.RequestParameter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -27,7 +29,7 @@ public class Controller extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
 
-        String commandName = request.getParameter("by/javacourse/hotel/controller/command");
+        String commandName = request.getParameter(RequestParameter.COMMAND);
         Command command = CommandProvider.getCommand(commandName);
         CommandResult result = command.execute(request);
 

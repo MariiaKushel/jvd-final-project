@@ -1,69 +1,90 @@
 package by.javacourse.hotel.model.service.impl;
 
+import static by.javacourse.hotel.controller.command.RequestParameter.*;
+
 import by.javacourse.hotel.exception.DaoException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.dao.DaoProvider;
 import by.javacourse.hotel.model.dao.UserDao;
-import by.javacourse.hotel.model.entity.User;
+import by.javacourse.hotel.entity.User;
 import by.javacourse.hotel.model.service.UserService;
 import by.javacourse.hotel.util.PasswordEncryptor;
-import by.javacourse.hotel.util.UserValidator;
+import by.javacourse.hotel.validator.UserValidator;
+import by.javacourse.hotel.validator.impl.UserValidatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Map;
 import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
-    private static Logger logger = LogManager.getLogger();
+    static Logger logger = LogManager.getLogger();
 
     private DaoProvider provider = DaoProvider.getInstance();
     private UserDao userDao = provider.getUserDao();
 
     @Override
-    public boolean register(User user) throws ServiceException { // TODO many returns ok?
-        if (!UserValidator.validate(user)) {
-            logger.info("Login or password has not valid value");
-            return false;
+    public Optional<User> createNewAccount(Map<String, String> userData, String password) throws ServiceException {
+        Optional<User> user = Optional.empty();
+        UserValidator validator = UserValidatorImpl.getInstance();
+        String email = userData.get(EMAIL);
+        String name = userData.get(NAME);
+        String phoneNumber = userData.get(PHONE_NUMBER);
+        if (!validator.validateEmail(email)
+                || !validator.validatePassword(password)
+                || !validator.validateName(name)
+                || !validator.validatePhoneNumber(phoneNumber)) {
+            logger.info("Some data has not valid value");
+            return user;
         }
         try {
-            if (userDao.isLoginExsist(user.getLogin())) {
-                logger.info("Login is already in use");
-                return false;
+            if (userDao.isEmailExist(email)) {
+                logger.info("Email is already in use");
+                return user;
             }
-            String secretPassword = PasswordEncryptor.encrypt(user.getPassword());
-            user.setPassword(secretPassword);
-            userDao.create(user);
+            User newUser = User.newBuilder()
+                    .setEmail(email)
+                    .setName(name)
+                    .setPhoneNumber(phoneNumber)
+                    .build();
+            userDao.create(newUser);
+            user = Optional.of(newUser);
+
+            String secretPassword = PasswordEncryptor.encrypt(password);
+            userDao.changePassword(email, secretPassword);
         } catch (DaoException e) {
             logger.error("Try to register new user was failed " + e);
             throw new ServiceException("Try to register new user was failed", e);
         }
-        return true;
+        return user;
     }
 
     @Override
-    public boolean authenticate(String login, String password) throws ServiceException { // TODO many returns ok?
-        if (!UserValidator.validateLogin(login) || !UserValidator.validatePassword(password)) {
-            logger.info("Login or password has not valid value");
-            return false;
+    public Optional<User> authenticate(String email, String password) throws ServiceException {
+        Optional<User> user = Optional.empty();
+        UserValidator validator = UserValidatorImpl.getInstance();
+        if (!validator.validateEmail(email) || !validator.validatePassword(password)) {
+            logger.info("Email or password has not valid value");
+            return user;
         }
-        boolean isAuthenticate = false;
         try {
             String secretPassword = PasswordEncryptor.encrypt(password);
-            isAuthenticate = userDao.isUserExsist(login, secretPassword);
+            user = userDao.findUserByEmailAndPassword(email, secretPassword);
         } catch (DaoException e) {
             logger.error("Try to authenticate user was failed " + e);
             throw new ServiceException("Try to authenticate user was failed", e);
         }
-        return isAuthenticate;
+        return user;
     }
 
-    @Override
-    public Optional<User> updatePersonalData(User user) throws ServiceException {
-        if (!UserValidator.validate(user)) {
-            logger.info("Some personal data has not valid value");
-            return Optional.empty();
-        }
+    @Override //Fixme rewrite
+    public Optional<User> updatePersonalData(User user, String password) throws ServiceException {
         Optional<User> oldUser = Optional.empty();
+        UserValidator validator = UserValidatorImpl.getInstance();
+        if (!validator.validate(user, password)) {
+            logger.info("Some personal data has not valid value");
+            return oldUser;
+        }
         try {
             oldUser = userDao.update(user);
         } catch (DaoException e) {

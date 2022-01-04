@@ -4,7 +4,7 @@ import static by.javacourse.hotel.model.dao.ColumnName.*;
 
 import by.javacourse.hotel.exception.DaoException;
 import by.javacourse.hotel.model.dao.DiscountDao;
-import by.javacourse.hotel.model.entity.Discount;
+import by.javacourse.hotel.entity.Discount;
 import by.javacourse.hotel.model.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,7 +91,7 @@ public class DiscountDaoImpl implements DiscountDao {
 
     private Discount createDiscountFromResultSet(ResultSet resultSet) throws SQLException {//TODO maybe make separate class
         Discount discount = new Discount();
-        discount.setId(resultSet.getLong(DISCOUNT_ID));
+        //discount.setEntityId(resultSet.getLong(DISCOUNT_ID));
         discount.setRate(resultSet.getInt(RATE));
         return discount;
     }
