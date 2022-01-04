@@ -29,7 +29,7 @@ public final class CommandProvider {
     public static Command getCommand(String commandName) {
         Command currentCommand;
         try {
-            System.out.println(commandName.toUpperCase());
+            logger.debug(commandName.toUpperCase());
             currentCommand = commands.get(CommandName.valueOf(commandName.toUpperCase()));
         } catch (IllegalArgumentException e) {
             logger.error("Command: " + commandName + ", is not present " + e);
