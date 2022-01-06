@@ -9,10 +9,12 @@ import jakarta.servlet.http.HttpSessionListener;
 @WebListener
 public class HttpSessionListenerImpl implements HttpSessionListener {
     private static final String DEFAULT_LOCALE = "ru_RU";
+    private static final String DEFAULT_PAGE = "index.jsp";
 
     @Override
     public void sessionCreated(HttpSessionEvent se) {
         HttpSession session = se.getSession();
         session.setAttribute(SessionAtribute.LOCALE,DEFAULT_LOCALE);
+        session.setAttribute(SessionAtribute.CURRENT_PAGE, DEFAULT_PAGE);
     }
 }

@@ -7,19 +7,19 @@ public class CommandResult {
 
     private String page;
     private SendingType sendingType;
+    private int errorCode;
 
-    private CommandResult(String page, SendingType sendingType) {
+    public CommandResult(String page, SendingType sendingType) {
         this.page = page;
         this.sendingType = sendingType;
     }
-    public static CommandResult createForwardCommandResult (String page){
-        return new CommandResult(page, SendingType.FORWARD);
-    }
-    public static CommandResult createRedirectCommandResult (String page){
-        return new CommandResult(page, SendingType.REDIRECT);
-    }
-    public static CommandResult createErrorCommandResult (String page){ //TODO add error code
-        return new CommandResult(page, SendingType.ERROR);
+
+    public CommandResult(String page, SendingType sendingType, int errorCode) {
+        this.page = page;
+        this.sendingType = sendingType;
+        if (sendingType == SendingType.ERROR){
+            this.errorCode = errorCode;
+        }
     }
 
     public String getPage() {
@@ -28,5 +28,9 @@ public class CommandResult {
 
     public SendingType getSendingType() {
         return sendingType;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
     }
 }

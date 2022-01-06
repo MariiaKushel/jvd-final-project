@@ -24,39 +24,58 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao = provider.getUserDao();
 
     @Override
-    public Optional<User> createNewAccount(Map<String, String> userData, String password) throws ServiceException {
-        Optional<User> user = Optional.empty();
+    public boolean createNewAccount(Map<String, String> userData, String password) throws ServiceException {
         UserValidator validator = UserValidatorImpl.getInstance();
         String email = userData.get(EMAIL);
         String name = userData.get(NAME);
         String phoneNumber = userData.get(PHONE_NUMBER);
-        if (!validator.validateEmail(email)
-                || !validator.validatePassword(password)
-                || !validator.validateName(name)
-                || !validator.validatePhoneNumber(phoneNumber)) {
-            logger.info("Some data has not valid value");
-            return user;
+        String repeatPassword = userData.get(REPEAT_PASSWORD);
+        System.out.println("password " + password);
+        System.out.println("repeatPassword " + repeatPassword);
+
+        boolean isCreated = true;
+        if (!password.equals(repeatPassword)) {
+            logger.info("Passwords mismatch");
+            isCreated = false;
         }
+        if(!validator.validateEmail(email)){
+            logger.info("Email is not valid");
+            isCreated = false;
+        }
+        if(!validator.validatePassword(password)){
+            logger.info("Password is not valid");
+            isCreated = false;
+        }
+        if(!validator.validateName(name)){
+            logger.info("Name is not valid");
+            isCreated = false;
+        }
+        if(!validator.validatePhoneNumber(phoneNumber)){
+            logger.info("Phone number is not valid");
+            isCreated = false;
+        }
+        if (!isCreated) {
+            return isCreated;
+        }
+
         try {
             if (userDao.isEmailExist(email)) {
                 logger.info("Email is already in use");
-                return user;
+                isCreated = false;
+                return isCreated;
             }
             User newUser = User.newBuilder()
                     .setEmail(email)
                     .setName(name)
                     .setPhoneNumber(phoneNumber)
                     .build();
-            userDao.create(newUser);
-            user = Optional.of(newUser);
-
             String secretPassword = PasswordEncryptor.encrypt(password);
-            userDao.changePassword(email, secretPassword);
+            isCreated = userDao.createUserWithPassword(newUser, secretPassword);
         } catch (DaoException e) {
             logger.error("Try to register new user was failed " + e);
             throw new ServiceException("Try to register new user was failed", e);
         }
-        return user;
+        return isCreated;
     }
 
     @Override

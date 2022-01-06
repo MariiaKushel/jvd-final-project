@@ -15,14 +15,15 @@ import org.apache.logging.log4j.Logger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public class UserDaoImpl implements UserDao {
     static Logger logger = LogManager.getLogger();
 
     private static final String SQL_INSERT_USER = """
-            INSERT INTO hotel.users (email, role, name, phone_number, status, discount_id, balance) 
-            VALUES (?,?,?,?,?,?,?)""";
+            INSERT INTO hotel.users (email, role, name, phone_number, status, discount_id, balance, password) 
+            VALUES (?,?,?,?,?,?,?,?)""";
     private static final String SQL_UPDATE_PASSWORD =
             "UPDATE hotel.users SET password=? WHERE email=?";
     private static final String SQL_SELECT_USER = """
@@ -56,7 +57,9 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean create(User user) throws DaoException {
-        int rowsInserted = 0;
+        logger.error("Unavailable operation to entity <User>");
+        throw new UnsupportedOperationException("Unavailable operation to entity <User>");
+       /* int rowsInserted = 0;
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_INSERT_USER)) {
@@ -72,7 +75,7 @@ public class UserDaoImpl implements UserDao {
             logger.error("SQL request create from table hotel.users was failed" + e);
             throw new DaoException("SQL request create from table hotel.users was failed", e);
         }
-        return rowsInserted == 1;
+        return rowsInserted == 1;*/
     }
 
     @Override
@@ -112,7 +115,7 @@ public class UserDaoImpl implements UserDao {
         boolean isExist = false;
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_USER + BY_EMAIL)) { //TODO can use "" + "" ?
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_USER + BY_EMAIL)) {
             statement.setString(1, email);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -179,6 +182,28 @@ public class UserDaoImpl implements UserDao {
             throw new DaoException("SQL request changePassword from table hotel.users was failed", e);
         }
         return rowsUpdated == 1;
+    }
+
+    @Override
+    public boolean createUserWithPassword(User user, String password) throws DaoException {
+        int rowsInserted = 0;
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_INSERT_USER)) {
+            statement.setString(1, user.getEmail());
+            statement.setString(2, user.getRole().toString());
+            statement.setString(3, user.getName());
+            statement.setString(4, user.getPhoneNumber());
+            statement.setString(5, user.getStatus().toString());
+            statement.setLong(6, user.getDiscountId());
+            statement.setBigDecimal(7, user.getBalance());
+            statement.setString(8, password);
+            rowsInserted = statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("SQL request create from table hotel.users was failed" + e);
+            throw new DaoException("SQL request create from table hotel.users was failed", e);
+        }
+        return rowsInserted==1;
     }
 
 }

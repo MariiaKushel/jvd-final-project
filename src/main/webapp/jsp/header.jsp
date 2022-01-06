@@ -18,8 +18,10 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="${path}/css/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>${title}</title>
+    <link href="${path}/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>
+        ${title}
+    </title>
 </head>
 <body>
 <div class="container p-3 mb-2 bg-secondary bg-opacity-75 text-white ">
@@ -28,7 +30,9 @@
             ${name}
         </div>
         <div class="col">
-            <div class="text-end">${phone}</div>
+            <div class="text-end">
+                ${phone}
+            </div>
         </div>
         <div class="col-auto">
             <div class="btn-group">
@@ -37,16 +41,22 @@
                     ${sessionScope.locale}
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="${path}/controller?command=change_locale&language=EN">${en}</a></li>
-                    <li><a class="dropdown-item" href="${path}/controller?command=change_locale&language=RU">${ru}</a></li>
+                    <li><a class="dropdown-item" href="${path}/controller?command=change_locale&language=EN">${en}</a>
+                    </li>
+                    <li><a class="dropdown-item" href="${path}/controller?command=change_locale&language=RU">${ru}</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col">
+            <c:if test="${not empty sessionScope.current_role}">
+                <jsp:include page="header_navigation.jsp"/>
+            </c:if>
+        </div>
+    </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-        crossorigin="anonymous"></script>
+<script src="${path}/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

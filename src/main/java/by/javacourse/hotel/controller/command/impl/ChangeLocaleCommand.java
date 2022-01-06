@@ -4,6 +4,8 @@ import by.javacourse.hotel.controller.command.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
+
 public class ChangeLocaleCommand implements Command {
 
     private enum Language {
@@ -30,6 +32,6 @@ public class ChangeLocaleCommand implements Command {
             case EN -> session.setAttribute(SessionAtribute.LOCALE, Language.EN.getLocale());
             case RU -> session.setAttribute(SessionAtribute.LOCALE, Language.RU.getLocale());
         }
-        return CommandResult.createRedirectCommandResult(currentPage);
+        return new CommandResult(currentPage, FORWARD);
     }
 }

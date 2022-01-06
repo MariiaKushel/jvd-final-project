@@ -3,6 +3,7 @@ package by.javacourse.hotel.controller.command.impl;
 import by.javacourse.hotel.controller.command.*;
 import by.javacourse.hotel.controller.command.Command;
 import by.javacourse.hotel.controller.command.CommandResult;
+import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
 
 import by.javacourse.hotel.controller.command.PagePath;
 import by.javacourse.hotel.entity.User;
@@ -33,20 +34,25 @@ public class SingInCommand implements Command {
         try {
             Optional<User> optUser = service.authenticate(email, password);
             if (optUser.isPresent()) {
-                session.setAttribute(SessionAtribute.CURRENT_USER, email);
                 User user = optUser.get();
                 String role = user.getRole().toString();
+                String userId = String.valueOf(user.getEntityId());
+                session.setAttribute(SessionAtribute.CURRENT_USER_ID, userId);
+                session.setAttribute(SessionAtribute.CURRENT_USER, email);
                 session.setAttribute(SessionAtribute.CURRENT_ROLE, role);
                 session.setAttribute(SessionAtribute.WRONG_MESSAGE, false);
-                commandResult = CommandResult.createRedirectCommandResult(PagePath.HOME_PAGE);
+                session.setAttribute(SessionAtribute.CURRENT_PAGE, PagePath.HOME_PAGE);
+                commandResult = new CommandResult(PagePath.HOME_PAGE, REDIRECT);
             } else {
                 session.setAttribute(SessionAtribute.WRONG_MESSAGE, true);
-                commandResult = CommandResult.createRedirectCommandResult(PagePath.SING_IN_PAGE);
+                session.setAttribute(SessionAtribute.CURRENT_PAGE, PagePath.SING_IN_PAGE);
+                commandResult = new CommandResult(PagePath.SING_IN_PAGE, REDIRECT);
             }
         } catch (ServiceException e) {
             logger.error("Try to execute SingInCommand was failed " + e);
-            commandResult = CommandResult.createRedirectCommandResult(PagePath.ERROR_500_PAGE); //TODO add error code
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
         }
+
         return commandResult;
     }
 }

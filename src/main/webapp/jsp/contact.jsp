@@ -7,9 +7,11 @@
 <fmt:setLocale value="${sessionScope.locale}" scope="session"/>
 <fmt:setBundle basename="properties.pagecontent"/>
 
-<fmt:message key="title.home" var="title"/>
-<fmt:message key="message.welcom" var="welcom"/>
-<fmt:message key="message.hotel_info" var="hotel_info"/>
+<fmt:message key="title.contact" var="title"/>
+<fmt:message key="massage.hotel_official_name" var="official_name"/>
+<fmt:message key="massage.hotel_adress" var="adress"/>
+<fmt:message key="massage.hotel_phone" var="phone"/>
+<fmt:message key="massage.hotel_bank_account" var="bank_account"/>
 
 <html>
 <head>
@@ -24,15 +26,30 @@
     <jsp:include page="header.jsp"/>
 </header>
 <body>
-<div class="container text-secondary">
+<div class="container text-secondary ">
+   <div class ="row">
+       <div class="col fw-bold">
+           ${title}
+       </div>
+   </div>
     <div class ="row">
-        <div class="col fw-bold">
-            ${welcom}
+        <div class="col">
+            ${official_name}
         </div>
     </div>
     <div class ="row">
         <div class="col">
-            ${hotel_info}
+            ${adress}
+        </div>
+    </div>
+    <div class ="row">
+        <div class="col">
+            ${phone}
+        </div>
+    </div>
+    <div class ="row">
+        <div class="col">
+            ${bank_account}
         </div>
     </div>
 </div>
