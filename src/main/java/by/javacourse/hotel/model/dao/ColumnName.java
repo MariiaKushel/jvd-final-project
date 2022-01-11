@@ -15,6 +15,20 @@ public final class ColumnName {
     //table hotel.discounts
     public static final String RATE = "rate";
 
+    //table.hotel.rooms
+    public static final String ROOM_ID = "room_id";
+    public static final String NUMBER = "number";
+    public static final String SLEEPING_PLACE = "sleeping_place";
+    public static final String PRICE_PER_DAY = "price_per_day";
+    public static final String RATING = "rating";
+    public static final String VISIBLE = "visible";
+    public static final String DESCRIPTION = "description";
+
+    //table.hotel.images
+    public static final String IMAGE_ID = "image_id";
+    public static final String IMAGE = "image";
+    public static final String PREVIEW = "preview";
+
     private ColumnName(){
     }
 }

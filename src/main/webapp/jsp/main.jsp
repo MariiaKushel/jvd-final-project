@@ -9,6 +9,7 @@
 
 <fmt:message key="title.main" var="title"/>
 <fmt:message key="message.welcom" var="message"/>
+<fmt:message key="reference.show_rooms" var="show_rooms"/>
 <fmt:message key="reference.sing_in" var="sing_in"/>
 <fmt:message key="reference.create_new_account" var="create_new_account"/>
 <fmt:message key="language.ru" var="ru"/>
@@ -24,6 +25,9 @@
     <title>${title}</title>
 </head>
 <body>
+<c:if test="${not empty sessionScope.current_role}">
+    <jsp:forward page="/controller?command=go_to_home_page"></jsp:forward>
+</c:if>
 <div class="container text-dark text-center fw-bold">
     <div class="row">
         <div class="col">
@@ -32,6 +36,17 @@
             </h1>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col">
+            <h4>
+                <a class="link-dark text-decoration-none" href="${path}/controller?command=find_all_visible_rooms">
+                    ${show_rooms}
+                </a>
+            </h4>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col">
             <h4>

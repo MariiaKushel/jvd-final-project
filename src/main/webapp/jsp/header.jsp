@@ -9,6 +9,11 @@
 <fmt:message key="title.header" var="title"/>
 <fmt:message key="message.name" var="name"/>
 <fmt:message key="message.phone" var="phone"/>
+<fmt:message key="message.need_account_to_book1" var="info_part1"/>
+<fmt:message key="message.need_account_to_book2" var="info_part2"/>
+<fmt:message key="message.need_account_to_book3" var="info_part3"/>
+<fmt:message key="message.need_account_to_book4" var="info_part4"/>
+<fmt:message key="message.need_account_to_book5" var="info_part5"/>
 <fmt:message key="language.ru" var="ru"/>
 <fmt:message key="language.en" var="en"/>
 
@@ -41,18 +46,32 @@
                     ${sessionScope.locale}
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="${path}/controller?command=change_locale&language=EN">${en}</a>
+                    <li><a class="dropdown-item text-secondary"
+                           href="${path}/controller?command=change_locale&language=EN">${en}</a>
                     </li>
-                    <li><a class="dropdown-item" href="${path}/controller?command=change_locale&language=RU">${ru}</a>
+                    <li><a class="dropdown-item text-secondary"
+                           href="${path}/controller?command=change_locale&language=RU">${ru}</a>
                     </li>
                 </ul>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col">
+        <div class="col text-center">
             <c:if test="${not empty sessionScope.current_role}">
                 <jsp:include page="header_navigation.jsp"/>
+            </c:if>
+            <c:if test="${empty sessionScope.current_role}">
+                ${info_part1}
+                <a class="link-light" href="${path}/controller?command=go_to_sing_in_page">
+                        ${info_part2}
+                </a>
+                ${info_part3}
+                <a class="link-light"
+                   href="${path}/controller?command=go_to_create_new_account_page">
+                        ${info_part4}
+                </a>
+                ${info_part5}
             </c:if>
         </div>
     </div>

@@ -9,8 +9,8 @@ public final class PagePath {
     public static final String FIND_ROOM_PAGE = "jsp/find_room.jsp";
     public static final String CONTACT_PAGE = "jsp/contact.jsp";
     public static final String ACCOUNT_PAGE = "jsp/account.jsp";
-
-    public static final String RESULT_PAGE = "jsp/result.jsp"; //TODO temporary page
+    public static final String SHOW_ROOM_PAGE = "jsp/show_room.jsp";
+    public static final String ROOM_PAGE = "jsp/room.jsp";
 
     public static final String ERROR_500_PAGE = "jsp/error500.jsp";
 

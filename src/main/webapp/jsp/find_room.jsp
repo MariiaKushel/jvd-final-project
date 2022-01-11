@@ -22,8 +22,59 @@
     <jsp:include page="header.jsp"/>
 </header>
 <body>
-<div class="container text-secondary">
-    <p class="fw-bold">find room</p>
+<div class="container text-secondary" <%--style="overflow-y: scroll;--%>>
+    <div class="fw-bold">
+        find room
+    </div>
+
+    <div class="card mb-3" >
+        <div class="row g-0">
+            <div class="col-md-3">
+                <img src="${path}/images/nophoto.png" >
+            </div>
+            <div class="col-md-9">
+                <div class="card-body">
+                    <h5 class="card-title">Number name</h5>
+                    <p class="card-text">Sleeping place: ...</br>
+                        Raiting: ...</br>
+                        Price: ...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-3" >
+        <div class="row g-0">
+            <div class="col-md-3">
+                <img src="${path}/images/nophoto.png" >
+            </div>
+            <div class="col-md-9">
+                <div class="card-body">
+                    <h5 class="card-title">Number name</h5>
+                    <p class="card-text">Sleeping place: ...</br>
+                        Raiting: ...</br>
+                        Price: ...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-3" >
+        <div class="row g-0">
+            <div class="col-md-3">
+                <img src="${path}/images/nophoto.png" >
+            </div>
+            <div class="col-md-9">
+                <div class="card-body">
+                    <h5 class="card-title">Number name</h5>
+                    <p class="card-text">Sleeping place: ...</br>
+                        Raiting: ...</br>
+                        Price: ...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 </div>
 <footer>
     <jsp:include page="footer.jsp"/>

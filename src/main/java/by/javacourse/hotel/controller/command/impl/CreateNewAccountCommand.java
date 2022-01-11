@@ -3,7 +3,7 @@ package by.javacourse.hotel.controller.command.impl;
 import by.javacourse.hotel.controller.command.Command;
 import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
-import by.javacourse.hotel.controller.command.SessionAtribute;
+import by.javacourse.hotel.controller.command.SessionAttribute;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.ServiceProvider;
 import by.javacourse.hotel.model.service.UserService;
@@ -44,12 +44,12 @@ public class CreateNewAccountCommand implements Command {
         CommandResult commandResult = null;
         try {
             if (service.createNewAccount(userData, password)) {
-                session.setAttribute(SessionAtribute.WRONG_MESSAGE, false);
-                session.setAttribute(SessionAtribute.CURRENT_PAGE, PagePath.SING_IN_PAGE);
+                session.setAttribute(SessionAttribute.WRONG_MESSAGE, false);
+                session.setAttribute(SessionAttribute.CURRENT_PAGE, PagePath.SING_IN_PAGE);
                 commandResult = new CommandResult(PagePath.SING_IN_PAGE, REDIRECT);
             } else {
-                session.setAttribute(SessionAtribute.WRONG_MESSAGE, true);
-                session.setAttribute(SessionAtribute.CURRENT_PAGE, PagePath.CREATE_NEW_ACCOUNT_PAGE);
+                session.setAttribute(SessionAttribute.WRONG_MESSAGE, true);
+                session.setAttribute(SessionAttribute.CURRENT_PAGE, PagePath.CREATE_NEW_ACCOUNT_PAGE);
                 commandResult = new CommandResult(PagePath.CREATE_NEW_ACCOUNT_PAGE, REDIRECT);
             }
         } catch (ServiceException e) {

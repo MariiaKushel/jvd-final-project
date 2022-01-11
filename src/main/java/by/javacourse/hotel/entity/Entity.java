@@ -7,12 +7,10 @@ public abstract class Entity {
     }
 
     public long getEntityId() {
-
         return entityId;
     }
 
     void setEntityId(long entityId) {
-
         this.entityId = entityId;
     }
 
@@ -30,7 +28,6 @@ public abstract class Entity {
 
     @Override
     public int hashCode() {
-
         return Long.hashCode(entityId);
     }
 

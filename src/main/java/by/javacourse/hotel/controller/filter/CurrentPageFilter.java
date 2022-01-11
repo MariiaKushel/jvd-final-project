@@ -1,8 +1,7 @@
 package by.javacourse.hotel.controller.filter;
 
-import by.javacourse.hotel.controller.command.SessionAtribute;
+import by.javacourse.hotel.controller.command.SessionAttribute;
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -33,7 +32,7 @@ public class CurrentPageFilter implements Filter {
 
         if (currentPage != null) {
             HttpSession session = request.getSession();
-            session.setAttribute(SessionAtribute.CURRENT_PAGE, currentPage);
+            session.setAttribute(SessionAttribute.CURRENT_PAGE, currentPage);
         }
         System.out.println("---filter end---");
         filterChain.doFilter(servletRequest, servletResponse);

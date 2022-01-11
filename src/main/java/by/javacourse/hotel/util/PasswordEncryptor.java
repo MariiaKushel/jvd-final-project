@@ -6,7 +6,6 @@ public class PasswordEncryptor {
     private static final String SALT = "4d!5&T#";
 
     public static String encrypt(String password) {
-
         return DigestUtils.md5Hex(password + SALT);
     }
 }

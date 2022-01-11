@@ -37,15 +37,15 @@ public class SingInCommand implements Command {
                 User user = optUser.get();
                 String role = user.getRole().toString();
                 String userId = String.valueOf(user.getEntityId());
-                session.setAttribute(SessionAtribute.CURRENT_USER_ID, userId);
-                session.setAttribute(SessionAtribute.CURRENT_USER, email);
-                session.setAttribute(SessionAtribute.CURRENT_ROLE, role);
-                session.setAttribute(SessionAtribute.WRONG_MESSAGE, false);
-                session.setAttribute(SessionAtribute.CURRENT_PAGE, PagePath.HOME_PAGE);
+                session.setAttribute(SessionAttribute.CURRENT_USER_ID, userId);
+                session.setAttribute(SessionAttribute.CURRENT_USER, email);
+                session.setAttribute(SessionAttribute.CURRENT_ROLE, role);
+                session.setAttribute(SessionAttribute.WRONG_MESSAGE, false);
+                session.setAttribute(SessionAttribute.CURRENT_PAGE, PagePath.HOME_PAGE);
                 commandResult = new CommandResult(PagePath.HOME_PAGE, REDIRECT);
             } else {
-                session.setAttribute(SessionAtribute.WRONG_MESSAGE, true);
-                session.setAttribute(SessionAtribute.CURRENT_PAGE, PagePath.SING_IN_PAGE);
+                session.setAttribute(SessionAttribute.WRONG_MESSAGE, true);
+                session.setAttribute(SessionAttribute.CURRENT_PAGE, PagePath.SING_IN_PAGE);
                 commandResult = new CommandResult(PagePath.SING_IN_PAGE, REDIRECT);
             }
         } catch (ServiceException e) {

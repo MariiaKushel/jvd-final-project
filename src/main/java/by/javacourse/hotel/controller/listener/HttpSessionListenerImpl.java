@@ -1,6 +1,6 @@
 package by.javacourse.hotel.controller.listener;
 
-import by.javacourse.hotel.controller.command.SessionAtribute;
+import by.javacourse.hotel.controller.command.SessionAttribute;
 import jakarta.servlet.annotation.WebListener;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
@@ -14,7 +14,7 @@ public class HttpSessionListenerImpl implements HttpSessionListener {
     @Override
     public void sessionCreated(HttpSessionEvent se) {
         HttpSession session = se.getSession();
-        session.setAttribute(SessionAtribute.LOCALE,DEFAULT_LOCALE);
-        session.setAttribute(SessionAtribute.CURRENT_PAGE, DEFAULT_PAGE);
+        session.setAttribute(SessionAttribute.LOCALE,DEFAULT_LOCALE);
+        session.setAttribute(SessionAttribute.CURRENT_PAGE, DEFAULT_PAGE);
     }
 }

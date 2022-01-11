@@ -8,9 +8,9 @@
 <fmt:setBundle basename="properties.pagecontent"/>
 
 <fmt:message key="title.contact" var="title"/>
-<fmt:message key="massage.hotel_official_name" var="official_name"/>
-<fmt:message key="massage.hotel_adress" var="adress"/>
-<fmt:message key="massage.hotel_phone" var="phone"/>
+<fmt:message key="message.hotel_official_name" var="official_name"/>
+<fmt:message key="message.hotel_adress" var="adress"/>
+<fmt:message key="message.hotel_phone" var="phone"/>
 <fmt:message key="massage.hotel_bank_account" var="bank_account"/>
 
 <html>

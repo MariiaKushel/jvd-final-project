@@ -26,11 +26,11 @@ public class ChangeLocaleCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        String currentPage = session.getAttribute(SessionAtribute.CURRENT_PAGE).toString();
+        String currentPage = session.getAttribute(SessionAttribute.CURRENT_PAGE).toString();
         Language newLanguage = Language.valueOf(request.getParameter(RequestParameter.LANGUAGE));
         switch (newLanguage) {
-            case EN -> session.setAttribute(SessionAtribute.LOCALE, Language.EN.getLocale());
-            case RU -> session.setAttribute(SessionAtribute.LOCALE, Language.RU.getLocale());
+            case EN -> session.setAttribute(SessionAttribute.LOCALE, Language.EN.getLocale());
+            case RU -> session.setAttribute(SessionAttribute.LOCALE, Language.RU.getLocale());
         }
         return new CommandResult(currentPage, FORWARD);
     }

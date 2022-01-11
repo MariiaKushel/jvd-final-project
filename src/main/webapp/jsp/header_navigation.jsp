@@ -40,8 +40,8 @@
             User: ${sessionScope.current_user}
         </a>
         <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="${path}/controller?command=go_to_account_page">Go to account</a></li>
-            <li><a class="dropdown-item" href="${path}/controller?command=sing_out">Sing out</a></li>
+            <li><a class="dropdown-item text-secondary" href="${path}/controller?command=go_to_account_page">Go to account</a></li>
+            <li><a class="dropdown-item text-secondary" href="${path}/controller?command=sing_out">Sing out</a></li>
         </ul>
         </li>
         </ul>

@@ -15,6 +15,8 @@ public final class RequestParameter {
     public static final String DISCOUNT_ID = "discount_id";
     public static final String BALANCE = "balance";
 
+    public static final String ROOM_ID = "room_id";
+
     private RequestParameter (){
 
     }

@@ -85,13 +85,14 @@ public class UserDaoImpl implements UserDao {
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_SELECT_USER + BY_ID,
-                     ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) { // FIXME need TYPE_SCROLL_INSENSITIVE?
+                     ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
             statement.setLong(1, user.getEntityId());
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     //get old user
                     oldUser = mapper.retrieve(resultSet).stream().findFirst();
                     //update user
+                    resultSet.first();
                     resultSet.updateString(EMAIL, user.getEmail());
                     resultSet.updateString(ROLE, user.getRole().toString());
                     resultSet.updateString(NAME, user.getName());
@@ -200,8 +201,8 @@ public class UserDaoImpl implements UserDao {
             statement.setString(8, password);
             rowsInserted = statement.executeUpdate();
         } catch (SQLException e) {
-            logger.error("SQL request create from table hotel.users was failed" + e);
-            throw new DaoException("SQL request create from table hotel.users was failed", e);
+            logger.error("SQL request createUserWithPassword from table hotel.users was failed" + e);
+            throw new DaoException("SQL request createUserWithPassword from table hotel.users was failed", e);
         }
         return rowsInserted==1;
     }
