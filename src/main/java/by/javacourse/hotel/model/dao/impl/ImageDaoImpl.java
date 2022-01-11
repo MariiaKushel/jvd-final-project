@@ -1,27 +1,17 @@
 package by.javacourse.hotel.model.dao.impl;
 
 import by.javacourse.hotel.entity.Image;
-import by.javacourse.hotel.entity.Room;
 import by.javacourse.hotel.exception.DaoException;
 import by.javacourse.hotel.model.dao.ImageDao;
-import by.javacourse.hotel.model.dao.RoomDao;
 import by.javacourse.hotel.model.dao.mapper.Mapper;
 import by.javacourse.hotel.model.dao.mapper.impl.ImageMapper;
-import by.javacourse.hotel.model.dao.mapper.impl.RoomMapper;
 import by.javacourse.hotel.model.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.sql.rowset.serial.SerialBlob;
-import javax.swing.text.html.Option;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,7 +41,7 @@ public class ImageDaoImpl implements ImageDao {
             ON hotel.images.room_id=hotel.rooms.room_id 
             AND hotel.rooms.visible=true 
             AND preview=true
-            ORDER BY hotel.images.room_id""";////
+            ORDER BY hotel.images.room_id""";
 
 
     @Override
@@ -93,7 +83,7 @@ public class ImageDaoImpl implements ImageDao {
              PreparedStatement statement = connection.prepareStatement(SQL_INSERT_IMAGE)) {
             statement.setLong(1, image.getEntityId());
             statement.setLong(2, image.getRoomId());
-            statement.setBytes(3, image.getImage());
+            statement.setBytes(3, image.getImageContent());
             insertedRows = statement.executeUpdate();
         } catch (SQLException e) {
             logger.error("SQL request create from table hotel.images was failed" + e);
@@ -116,7 +106,7 @@ public class ImageDaoImpl implements ImageDao {
                     oldImage = mapper.retrieve(resultSet).stream().findFirst();
                     resultSet.first();
                     resultSet.updateLong(ROOM_ID, image.getRoomId());
-                    Blob blob = new SerialBlob(image.getImage());
+                    Blob blob = new SerialBlob(image.getImageContent());
                     resultSet.updateBlob(IMAGE, blob);
                     resultSet.updateRow();
                 }

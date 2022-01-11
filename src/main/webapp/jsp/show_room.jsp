@@ -14,7 +14,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="${path}/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Title</title>
+    <title>Title</title> <%--FIXME add text to property--%>
 </head>
 <body>
 <header>
@@ -23,7 +23,7 @@
 <div class="container text-secondary">
     <div class="row">
         <div class="col md-3">
-            <h4 class="fw-bold">Our rooms</h4>
+            <h4 class="fw-bold">Our rooms</h4> <%--FIXME add text to property--%>
         </div>
         <div class="col md-3 text-end">
             <a class="link-secondary text-decoration-none" href="${path}/controller?command=go_to_main_page">

@@ -1,6 +1,5 @@
 package by.javacourse.hotel.entity;
 
-import by.javacourse.hotel.util.ImageEncoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,25 +15,23 @@ public class Image extends Entity {
     private static final String PATH_DEFAULT_IMAGE = "C:\\images\\nophoto.jpg";
 
     static {
-        byte[] imageContent = null;
+        byte[] imageAsByteArray = null;
         try {
             Path path = Paths.get(PATH_DEFAULT_IMAGE);
-            logger.debug("Path>> " + path);
-            imageContent = Files.readAllBytes(path);
-            //.debug("byte[] >> " + Arrays.toString(imageContent));
+            imageAsByteArray = Files.readAllBytes(path);
         } catch (IOException e) {
             logger.debug("IOException in static blok in Image");
             //FIXME add what need to do
         }
-        defaultImage = imageContent;
+        defaultImage = imageAsByteArray;
     }
 
     private long roomId;
-    private byte[] image;
+    private byte[] imageContent;
     private boolean preview;
 
     private Image() {
-        this.image = defaultImage;
+        this.imageContent = defaultImage;
     }
 
     public static Builder newBuilder() {
@@ -56,8 +53,8 @@ public class Image extends Entity {
             return this;
         }
 
-        public Builder setImage (byte[] image){
-            Image.this.image = image;
+        public Builder setImageContent(byte[] image){
+            Image.this.imageContent = image;
             return this;
         }
 
@@ -75,8 +72,8 @@ public class Image extends Entity {
         return roomId;
     }
 
-    public byte[] getImage() {
-        return image;
+    public byte[] getImageContent() {
+        return imageContent;
     }
 
     public boolean isPreview(){
@@ -96,7 +93,7 @@ public class Image extends Entity {
         Image image1 = (Image) o;
         if (roomId != image1.roomId) return false;
         if (preview != image1.preview) return false;
-        return Arrays.equals(image, image1.image);
+        return Arrays.equals(imageContent, image1.imageContent);
     }
 
     @Override
@@ -104,7 +101,7 @@ public class Image extends Entity {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + (int) (roomId ^ (roomId >>> 32));
-        result = prime * result + Arrays.hashCode(image);
+        result = prime * result + Arrays.hashCode(imageContent);
         result = prime * result + (preview ? 1 : 0);
         return result;
     }
@@ -115,8 +112,8 @@ public class Image extends Entity {
                 .append("Image [")
                 .append("roomId=")
                 .append(roomId)
-                .append(", image=")
-                .append(Arrays.toString(image))
+                .append(", imageContent=")
+                .append(Arrays.toString(imageContent))
                 .append(", preview=")
                 .append(preview)
                 .append("]")

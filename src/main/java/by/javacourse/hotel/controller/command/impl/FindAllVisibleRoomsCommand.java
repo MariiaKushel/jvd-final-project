@@ -35,15 +35,18 @@ public class FindAllVisibleRoomsCommand implements Command {
         try {
             List<Room> rooms = roomService.findAllVisibleRooms();
             List<Image> images = imageService.findPreviewByVisibleRoom();
+
             Map<Long, String> previews = new HashMap<>();
             for (Image image : images) {
-               byte[] imageContent = image.getImage();
+               byte[] imageContent = image.getImageContent();
                String imageAsString = ImageEncoder.encode(imageContent);
                previews.put(image.getRoomId(), imageAsString);
             }
+
             request.setAttribute(RequestAttribute.ROOM_LIST, rooms);
             request.setAttribute(RequestAttribute.PREVIEW_MAP, previews);
             session.setAttribute(SessionAttribute.CURRENT_PAGE, CurrentPageExtractor.extract(request));
+
             commandResult = new CommandResult(PagePath.SHOW_ROOM_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindAllVisibleRoomsCommand was failed " + e);
