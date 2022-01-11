@@ -7,7 +7,6 @@ import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static by.javacourse.hotel.model.dao.ColumnName.*;
@@ -35,7 +34,7 @@ public class ImageMapper implements Mapper<Image> {
             Blob blob = resultSet.getBlob(IMAGE);
             if (blob != null) {
                 byte[] imageContent = blob.getBytes(1, (int) blob.length());
-                builder.setImage(imageContent);
+                builder.setImageContent(imageContent);
             }
             Image image = builder.build();
             images.add(image);
