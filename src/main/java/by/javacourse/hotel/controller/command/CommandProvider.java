@@ -18,19 +18,21 @@ public final class CommandProvider {
         commands.put(CommandName.SING_IN, new SingInCommand());
         commands.put(CommandName.SING_OUT, new SingOutCommand());
         commands.put(CommandName.CREATE_NEW_ACCOUNT, new CreateNewAccountCommand());
+        commands.put(CommandName.CREATE_ORDER, new CreateOrderCommand());
 
         commands.put(CommandName.FIND_ALL_ROOMS, new FindAllRoomsCommand());
         commands.put(CommandName.FIND_ALL_VISIBLE_ROOMS, new FindAllVisibleRoomsCommand());
         commands.put(CommandName.FIND_ROOM_BY_ID, new FindRoomByIdCommand());
+        commands.put(CommandName.FIND_ROOM_BY_PARAMETER, new FindRoomByParameter());
 
         commands.put(CommandName.GO_TO_MAIN_PAGE, new GoToMainPageCommand());
         commands.put(CommandName.GO_TO_SING_IN_PAGE, new GoToSingInPageCommand());
         commands.put(CommandName.GO_TO_CREATE_NEW_ACCOUNT_PAGE, new GoToCreateNewAccountPageCommand());
         commands.put(CommandName.GO_TO_HOME_PAGE, new GoToHomePageCommand());
-        commands.put(CommandName.GO_TO_FIND_ROOM_PAGE, new GoToFindRoomPageCommand());
+        commands.put(CommandName.GO_TO_BOOK_ROOM_PAGE, new GoToBookRoomPageCommand());
         commands.put(CommandName.GO_TO_CONTACT_PAGE, new GoToContactPageCommand());
         commands.put(CommandName.GO_TO_ACCOUNT_PAGE, new GoToAccountPageCommand());
-
+        commands.put(CommandName.GO_TO_ORDER_PAGE, new GoToOrderPageCommand());
     }
 
     public static Command getCommand(String commandName) {

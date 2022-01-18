@@ -25,9 +25,6 @@
     <title>${title}</title>
 </head>
 <body>
-<c:if test="${not empty sessionScope.current_role}">
-    <jsp:forward page="/controller?command=go_to_home_page"></jsp:forward>
-</c:if>
 <div class="container text-dark text-center fw-bold">
     <div class="row">
         <div class="col">

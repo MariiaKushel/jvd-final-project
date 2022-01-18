@@ -107,7 +107,6 @@ public class UserDaoImpl implements UserDao {
             logger.error("SQL request update from table hotel.users was failed " + e);
             throw new DaoException("SQL request update from table hotel.users was failed", e);
         }
-        System.out.println(oldUser);
         return oldUser;
     }
 

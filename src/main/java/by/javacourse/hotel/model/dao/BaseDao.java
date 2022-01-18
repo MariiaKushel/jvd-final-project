@@ -22,10 +22,10 @@ public interface BaseDao<K, T extends Entity> {
 
     Optional<T> update(T t) throws DaoException;
 
-    default void close(Statement statment) { //TODO if not use - remove
+    default void close(Statement statement) { //TODO if not use - remove
         try {
-            if (statment != null) {
-                statment.close();
+            if (statement != null) {
+                statement.close();
             }
         } catch (SQLException e) {
             logger.error("Try to close statement was failed");

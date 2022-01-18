@@ -6,13 +6,18 @@ import by.javacourse.hotel.validator.UserValidator;
 public final class UserValidatorImpl implements UserValidator {
 
     private static final String EMAIL_REGEX =
-            "[\\d\\p{Alpha}]([\\d\\p{Alpha}_\\-\\.]*)[\\d\\p{Alpha}_\\-]@[\\d\\p{Alpha}_\\-]{2,}\\.\\p{Lower}{2,6}";
+            "[\\d\\p{Lower}]([\\d\\p{Lower}_\\-\\.]*)[\\d\\p{Lower}_\\-]@[\\d\\p{Lower}_\\-]{2,}\\.\\p{Lower}{2,6}";
     private static final String PASSWORD_REGEX =
-            "[\\d\\p{Alpha}\\p{Punct}]+";
+            "[\\p{Graph}]+";
     private static final String NAME_REGEX =
-            "([\\p{Alpha}[а-яА-яёЁ]])+(\\s([\\p{Alpha}[а-яА-яёЁ]]))*";
+            "[\\wа-яА-яёЁ][\\wа-яА-яёЁ\\s]*";
     private static final String PHONE_NUMBER_REGEX =
             "\\+375(29|44|17|25|33)\\d{7}";
+    private static final int MAX_EMAIL_LENGTH = 50;
+    private static final int MIN_PASSWORD_LENGTH = 4;
+    private static final int MAX_PASSWORD_LENGTH = 12;
+    private static final int MAX_NAME_LENGTH = 50;
+    private static final int PHONE_NUMBER_LENGTH = 13;
 
     private static final UserValidatorImpl instance = new UserValidatorImpl();
 
@@ -26,7 +31,7 @@ public final class UserValidatorImpl implements UserValidator {
 
     @Override
     public boolean validateEmail(String email) {
-        if (email.length() > 50) {
+        if (email.length() > MAX_EMAIL_LENGTH) {
             return false;
         }
         return email.matches(EMAIL_REGEX);
@@ -34,7 +39,7 @@ public final class UserValidatorImpl implements UserValidator {
 
     @Override
     public boolean validatePassword(String password) {
-        if (password.length() < 4 || password.length() > 12) {
+        if (password.length() > MAX_PASSWORD_LENGTH || password.length() < MIN_PASSWORD_LENGTH) {
             return false;
         }
         return password.matches(PASSWORD_REGEX);
@@ -42,7 +47,7 @@ public final class UserValidatorImpl implements UserValidator {
 
     @Override
     public boolean validateName(String name) {
-        if (name.isEmpty()) {
+        if (name.length() > MAX_NAME_LENGTH) {
             return false;
         }
         return name.matches(NAME_REGEX);
@@ -50,7 +55,7 @@ public final class UserValidatorImpl implements UserValidator {
 
     @Override
     public boolean validatePhoneNumber(String phoneNumber) {
-        if (phoneNumber.length() != 13) {
+        if (phoneNumber.length() != PHONE_NUMBER_LENGTH) {
             return false;
         }
         return phoneNumber.matches(PHONE_NUMBER_REGEX);

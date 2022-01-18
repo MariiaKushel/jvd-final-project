@@ -32,7 +32,9 @@
 <div class="container p-3 mb-2 bg-secondary bg-opacity-75 text-white ">
     <div class="row">
         <div class="col">
-            ${name}
+            <a class="link-light text-decoration-none" href="${path}/controller?command=go_to_main_page">
+                ${name}
+            </a>
         </div>
         <div class="col">
             <div class="text-end">
@@ -43,7 +45,7 @@
             <div class="btn-group">
                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                    ${sessionScope.locale}
+                    ${sessionScope.locale=='ru_RU'?ru:en}
                 </button>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item text-secondary"

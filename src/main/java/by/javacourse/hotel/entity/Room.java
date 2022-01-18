@@ -1,12 +1,7 @@
 package by.javacourse.hotel.entity;
 
-import by.javacourse.hotel.util.ImageEncoder;
-import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.Arrays;
 
 public class Room extends Entity {
 
@@ -15,9 +10,9 @@ public class Room extends Entity {
     private BigDecimal pricePerDay;
     private BigDecimal rating;
     private boolean visible;
-    private String description;
+    private String preview;
 
-    public Room() {
+    private Room() {
     }
 
     public static Builder newBuilder() {
@@ -58,8 +53,8 @@ public class Room extends Entity {
             return this;
         }
 
-        public Builder setDescription(String description) {
-            Room.this.description = description;
+        public Builder setPreview(String preview){
+            Room.this.preview = preview;
             return this;
         }
 
@@ -88,8 +83,8 @@ public class Room extends Entity {
         return visible;
     }
 
-    public String getDescription() {
-        return description;
+    public String getPreview(){
+        return preview;
     }
 
     @Override
@@ -113,7 +108,7 @@ public class Room extends Entity {
             return false;
         if (rating != null ? !rating.equals(room.rating) : room.rating != null)
             return false;
-        return description != null ? description.equals(room.description) : room.description == null;
+        return preview.equals(room.preview);
     }
 
     @Override
@@ -125,7 +120,7 @@ public class Room extends Entity {
         result = prime * result + (pricePerDay != null ? pricePerDay.hashCode() : 0);
         result = prime * result + (rating != null ? rating.hashCode() : 0);
         result = prime * result + (visible ? 1 : 0);
-        result = prime * result + (description != null ? description.hashCode() : 0);
+        result = prime * result + preview.hashCode();
         return result;
     }
 
@@ -143,8 +138,8 @@ public class Room extends Entity {
                 .append(rating)
                 .append(", visible=")
                 .append(visible)
-                .append(", description=")
-                .append(description)
+                .append(", preview=")
+                .append(preview)
                 .append("]")
                 .toString();
     }

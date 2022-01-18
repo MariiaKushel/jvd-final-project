@@ -8,7 +8,8 @@
 
 <fmt:message key="title.header" var="title"/>
 <fmt:message key="reference.home" var="home"/>
-<fmt:message key="reference.find_room" var="find_room"/>
+<fmt:message key="reference.book_room" var="book_room"/>
+<fmt:message key="reference.our_rooms" var="our_room"/>
 <fmt:message key="reference.contact" var="contact"/>
 
 <html>
@@ -25,8 +26,11 @@
             <a class="nav-link text-secondary" href="${path}/controller?command=go_to_home_page">
                 ${home}
             </a>
-            <a class="nav-link text-secondary" href="${path}/controller?command=go_to_find_room_page">
-                ${find_room}
+            <a class="nav-link text-secondary" href="${path}/controller?command=find_all_visible_rooms">
+                ${our_room}
+            </a>
+            <a class="nav-link text-secondary" href="${path}/controller?command=go_to_book_room_page">
+                ${book_room}
             </a>
             <a class="nav-link text-secondary" href="${path}/controller?command=go_to_contact_page">
                 ${contact}

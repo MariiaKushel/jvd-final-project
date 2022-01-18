@@ -8,11 +8,15 @@
 <fmt:setBundle basename="properties.pagecontent"/>
 
 <fmt:message key="title.sing_in" var="title"/>
-<fmt:message key="message.wrong_login_or_password" var="wrong_login_or_password"/>
+<fmt:message key="message.incorrect_login_or_password" var="incorrect_login_or_password"/>
 <fmt:message key="field.email" var="email"/>
 <fmt:message key="field.password" var="password"/>
 <fmt:message key="button.confirm" var="confirm"/>
 <fmt:message key="reference.back_to_main" var="back_to_main"/>
+<fmt:message key="message.password_rules" var="password_rules"/>
+<fmt:message key="message.email_rules" var="email_rules"/>
+<fmt:message key="reference.show_password" var="show_password"/>
+<fmt:message key="reference.hide_password" var="hide_password"/>
 
 <html>
 <head>
@@ -32,9 +36,9 @@
     <div class="row">
         <div class="col">
         </div>
-        <div class="col">
-            <c:if test="${sessionScope.wrong_message eq true}">
-                ${wrong_login_or_password}
+        <div class="col text-danger">
+            <c:if test="${wrong_login_or_password eq true}">
+                ${incorrect_login_or_password}
             </c:if>
         </div>
         <div class="col">
@@ -44,19 +48,30 @@
         <div class="col">
         </div>
         <div class="col">
-            <form name="SingInForm" method="post" action="${path}/controller">
+            <form method="post" action="${path}/controller">
                 <input type="hidden" name="command" value="sing_in"/>
                 <div class="mb-3">
                     <label class="form-label">
                         ${email}
                     </label>
-                    <input type="text" name="email" class="form-control text-lowercase">
+                    <input type="text" maxlength="50" name="email"
+                           pattern="[\da-z]([\da-z_\-\.]*)[\da-z_\-]@[\da-z_\-]{2,}\.[a-z]{2,6}"
+                           required oninvalid="this.setCustomValidity('${email_rules}')"
+                           class="form-control">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">
                         ${password}
                     </label>
-                    <input type="text" name="password" class="form-control">
+                    <input type="password" minlength="4" maxlength="12" name="password" id="pass"
+                           pattern="[\da-zA-Z\-!«»#\$%&'\(\)\*\+,\./:;<=>\?@_`\{\|\}~]+"
+                           required oninvalid="this.setCustomValidity('${password_rules} \'')"
+                           class="form-control">
+                    <label class="form-label">
+                        <a class="link-secondary text-decoration-none" id="show">
+                            ${show_password}
+                        </a>
+                    </label>
                 </div>
                 <button type="submit" class="btn btn-secondary">
                     ${confirm}
@@ -69,7 +84,7 @@
     <div class="row">
         <div class="col">
         </div>
-        <div class="col">
+        <div class="col mb-3">
             <a class="link-secondary text-decoration-none" href="${path}/controller?command=go_to_main_page">
                 ${back_to_main}
             </a>
@@ -78,8 +93,27 @@
         </div>
     </div>
 </div>
+
 <footer>
     <jsp:include page="footer.jsp"/>
 </footer>
+
+<script type="text/javascript">
+    var input = document.getElementById("pass");
+    var ref = document.getElementById("show");
+    ref.onclick = show;
+
+    function show() {
+        if (input.getAttribute('type') == 'password') {
+            input.removeAttribute('type');
+            input.setAttribute('type', 'text');
+            ref.innerHTML = '${hide_password}';
+        } else {
+            input.removeAttribute('type');
+            input.setAttribute('type', 'password');
+            ref.innerHTML = '${show_password}';
+        }
+    }
+</script>
 </body>
 </html>

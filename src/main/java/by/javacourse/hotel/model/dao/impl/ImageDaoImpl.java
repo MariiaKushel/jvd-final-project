@@ -35,13 +35,12 @@ public class ImageDaoImpl implements ImageDao {
     private static final String BY_ROOM_ID_FIRST = " WHERE room_id=? LIMIT 1";
 
     private static final String SQL_SELECT_IMAGE_BY_VISIBLE_ROOM = """
-            SELECT image_id, hotel.rooms.room_id, image, preview
+            SELECT image_id, hotel.images.room_id, image, preview
             FROM hotel.images
-            RIGHT JOIN hotel.rooms 
+            JOIN hotel.rooms 
             ON hotel.images.room_id=hotel.rooms.room_id 
-            AND hotel.rooms.visible=true 
-            AND preview=true
-            ORDER BY hotel.images.room_id""";
+            AND visible=true 
+            AND preview=true""";
 
 
     @Override

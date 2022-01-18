@@ -15,9 +15,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static by.javacourse.hotel.controller.command.CommandResult.SendingType.ERROR;
-import static by.javacourse.hotel.controller.command.CommandResult.SendingType.FORWARD;
+import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
+
 
 public class FindAllVisibleRoomsCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -34,17 +35,8 @@ public class FindAllVisibleRoomsCommand implements Command {
         CommandResult commandResult = null;
         try {
             List<Room> rooms = roomService.findAllVisibleRooms();
-            List<Image> images = imageService.findPreviewByVisibleRoom();
-
-            Map<Long, String> previews = new HashMap<>();
-            for (Image image : images) {
-               byte[] imageContent = image.getImageContent();
-               String imageAsString = ImageEncoder.encode(imageContent);
-               previews.put(image.getRoomId(), imageAsString);
-            }
 
             request.setAttribute(RequestAttribute.ROOM_LIST, rooms);
-            request.setAttribute(RequestAttribute.PREVIEW_MAP, previews);
             session.setAttribute(SessionAttribute.CURRENT_PAGE, CurrentPageExtractor.extract(request));
 
             commandResult = new CommandResult(PagePath.SHOW_ROOM_PAGE, FORWARD);
@@ -54,5 +46,4 @@ public class FindAllVisibleRoomsCommand implements Command {
         }
         return commandResult;
     }
-
 }

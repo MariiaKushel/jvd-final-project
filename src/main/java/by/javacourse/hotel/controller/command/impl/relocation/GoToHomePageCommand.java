@@ -15,6 +15,7 @@ public class GoToHomePageCommand implements Command {
     public CommandResult execute(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.setAttribute(SessionAttribute.CURRENT_PAGE, CurrentPageExtractor.extract(request));
+        System.out.println("GoToHomePageCommand> " +session.getAttribute(SessionAttribute.CURRENT_PAGE));
         return new CommandResult(PagePath.HOME_PAGE, FORWARD);
     }
 }

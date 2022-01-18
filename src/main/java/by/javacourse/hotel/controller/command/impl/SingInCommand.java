@@ -40,13 +40,13 @@ public class SingInCommand implements Command {
                 session.setAttribute(SessionAttribute.CURRENT_USER_ID, userId);
                 session.setAttribute(SessionAttribute.CURRENT_USER, email);
                 session.setAttribute(SessionAttribute.CURRENT_ROLE, role);
-                session.setAttribute(SessionAttribute.WRONG_MESSAGE, false);
+                session.setAttribute(SessionAttribute.CURRENT_DISCOUNT, 0);//FixME
                 session.setAttribute(SessionAttribute.CURRENT_PAGE, PagePath.HOME_PAGE);
                 commandResult = new CommandResult(PagePath.HOME_PAGE, REDIRECT);
             } else {
-                session.setAttribute(SessionAttribute.WRONG_MESSAGE, true);
+                request.setAttribute(RequestAttribute.WRONG_EMAIL_OR_PASSWORD,true);
                 session.setAttribute(SessionAttribute.CURRENT_PAGE, PagePath.SING_IN_PAGE);
-                commandResult = new CommandResult(PagePath.SING_IN_PAGE, REDIRECT);
+                commandResult = new CommandResult(PagePath.SING_IN_PAGE, FORWARD);
             }
         } catch (ServiceException e) {
             logger.error("Try to execute SingInCommand was failed " + e);

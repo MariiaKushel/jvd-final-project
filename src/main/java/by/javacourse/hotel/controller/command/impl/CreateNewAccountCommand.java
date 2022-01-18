@@ -1,9 +1,6 @@
 package by.javacourse.hotel.controller.command.impl;
 
-import by.javacourse.hotel.controller.command.Command;
-import by.javacourse.hotel.controller.command.CommandResult;
-import by.javacourse.hotel.controller.command.PagePath;
-import by.javacourse.hotel.controller.command.SessionAttribute;
+import by.javacourse.hotel.controller.command.*;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.ServiceProvider;
 import by.javacourse.hotel.model.service.UserService;
@@ -13,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
+import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,13 +42,25 @@ public class CreateNewAccountCommand implements Command {
         CommandResult commandResult = null;
         try {
             if (service.createNewAccount(userData, password)) {
-                session.setAttribute(SessionAttribute.WRONG_MESSAGE, false);
                 session.setAttribute(SessionAttribute.CURRENT_PAGE, PagePath.SING_IN_PAGE);
                 commandResult = new CommandResult(PagePath.SING_IN_PAGE, REDIRECT);
             } else {
-                session.setAttribute(SessionAttribute.WRONG_MESSAGE, true);
+                request.setAttribute(TEMP_EMAIL, userData.get(EMAIL));
+                request.setAttribute(TEMP_NAME, userData.get(NAME));
+                request.setAttribute(TEMP_PHONE_NUMBER,userData.get(PHONE_NUMBER));
+                request.setAttribute(TEMP_REPEAT_PASSWORD,userData.get(REPEAT_PASSWORD));
+                request.setAttribute(TEMP_PASSWORD,password);
+
+                request.setAttribute(WRONG_EMAIL, userData.get(WRONG_EMAIL));
+                request.setAttribute(WRONG_EMAIL_EXIST, userData.get(WRONG_EMAIL_EXIST));
+                request.setAttribute(WRONG_NAME, userData.get(WRONG_NAME));
+                request.setAttribute(WRONG_PHONE_NUMBER, userData.get(WRONG_PHONE_NUMBER));
+                request.setAttribute(WRONG_REPEAT_PASSWORD, userData.get(WRONG_REPEAT_PASSWORD));
+                request.setAttribute(WRONG_PASSWORD, userData.get(WRONG_PASSWORD));
+                ///
+                //session.setAttribute(SessionAttribute.WRONG_MESSAGE, true);
                 session.setAttribute(SessionAttribute.CURRENT_PAGE, PagePath.CREATE_NEW_ACCOUNT_PAGE);
-                commandResult = new CommandResult(PagePath.CREATE_NEW_ACCOUNT_PAGE, REDIRECT);
+                commandResult = new CommandResult(PagePath.CREATE_NEW_ACCOUNT_PAGE, FORWARD);
             }
         } catch (ServiceException e) {
             logger.error("Try to execute CreateNewAccountCommand was failed" + e);

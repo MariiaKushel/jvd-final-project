@@ -8,13 +8,19 @@
 <fmt:setBundle basename="properties.pagecontent"/>
 
 <fmt:message key="reference.back_to_main" var="back_to_main"/>
+<fmt:message key="message.room_number" var="number"/>
+<fmt:message key="message.room_sleeping_place" var="sleeping_place"/>
+<fmt:message key="message.room_description" var="room_description"/>
+<fmt:message key="message.room_price" var="price"/>
+<fmt:message key="message.room_rating" var="rating"/>
+<fmt:message key="title.our_room" var="title"/>
 
 <html>
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="${path}/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Title</title> <%--FIXME add text to property--%>
+    <title>${title}</title>
 </head>
 <body>
 <header>
@@ -22,52 +28,47 @@
 </header>
 <div class="container text-secondary">
     <div class="row">
-        <div class="col md-3">
-            <h4 class="fw-bold">Our rooms</h4> <%--FIXME add text to property--%>
-        </div>
-        <div class="col md-3 text-end">
-            <a class="link-secondary text-decoration-none" href="${path}/controller?command=go_to_main_page">
-                ${back_to_main}
-            </a>
+        <div class="col-md-3 fw-bold">
+            ${title}
         </div>
     </div>
-    <c:forEach var="element" items="${room_list}">
+    <c:forEach var="room" items="${room_list}">
         <div class="card mb-3">
             <div class="row g-0">
                 <div class="col-auto" style="width: 150px;">
-                    <img src="${preview_map[element.entityId]}" class="img-thumbnail"> <%--FIXME--%>
+                    <c:choose>
+                        <c:when test="${not empty room.preview}">
+                            <img src="${room.preview}" class="img-thumbnail">
+                        </c:when>
+                        <c:otherwise>
+                            <img src="${path}/images/nophoto.jpg" class="img-thumbnail">
+                        </c:otherwise>
+                    </c:choose>
                 </div>
                 <div class="col">
                     <div class="card-body">
                         <h5 class="card-title card-text">
                             <a class="link-secondary text-decoration-none"
-                               href="${path}/controller?command=find_room_by_id&room_id=${element.entityId}">
-                                Number №${element.number}
+                               href="${path}/controller?command=find_room_by_id&room_id=${room.entityId}">
+                                    ${number} ${room.number}
                             </a>
                         </h5>
                         <p class="card-text">
-                            Sleeping place: ${element.sleepingPlace}</br>
-                            Price: ${element.pricePerDay}
+                                ${sleeping_place}: ${room.sleepingPlace}</br>
+                                ${price}: ${room.pricePerDay}
                         </p>
                     </div>
                 </div>
                 <div class="col-auto">
                     <div class="card-body">
                         <h5 class="card-title text-end">
-                            Rating: ${element.rating}
+                                ${rating}: ${room.rating}
                         </h5>
                     </div>
                 </div>
             </div>
         </div>
     </c:forEach>
-    <div class="row">
-        <div class="col mb-3 text-end">
-            <a class="link-secondary text-decoration-none" href="${path}/controller?command=go_to_main_page">
-                ${back_to_main}
-            </a>
-        </div>
-    </div>
 </div>
 <footer>
     <jsp:include page="footer.jsp"/>

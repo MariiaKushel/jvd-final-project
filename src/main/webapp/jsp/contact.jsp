@@ -11,7 +11,7 @@
 <fmt:message key="message.hotel_official_name" var="official_name"/>
 <fmt:message key="message.hotel_adress" var="adress"/>
 <fmt:message key="message.hotel_phone" var="phone"/>
-<fmt:message key="massage.hotel_bank_account" var="bank_account"/>
+<fmt:message key="message.hotel_bank_account" var="bank_account"/>
 
 <html>
 <head>
@@ -28,27 +28,27 @@
 <body>
 <div class="container text-secondary ">
    <div class ="row">
-       <div class="col fw-bold">
+       <div class="col mb-3 fw-bold">
            ${title}
        </div>
    </div>
     <div class ="row">
-        <div class="col">
+        <div class="col mb-3">
             ${official_name}
         </div>
     </div>
     <div class ="row">
-        <div class="col">
+        <div class="col mb-3">
             ${adress}
         </div>
     </div>
     <div class ="row">
-        <div class="col">
+        <div class="col mb-3">
             ${phone}
         </div>
     </div>
     <div class ="row">
-        <div class="col">
+        <div class="col mb-3">
             ${bank_account}
         </div>
     </div>

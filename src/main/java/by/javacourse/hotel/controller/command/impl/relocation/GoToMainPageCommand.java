@@ -7,6 +7,7 @@ import by.javacourse.hotel.controller.command.SessionAttribute;
 import by.javacourse.hotel.util.CurrentPageExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
 
 public class GoToMainPageCommand implements Command {
@@ -14,6 +15,8 @@ public class GoToMainPageCommand implements Command {
     public CommandResult execute(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.setAttribute(SessionAttribute.CURRENT_PAGE, CurrentPageExtractor.extract(request));
-        return new CommandResult(PagePath.MAIN_PAGE, FORWARD);
+        return session.getAttribute(SessionAttribute.CURRENT_USER) != null
+                ? new CommandResult(PagePath.HOME_PAGE, FORWARD)
+                : new CommandResult(PagePath.MAIN_PAGE, FORWARD);
     }
 }

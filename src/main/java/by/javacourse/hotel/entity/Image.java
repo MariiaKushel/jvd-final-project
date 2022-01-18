@@ -1,37 +1,13 @@
 package by.javacourse.hotel.entity;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class Image extends Entity {
-    static Logger logger = LogManager.getLogger();
-    private static final byte[] defaultImage;
-    private static final String PATH_DEFAULT_IMAGE = "C:\\images\\nophoto.jpg";
-
-    static {
-        byte[] imageAsByteArray = null;
-        try {
-            Path path = Paths.get(PATH_DEFAULT_IMAGE);
-            imageAsByteArray = Files.readAllBytes(path);
-        } catch (IOException e) {
-            logger.debug("IOException in static blok in Image");
-            //FIXME add what need to do
-        }
-        defaultImage = imageAsByteArray;
-    }
-
     private long roomId;
     private byte[] imageContent;
     private boolean preview;
 
     private Image() {
-        this.imageContent = defaultImage;
     }
 
     public static Builder newBuilder() {

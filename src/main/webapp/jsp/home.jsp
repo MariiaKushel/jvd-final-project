@@ -26,12 +26,12 @@
 <body>
 <div class="container text-secondary">
     <div class ="row">
-        <div class="col fw-bold">
+        <div class="col mb-3 fw-bold">
             ${welcom}
         </div>
     </div>
     <div class ="row">
-        <div class="col">
+        <div class="col mb-3">
             ${hotel_info}
         </div>
     </div>

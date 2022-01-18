@@ -22,8 +22,7 @@
 <script type="text/javascript">
     if (document.body.scrollHeight > window.innerHeight) {
         document.getElementById("foot_position").className = "container position-relative p-3 mb-2 bg-secondary bg-opacity-75 text-white text-end";
-    }
-    else {
+    } else {
         document.getElementById("foot_position").className = "container position-absolute fixed-bottom p-3 mb-2 bg-secondary bg-opacity-75 text-white text-end";
     }
 </script>

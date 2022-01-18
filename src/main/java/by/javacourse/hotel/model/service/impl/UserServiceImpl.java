@@ -1,6 +1,7 @@
 package by.javacourse.hotel.model.service.impl;
 
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
+import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 
 import by.javacourse.hotel.exception.DaoException;
 import by.javacourse.hotel.exception.ServiceException;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
     static Logger logger = LogManager.getLogger();
+    private static final String WRONG_DATA_MARKER = "Wrong data";
 
     private DaoProvider provider = DaoProvider.getInstance();
     private UserDao userDao = provider.getUserDao();
@@ -30,28 +32,26 @@ public class UserServiceImpl implements UserService {
         String name = userData.get(NAME);
         String phoneNumber = userData.get(PHONE_NUMBER);
         String repeatPassword = userData.get(REPEAT_PASSWORD);
-        System.out.println("password " + password);
-        System.out.println("repeatPassword " + repeatPassword);
 
         boolean isCreated = true;
         if (!password.equals(repeatPassword)) {
-            logger.info("Passwords mismatch");
+            userData.put(WRONG_REPEAT_PASSWORD, WRONG_DATA_MARKER);
             isCreated = false;
         }
-        if(!validator.validateEmail(email)){
-            logger.info("Email is not valid");
+        if (!validator.validateEmail(email)) {
+            userData.put(WRONG_EMAIL, WRONG_DATA_MARKER);
             isCreated = false;
         }
-        if(!validator.validatePassword(password)){
-            logger.info("Password is not valid");
+        if (!validator.validatePassword(password)) {
+            userData.put(WRONG_PASSWORD, WRONG_DATA_MARKER);
             isCreated = false;
         }
-        if(!validator.validateName(name)){
-            logger.info("Name is not valid");
+        if (!validator.validateName(name)) {
+            userData.put(WRONG_NAME, WRONG_DATA_MARKER);
             isCreated = false;
         }
-        if(!validator.validatePhoneNumber(phoneNumber)){
-            logger.info("Phone number is not valid");
+        if (!validator.validatePhoneNumber(phoneNumber)) {
+            userData.put(WRONG_PHONE_NUMBER, WRONG_DATA_MARKER);
             isCreated = false;
         }
         if (!isCreated) {
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
         try {
             if (userDao.isEmailExist(email)) {
-                logger.info("Email is already in use");
+                userData.put(WRONG_EMAIL_EXIST, WRONG_DATA_MARKER);
                 isCreated = false;
                 return isCreated;
             }
@@ -72,8 +72,8 @@ public class UserServiceImpl implements UserService {
             String secretPassword = PasswordEncryptor.encrypt(password);
             isCreated = userDao.createUserWithPassword(newUser, secretPassword);
         } catch (DaoException e) {
-            logger.error("Try to register new user was failed " + e);
-            throw new ServiceException("Try to register new user was failed", e);
+            logger.error("Try to createNewAccount new user was failed " + e);
+            throw new ServiceException("Try to createNewAccount new user was failed", e);
         }
         return isCreated;
     }
