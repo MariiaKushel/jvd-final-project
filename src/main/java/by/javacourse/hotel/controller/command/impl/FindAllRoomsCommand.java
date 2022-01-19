@@ -11,10 +11,11 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collections;
 import java.util.List;
 
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
+import static by.javacourse.hotel.controller.command.RequestAttribute.ROOM_LIST_ATR;
+import static by.javacourse.hotel.controller.command.SessionAttribute.CURRENT_PAGE;
 
 public class FindAllRoomsCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -27,8 +28,8 @@ public class FindAllRoomsCommand implements Command {
         CommandResult commandResult = null;
         try {
             List<Room> rooms = service.findAllRooms();
-            request.setAttribute(RequestAttribute.ROOM_LIST, rooms);
-            session.setAttribute(SessionAttribute.CURRENT_PAGE, CurrentPageExtractor.extract(request));
+            request.setAttribute(ROOM_LIST_ATR, rooms);
+            session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
             commandResult = new CommandResult(PagePath.SHOW_ROOM_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindAllRoomsCommand was failed " + e);

@@ -34,8 +34,6 @@ public class Controller extends HttpServlet {
 
         String toPage = result.getPage();
         CommandResult.SendingType sendingType = result.getSendingType();
-/*        toPage = PagePath.ERROR_500_PAGE;
-        sendingType = CommandResult.SendingType.ERROR;*/
 
         switch (sendingType) {
             case FORWARD -> request.getRequestDispatcher(toPage).forward(request, response);

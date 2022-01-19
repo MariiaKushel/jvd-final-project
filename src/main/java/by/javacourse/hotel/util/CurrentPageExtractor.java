@@ -8,11 +8,7 @@ public class CurrentPageExtractor {
     public static String extract(HttpServletRequest request) {
 
         String commandPart = request.getQueryString();
-        System.out.println("getQueryString>> " + commandPart);
-
         String currentPage = CONTROLLER_PART + commandPart;
-        System.out.println("currentPage>> " + currentPage);
-
         return currentPage;
     }
 }

@@ -4,15 +4,15 @@
 
 <c:set var="path" value="${pageContext.request.contextPath}"/>
 
-<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
+<fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="properties.pagecontent"/>
 
-<c:set var="language" value="${sessionScope.locale}"/>
+<c:set var="language" value="${locale}"/>
 
 <fmt:message key="reference.back_to_show_room" var="back_to_show_room"/>
 <fmt:message key="reference.back_to_book_room" var="back_to_book_room"/>
 <fmt:message key="message.room_number" var="number"/>
-<fmt:message key="message.room_sleeping_place" var="sleeping_place"/>
+<fmt:message key="message.room_sleeping_place" var="room_sleeping_place"/>
 <fmt:message key="message.room_description" var="room_description"/>
 <fmt:message key="message.room_price" var="price"/>
 <fmt:message key="message.room_rating" var="rating"/>
@@ -20,6 +20,7 @@
 <fmt:message key="message.incorrect_room" var="incorrect_room"/>
 <fmt:message key="message.mark" var="mark"/>
 <fmt:message key="message.no_comments" var="no_comments"/>
+<fmt:message key="button.make_order" var="make_order"/>
 
 <html>
 <head>
@@ -30,12 +31,12 @@
 </head>
 <body>
 <header>
-    <jsp:include page="header.jsp"/>
+    <jsp:include page="../header/header.jsp"/>
 </header>
 
 <div class="container text-secondary ">
     <div class="row">
-        <c:if test="${empty sessionScope.current_role}">
+        <c:if test="${empty current_role}">
             <div class="col mb-3 text-end">
                 <a class="link-secondary text-decoration-none"
                    href="${path}/controller?command=find_all_visible_rooms">
@@ -43,57 +44,57 @@
                 </a>
             </div>
         </c:if>
-        <c:if test="${not empty temp_date_from}">
+        <c:if test="${not empty date_from_atr}">
             <div class="col mb-3 text-center">
                 <form method="get" action="${path}/controller">
                     <input type="hidden" name="command" value="go_to_order_page"/>
-                    <input type="hidden" name="date_from" value="${temp_date_from}"/>
-                    <input type="hidden" name="date_to" value="${temp_date_to}"/>
-                    <input type="hidden" name="room_id" value="${room.entityId}"/>
-                    <input type="hidden" name="room_number" value="${room.number}"/>
-                    <input type="hidden" name="room_price" value="${room.pricePerDay}"/>
+                    <input type="hidden" name="date_from" value="${date_from_atr}"/>
+                    <input type="hidden" name="date_to" value="${date_to_atr}"/>
+                    <input type="hidden" name="room_id" value="${room_atr.entityId}"/>
+                    <input type="hidden" name="room_number" value="${room_atr.number}"/>
+                    <input type="hidden" name="room_price" value="${room_atr.pricePerDay}"/>
                     <button type="submit" class="btn btn-secondary">
-                        book it!
+                       ${make_order}
                     </button>
                 </form>
             </div>
         </c:if>
     </div>
     <c:choose>
-        <c:when test="${empty room_not_found}">
+        <c:when test="${empty room_not_found_atr}">
             <div class="row">
                 <div class="col mb-3">
-                        ${number} ${room.number}
+                        ${number} ${room_atr.number}
                 </div>
             </div>
             <div class="row">
                 <div class="col mb-3">
-                        ${rating}: ${room.rating}
+                        ${rating}: ${room_atr.rating}
                 </div>
             </div>
             <div class="row">
                 <div class="col mb-3">
-                        ${sleeping_place}: ${room.sleepingPlace}
+                        ${room_sleeping_place}: ${room_atr.sleepingPlace}
                 </div>
             </div>
             <div class="row">
                 <div class="col mb-3">
-                        ${price}: ${room.pricePerDay}
+                        ${price}: ${room_atr.pricePerDay}
                 </div>
             </div>
             <div class="row">
                 <div class="col mb-3">
-                        ${room_description}: ${sessionScope.locale=='ru_RU'?description.descriptionRu:description.descriptionEn}
+                        ${room_description}: ${locale=='ru_RU'?description_atr.descriptionRu:description_atr.descriptionEn}
                 </div>
             </div>
-            <c:forEach var="current_image" items="${image_list}">
+            <c:forEach var="current_image" items="${image_list_atr}">
                 <div class="row">
                     <div class="col mb-3">
                         <img src="${current_image}" class="figure-img mx-auto d-block" style="width: 600px">
                     </div>
                 </div>
             </c:forEach>
-            <c:if test="${empty image_list}">
+            <c:if test="${empty image_list_atr}">
                 <div class="row">
                     <div class="col mb-3">
                         <img src="${path}/images/nophoto.jpg" class="figure-img mx-auto d-block" style="width: 600px">
@@ -105,7 +106,7 @@
                         ${reviews}:
                 </div>
             </div>
-            <c:forEach var="current_review" items="${review_list}">
+            <c:forEach var="current_review" items="${review_list_atr}">
                 <div class="row">
                     <div class="col mb-3 fw-bold">
                             ${current_review.author}
@@ -123,7 +124,7 @@
                     </div>
                 </div>
             </c:forEach>
-            <c:if test="${empty review_list}">
+            <c:if test="${empty review_list_atr}">
                 <div class="row border-bottom border-3">
                     <div class="col mb-3">
                             ${no_comments}
@@ -139,18 +140,10 @@
             </div>
         </c:otherwise>
     </c:choose>
-    <div class="row">
-        <div class="col mb-3 text-end">
-            <a class="link-secondary text-decoration-none"
-               href="${path}/controller?command=find_all_visible_rooms">
-                ${back_to_book_room}
-            </a>
-        </div>
-    </div>
 </div>
 
 <footer>
-    <jsp:include page="footer.jsp"/>
+    <jsp:include page="../footer/footer.jsp"/>
 </footer>
 </body>
 </html>

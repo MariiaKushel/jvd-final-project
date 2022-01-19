@@ -20,6 +20,7 @@ public enum CommandName {
 
 
 
+
     GO_TO_MAIN_PAGE("go_to_main_page"),
     GO_TO_SING_IN_PAGE("go_to_sing_in_page"),
     GO_TO_CREATE_NEW_ACCOUNT_PAGE("go_to_create_new_account_page"),

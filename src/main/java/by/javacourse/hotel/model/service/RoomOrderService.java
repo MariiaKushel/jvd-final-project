@@ -14,5 +14,5 @@ public interface RoomOrderService {
 
     BigDecimal countBaseAmount(int days, String roomPrice) ;
 
-    BigDecimal countTotalAmount(int days, String roomPrice, String discount) ;
+    BigDecimal countTotalAmount(int days, String roomPrice, int discount) ;
 }

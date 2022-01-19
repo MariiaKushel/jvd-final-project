@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <c:set var="path" value="${pageContext.request.contextPath}"/>
 
-<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
+<fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="properties.pagecontent"/>
 
 <fmt:message key="title.header" var="title"/>
@@ -45,7 +45,7 @@
             <div class="btn-group">
                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                    ${sessionScope.locale=='ru_RU'?ru:en}
+                    ${locale=='ru_RU'?ru:en}
                 </button>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item text-secondary"
@@ -60,10 +60,10 @@
     </div>
     <div class="row">
         <div class="col text-center">
-            <c:if test="${not empty sessionScope.current_role}">
+            <c:if test="${not empty current_role}">
                 <jsp:include page="header_navigation.jsp"/>
             </c:if>
-            <c:if test="${empty sessionScope.current_role}">
+            <c:if test="${empty current_role}">
                 ${info_part1}
                 <a class="link-light" href="${path}/controller?command=go_to_sing_in_page">
                         ${info_part2}

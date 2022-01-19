@@ -4,7 +4,7 @@
 
 <c:set var="path" value="${pageContext.request.contextPath}"/>
 
-<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
+<fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="properties.pagecontent"/>
 
 <fmt:message key="title.sing_in" var="title"/>
@@ -29,7 +29,7 @@
 </head>
 <body>
 <header>
-    <jsp:include page="header.jsp"/>
+    <jsp:include page="../header/header.jsp"/>
 </header>
 
 <div class="container text-secondary text-center">
@@ -37,7 +37,7 @@
         <div class="col">
         </div>
         <div class="col text-danger">
-            <c:if test="${wrong_login_or_password eq true}">
+            <c:if test="${wrong_email_or_password eq true}">
                 ${incorrect_login_or_password}
             </c:if>
         </div>
@@ -49,6 +49,7 @@
         </div>
         <div class="col">
             <form method="post" action="${path}/controller">
+
                 <input type="hidden" name="command" value="sing_in"/>
                 <div class="mb-3">
                     <label class="form-label">
@@ -95,7 +96,7 @@
 </div>
 
 <footer>
-    <jsp:include page="footer.jsp"/>
+    <jsp:include page="../footer/footer.jsp"/>
 </footer>
 
 <script type="text/javascript">

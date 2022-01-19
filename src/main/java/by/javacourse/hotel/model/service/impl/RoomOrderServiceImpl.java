@@ -5,7 +5,10 @@ import by.javacourse.hotel.exception.DaoException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.dao.DaoProvider;
 import by.javacourse.hotel.model.dao.RoomOrderDao;
+import by.javacourse.hotel.model.dao.UserDao;
 import by.javacourse.hotel.model.service.RoomOrderService;
+import by.javacourse.hotel.validator.RoomOrderValidator;
+import by.javacourse.hotel.validator.impl.RoomOrderValidatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,21 +25,44 @@ public class RoomOrderServiceImpl implements RoomOrderService {
 
     @Override
     public boolean createOrder(Map<String, String> orderData) throws ServiceException {
-        RoomOrder order = RoomOrder.newBuilder()
-                .setRoomId(Long.parseLong(orderData.get(ROOM_ID)))
-                .setUserId(Long.parseLong(orderData.get(CURRENT_USER_ID)))
-                .setDate(LocalDate.parse(orderData.get(TODAY)))
-                .setFrom(LocalDate.parse(orderData.get(DATE_FROM)))
-                .setTo(LocalDate.parse(orderData.get(DATE_TO)))
-                .setAmount(new BigDecimal(orderData.get(TOTAL_AMOUNT)))
-                .setPrepayment(Boolean.parseBoolean(orderData.get(PREPAYMENT)))
-                .build();
+        boolean result = false;
 
         DaoProvider provider = DaoProvider.getInstance();
+        UserDao userDao = provider.getUserDao();
+
+        long userId = Long.parseLong(orderData.get(CURRENT_USER_ID));
+        try{
+            BigDecimal balance = userDao.findBalanceByUserId(userId);
+            RoomOrderValidator validator = RoomOrderValidatorImpl.getInstance();
+            if (!validator.validateOrderData(orderData, balance)){
+                return result;
+            }
+        } catch (DaoException e) {
+            logger.error("Try to createOrder was failed " + e);
+            throw new ServiceException("Try to createOrder  was failed", e);
+        }
+
+        long roomId = Long.parseLong(orderData.get(ROOM_ID));
+        LocalDate date = LocalDate.parse(orderData.get(ORDER_DATE));
+        LocalDate from = LocalDate.parse(orderData.get(DATE_FROM));
+        LocalDate to = LocalDate.parse(orderData.get(DATE_TO));
+        BigDecimal amount = new BigDecimal(orderData.get(TOTAL_AMOUNT));
+        boolean prepayment = orderData.get(PREPAYMENT) != null ? true : false;
+        int days = Integer.parseInt(orderData.get(DAYS));
+
+        RoomOrder order = RoomOrder.newBuilder()
+                .setRoomId(roomId)
+                .setUserId(userId)
+                .setDate(date)
+                .setFrom(from)
+                .setTo(to)
+                .setAmount(amount)
+                .setPrepayment(prepayment)
+                .build();
+
         RoomOrderDao roomOrderDao = provider.getRoomOrderDao();
-        boolean result = false;
         try {
-            result = roomOrderDao.create(order);
+            result = roomOrderDao.createOrderWithRoomStates(order, days);
         } catch (DaoException e) {
             logger.error("Try to createOrder was failed " + e);
             throw new ServiceException("Try to createOrder  was failed", e);
@@ -54,12 +80,12 @@ public class RoomOrderServiceImpl implements RoomOrderService {
     }
 
     @Override
-    public BigDecimal countBaseAmount(int days, String roomPrice){
+    public BigDecimal countBaseAmount(int days, String roomPrice) {
         return new BigDecimal(roomPrice).multiply(new BigDecimal(days));
     }
 
     @Override
-    public BigDecimal countTotalAmount(int days, String roomPrice, String discount) {
+    public BigDecimal countTotalAmount(int days, String roomPrice, int discount) {
         BigDecimal dis = (new BigDecimal(100).subtract(new BigDecimal(discount))).divide(new BigDecimal(100));
         BigDecimal amount = countBaseAmount(days, roomPrice);
         return amount.multiply(dis);

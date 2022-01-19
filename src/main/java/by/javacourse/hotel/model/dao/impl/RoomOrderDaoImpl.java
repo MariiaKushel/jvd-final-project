@@ -19,19 +19,18 @@ import java.util.Optional;
 public class RoomOrderDaoImpl implements RoomOrderDao {
     static Logger logger = LogManager.getLogger();
 
+    private static final String STATE_BOOKED = "booked"; // FIXME maybe enum
+
     private static final String SQL_INSERT_ROOM_ORDER = """
-            INSERT INTO hotel.room_orders (user_id, room_id, date, from, to, amount, status, prepayment) 
+            INSERT INTO hotel.room_orders (user_id, room_id, hotel.room_orders.date, hotel.room_orders.from, 
+             hotel.room_orders.to, amount, status, prepayment) 
             VALUES (?,?,?,?,?,?,?,?)""";
     private static final String SQL_INSERT_DAILY_ROOM_STATE = """
-            INSERT INTO hotel.daily_room_states (room_id, room_state, date) 
+            INSERT INTO hotel.daily_room_states (room_id, room_state, hotel.daily_room_states.date) 
             VALUES (?,?,?)""";
     private static final String SQL_UPDATE_USER_BALANCE = """
             UPDATE hotel.users SET balance=balance-? WHERE user_id=?";
             """;
-    private static final String SQL_SELECT_USER_BALANCE_BY_USER_ID = """
-            SELECT balance FROM hotel.users
-            WHERE user_id=? LIMIT 1""";
-
 
     @Override
     public List<RoomOrder> findAll() throws DaoException {
@@ -45,62 +44,46 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
 
     @Override
     public boolean create(RoomOrder roomOrder) throws DaoException {
+        return false;
+    }
+
+    @Override
+    public boolean createOrderWithRoomStates(RoomOrder roomOrder, int days) throws DaoException {
         boolean result = false;
 
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = null;
+        PreparedStatement statement = null;
         try {
             connection = pool.getConnection();
             connection.setAutoCommit(false);
-            PreparedStatement statement = connection.prepareStatement(SQL_INSERT_ROOM_ORDER);
+
+            statement = connection.prepareStatement(SQL_INSERT_ROOM_ORDER);
             statement.setLong(1, roomOrder.getUserId());
             statement.setLong(2, roomOrder.getRoomId());
             statement.setDate(3, Date.valueOf(roomOrder.getDate()));
             statement.setDate(4, Date.valueOf(roomOrder.getFrom()));
-            statement.setDate(4, Date.valueOf(roomOrder.getTo()));
-            statement.setBigDecimal(5, roomOrder.getAmount());
-            statement.setString(6, roomOrder.getStatus().toString());
-            statement.setBoolean(7, roomOrder.isPrepayment());
-            int insertedRoom = statement.executeUpdate();
-            if (insertedRoom != 1) {
-                connection.rollback();
-            }
+            statement.setDate(5, Date.valueOf(roomOrder.getTo()));
+            statement.setBigDecimal(6, roomOrder.getAmount());
+            statement.setString(7, roomOrder.getStatus().toString());
+            statement.setBoolean(8, roomOrder.isPrepayment());
+            statement.executeUpdate();
 
-
-            Period period = Period.between(roomOrder.getFrom(), roomOrder.getTo());
-            int days = period.getDays();
-            LocalDate currentDate = roomOrder.getFrom();
-            int insertedStates = 0;
+            LocalDate dateForStateChange = roomOrder.getFrom();
+            statement = connection.prepareStatement(SQL_INSERT_DAILY_ROOM_STATE);
             for (int i = 0; i < days; i++) {
-                statement = connection.prepareStatement(SQL_INSERT_DAILY_ROOM_STATE);
                 statement.setLong(1, roomOrder.getRoomId());
-                statement.setString(2, "booked");
-                statement.setDate(3, Date.valueOf(currentDate));
-                insertedStates += statement.executeUpdate();
-                currentDate = currentDate.plusDays(1);
-            }
-            if (insertedStates != days) {
-                connection.rollback();
+                statement.setString(2, STATE_BOOKED);
+                statement.setDate(3, Date.valueOf(dateForStateChange));
+                statement.executeUpdate();
+                dateForStateChange = dateForStateChange.plusDays(1);
             }
 
             if (roomOrder.isPrepayment()) {
-                int updatedBalance = 0;
                 statement = connection.prepareStatement(SQL_UPDATE_USER_BALANCE);
                 statement.setBigDecimal(1, roomOrder.getAmount());
                 statement.setLong(2, roomOrder.getUserId());
-                updatedBalance = statement.executeUpdate();
-                statement = connection.prepareStatement(SQL_SELECT_USER_BALANCE_BY_USER_ID);
-                statement.setLong(1, roomOrder.getUserId());
-                ResultSet resultSet = statement.executeQuery();
-                if (resultSet.next()) {
-                    BigDecimal newBalance = resultSet.getBigDecimal(ColumnName.BALANCE);
-                    if (newBalance.compareTo(new BigDecimal(0)) < 0) {
-                        updatedBalance = 0;
-                    }
-                }
-                if (updatedBalance != 1) {
-                    connection.rollback();
-                }
+                statement.executeUpdate();
             }
             result = true;
             connection.commit();
@@ -110,16 +93,17 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
             try {
                 connection.rollback();
             } catch (SQLException ex) {
-                logger.error("SQL request rollback create from table hotel.room_orders was failed " + e);
-                throw new DaoException("SQL request rollback create from table hotel.room_orders was failed", e);
+                logger.error("Rollback create from table hotel.room_orders was failed " + e);
+                throw new DaoException("Rollback create from table hotel.room_orders was failed", e);
             }
         }finally{
             try {
                 connection.setAutoCommit(true);
+                statement.close();
                 connection.close();
             } catch (SQLException e) {
-                logger.error("SQL request close create from table hotel.room_orders was failed " + e);
-                throw new DaoException("SQL request close create from table hotel.room_orders was failed", e);
+                logger.error("Connection or statment close was failed" + e);
+                throw new DaoException("Connection or statment close was failed", e);
             }
         }
         return result;

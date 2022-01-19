@@ -8,13 +8,14 @@ import by.javacourse.hotel.util.CurrentPageExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
-import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
+import static by.javacourse.hotel.controller.command.CommandResult.SendingType.FORWARD;
+import static by.javacourse.hotel.controller.command.SessionAttribute.CURRENT_PAGE;
 
 public class GoToMainPageCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        session.setAttribute(SessionAttribute.CURRENT_PAGE, CurrentPageExtractor.extract(request));
+        session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
         return session.getAttribute(SessionAttribute.CURRENT_USER) != null
                 ? new CommandResult(PagePath.HOME_PAGE, FORWARD)
                 : new CommandResult(PagePath.MAIN_PAGE, FORWARD);

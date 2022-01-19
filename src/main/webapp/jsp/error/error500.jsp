@@ -4,14 +4,14 @@
 
 <c:set var="path" value="${pageContext.request.contextPath}"/>
 
-<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
+<fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="properties.pagecontent"/>
 
 <fmt:message key="reference.back_to_main" var="back_to_main"/>
 
 <html>
 <header>
-    <jsp:include page="header.jsp"/>
+    <jsp:include page="../header/header.jsp"/>
 </header>
 <head>
     <meta charset="UTF-8"/>
@@ -42,7 +42,7 @@
        href="${path}/controller?command=go_to_main_page">${back_to_main}</a>
 </div>
 <footer>
-    <jsp:include page="footer.jsp"/>
+    <jsp:include page="../footer/footer.jsp"/>
 </footer>
 </body>
 </html>

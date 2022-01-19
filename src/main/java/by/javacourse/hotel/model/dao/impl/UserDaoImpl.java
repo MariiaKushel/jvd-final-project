@@ -4,6 +4,7 @@ import by.javacourse.hotel.exception.DaoException;
 
 import static by.javacourse.hotel.model.dao.ColumnName.*;
 
+import by.javacourse.hotel.model.dao.ColumnName;
 import by.javacourse.hotel.model.dao.UserDao;
 import by.javacourse.hotel.entity.User;
 import by.javacourse.hotel.model.dao.mapper.Mapper;
@@ -12,6 +13,7 @@ import by.javacourse.hotel.model.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,17 @@ public class UserDaoImpl implements UserDao {
     private static final String BY_EMAIL = " WHERE email=? LIMIT 1";
     private static final String BY_EMAIL_AND_PASSWORD = " WHERE email=? AND password=? LIMIT 1";
     private static final String BY_ID = " WHERE user_id=? LIMIT 1";
+
+    private static final String SQL_SELECT_DISCOUNT_BY_USER_ID = """
+            SELECT rate
+            FROM hotel.users
+            JOIN hotel.discounts ON hotel.users.discount_id=hotel.discounts.discount_id
+            AND user_id=? LIMIT 1""";
+
+    private static final String SQL_SELECT_BALANCE_BY_USER_ID = """
+            SELECT balance
+            FROM hotel.users
+            WHERE user_id=? LIMIT 1""";
 
     @Override
     public List<User> findAll() throws DaoException {
@@ -203,7 +216,45 @@ public class UserDaoImpl implements UserDao {
             logger.error("SQL request createUserWithPassword from table hotel.users was failed" + e);
             throw new DaoException("SQL request createUserWithPassword from table hotel.users was failed", e);
         }
-        return rowsInserted==1;
+        return rowsInserted == 1;
+    }
+
+    @Override
+    public int findDiscountByUserId(long userId) throws DaoException {
+        int rate = 0;
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_DISCOUNT_BY_USER_ID)) {
+            statement.setLong(1, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    rate = resultSet.getInt(RATE);
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("SQL request findDiscountByUserId from table hotel.users was failed" + e);
+            throw new DaoException("SQL request findDiscountByUserId from table hotel.users was failed", e);
+        }
+        return rate;
+    }
+
+    @Override
+    public BigDecimal findBalanceByUserId(long userId) throws DaoException {
+        BigDecimal balance = new BigDecimal(0);
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BALANCE_BY_USER_ID)) {
+            statement.setLong(1, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    balance = resultSet.getBigDecimal(BALANCE);
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("SQL request findBalanceByUserId from table hotel.users was failed" + e);
+            throw new DaoException("SQL request findBalanceByUserId from table hotel.users was failed", e);
+        }
+        return balance;
     }
 
 }

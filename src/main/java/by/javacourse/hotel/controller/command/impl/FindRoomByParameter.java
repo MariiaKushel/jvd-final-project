@@ -4,7 +4,7 @@ import by.javacourse.hotel.controller.command.*;
 
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.ERROR;
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.FORWARD;
-import static by.javacourse.hotel.controller.command.RequestAttribute.ROOM_LIST;
+import static by.javacourse.hotel.controller.command.RequestAttribute.ROOM_LIST_ATR;
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
 
 import by.javacourse.hotel.entity.Room;
@@ -17,9 +17,6 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.math.BigDecimal;
-import java.sql.Array;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -42,22 +39,22 @@ public class FindRoomByParameter implements Command {
         CommandResult commandResult = null;
         try {
             rooms = roomService.findRoomByParameters(searchParameters, sleepingPlaces);
-            request.setAttribute(ROOM_LIST, rooms);
+            request.setAttribute(ROOM_LIST_ATR, rooms);
             if (rooms.isEmpty() && searchParameters.get(DATE_FROM).isEmpty()) {
-                request.setAttribute(RequestAttribute.WRONG_DATE_OR_PRICE_RANGE, true);
+                request.setAttribute(RequestAttribute.WRONG_DATE_OR_PRICE_RANGE_ATR, true);
             } else {
-                request.setAttribute(RequestAttribute.WRONG_DATE_OR_PRICE_RANGE, false);
+                request.setAttribute(RequestAttribute.WRONG_DATE_OR_PRICE_RANGE_ATR, false);
             }
 
-            request.setAttribute(RequestAttribute.MIN_PRICE, request.getParameter(MIN_PRICE_FOR_SEARCH));
-            request.setAttribute(RequestAttribute.MAX_PRICE, request.getParameter(MAX_PRICE_FOR_SEARCH));
+            request.setAttribute(RequestAttribute.MIN_PRICE_ATR, request.getParameter(MIN_PRICE_FOR_SEARCH));
+            request.setAttribute(RequestAttribute.MAX_PRICE_ATR, request.getParameter(MAX_PRICE_FOR_SEARCH));
 
             List<Integer> allSleepingPlace = roomService.findAllPossibleSleepingPlace();
-            request.setAttribute(RequestAttribute.ALL_SLEEPING_PLACE_LIST, allSleepingPlace);
-            request.setAttribute(RequestAttribute.TEMP_DATE_FROM, searchParameters.get(DATE_FROM));
-            request.setAttribute(RequestAttribute.TEMP_DATE_TO, searchParameters.get(DATE_TO));
-            request.setAttribute(RequestAttribute.TEMP_PRICE_FROM, searchParameters.get(PRICE_FROM));
-            request.setAttribute(RequestAttribute.TEMP_PRICE_TO, searchParameters.get(PRICE_TO));
+            request.setAttribute(RequestAttribute.ALL_SLEEPING_PLACE_LIST_ATR, allSleepingPlace);
+            request.setAttribute(RequestAttribute.DATE_FROM_ATR, searchParameters.get(DATE_FROM));
+            request.setAttribute(RequestAttribute.DATE_TO_ATR, searchParameters.get(DATE_TO));
+            request.setAttribute(RequestAttribute.PRICE_FROM_ATR, searchParameters.get(PRICE_FROM));
+            request.setAttribute(RequestAttribute.PRICE_TO_ATR, searchParameters.get(PRICE_TO));
             session.setAttribute(SessionAttribute.CURRENT_PAGE, CurrentPageExtractor.extract(request));
 
             commandResult = new CommandResult(PagePath.BOOK_ROOM_PAGE, FORWARD);

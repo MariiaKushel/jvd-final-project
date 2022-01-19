@@ -1,7 +1,7 @@
 package by.javacourse.hotel.model.service.impl;
 
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
-import static by.javacourse.hotel.controller.command.RequestAttribute.*;
+import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
 import by.javacourse.hotel.exception.DaoException;
 import by.javacourse.hotel.exception.ServiceException;
@@ -15,52 +15,34 @@ import by.javacourse.hotel.validator.impl.UserValidatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.xml.validation.Validator;
 import java.util.Map;
 import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
     static Logger logger = LogManager.getLogger();
-    private static final String WRONG_DATA_MARKER = "Wrong data";
 
     private DaoProvider provider = DaoProvider.getInstance();
     private UserDao userDao = provider.getUserDao();
 
     @Override
-    public boolean createNewAccount(Map<String, String> userData, String password) throws ServiceException {
-        UserValidator validator = UserValidatorImpl.getInstance();
+    public boolean createNewAccount(Map<String, String> userData) throws ServiceException {
+
         String email = userData.get(EMAIL);
         String name = userData.get(NAME);
         String phoneNumber = userData.get(PHONE_NUMBER);
-        String repeatPassword = userData.get(REPEAT_PASSWORD);
+        String password = userData.get(PASSWORD);
 
         boolean isCreated = true;
-        if (!password.equals(repeatPassword)) {
-            userData.put(WRONG_REPEAT_PASSWORD, WRONG_DATA_MARKER);
+        UserValidator validator = UserValidatorImpl.getInstance();
+        if (!validator.validateUserData(userData)) {
             isCreated = false;
-        }
-        if (!validator.validateEmail(email)) {
-            userData.put(WRONG_EMAIL, WRONG_DATA_MARKER);
-            isCreated = false;
-        }
-        if (!validator.validatePassword(password)) {
-            userData.put(WRONG_PASSWORD, WRONG_DATA_MARKER);
-            isCreated = false;
-        }
-        if (!validator.validateName(name)) {
-            userData.put(WRONG_NAME, WRONG_DATA_MARKER);
-            isCreated = false;
-        }
-        if (!validator.validatePhoneNumber(phoneNumber)) {
-            userData.put(WRONG_PHONE_NUMBER, WRONG_DATA_MARKER);
-            isCreated = false;
-        }
-        if (!isCreated) {
             return isCreated;
         }
 
         try {
             if (userDao.isEmailExist(email)) {
-                userData.put(WRONG_EMAIL_EXIST, WRONG_DATA_MARKER);
+                userData.put(WRONG_EMAIL_EXIST_SES, UserValidator.WRONG_DATA_MARKER);
                 isCreated = false;
                 return isCreated;
             }
@@ -111,5 +93,17 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("Try to update personal data was failed", e);
         }
         return oldUser;
+    }
+
+    @Override
+    public int findDiscountByUserId(String userId) throws ServiceException {
+        int rate = 0;
+        try {
+            rate = userDao.findDiscountByUserId(Long.parseLong(userId));
+        } catch (DaoException e) {
+            logger.error("Try find discount by user id was failed " + e);
+            throw new ServiceException("Try find discount by user id was failed", e);
+        }
+        return rate;
     }
 }

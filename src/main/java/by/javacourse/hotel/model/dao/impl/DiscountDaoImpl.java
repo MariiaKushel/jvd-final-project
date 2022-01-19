@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class DiscountDaoImpl implements DiscountDao {
+public class
+DiscountDaoImpl implements DiscountDao {
     static Logger logger = LogManager.getLogger();
 
     private static final String SQL_INSERT_DISCOUNT =

@@ -3,6 +3,11 @@ package by.javacourse.hotel.validator.impl;
 import by.javacourse.hotel.entity.User;
 import by.javacourse.hotel.validator.UserValidator;
 
+import java.util.Map;
+
+import static by.javacourse.hotel.controller.command.SessionAttribute.*;
+import static by.javacourse.hotel.controller.command.RequestParameter.*;
+
 public final class UserValidatorImpl implements UserValidator {
 
     private static final String EMAIL_REGEX =
@@ -68,5 +73,37 @@ public final class UserValidatorImpl implements UserValidator {
         String phoneNumber = user.getPhoneNumber();
         return validateEmail(email) && validatePassword(password)
                 && validateName(name) && validatePhoneNumber(phoneNumber);
+    }
+
+    @Override
+    public boolean validateUserData(Map<String, String> userData) {
+        String email = userData.get(EMAIL);
+        String name = userData.get(NAME);
+        String phoneNumber = userData.get(PHONE_NUMBER);
+        String password = userData.get(PASSWORD);
+        String repeatPassword = userData.get(REPEAT_PASSWORD);
+
+        boolean isValid = true;
+        if (!password.equals(repeatPassword)) {
+            userData.put(WRONG_REPEAT_PASSWORD_SES, WRONG_DATA_MARKER);
+            isValid = false;
+        }
+        if (!validateEmail(email)) {
+            userData.put(WRONG_EMAIL_SES, WRONG_DATA_MARKER);
+            isValid = false;
+        }
+        if (!validatePassword(password)) {
+            userData.put(WRONG_PASSWORD_SES, WRONG_DATA_MARKER);
+            isValid = false;
+        }
+        if (!validateName(name)) {
+            userData.put(WRONG_NAME_SES, WRONG_DATA_MARKER);
+            isValid = false;
+        }
+        if (!validatePhoneNumber(phoneNumber)) {
+            userData.put(WRONG_PHONE_NUMBER_SES, WRONG_DATA_MARKER);
+            isValid = false;
+        }
+        return isValid;
     }
 }

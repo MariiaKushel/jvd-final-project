@@ -12,7 +12,6 @@ public class UserTest {
                 .setPhoneNumber("+375291111111")
                 .setEntityId(3L)
                 .build();
-        System.out.println(user);
     }
 
 }

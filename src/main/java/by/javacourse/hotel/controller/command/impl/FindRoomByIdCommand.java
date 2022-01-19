@@ -19,6 +19,10 @@ import java.util.Optional;
 
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.ERROR;
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.FORWARD;
+import static by.javacourse.hotel.controller.command.RequestAttribute.*;
+import static by.javacourse.hotel.controller.command.RequestParameter.DATE_FROM;
+import static by.javacourse.hotel.controller.command.RequestParameter.DATE_TO;
+import static by.javacourse.hotel.controller.command.SessionAttribute.CURRENT_PAGE;
 
 public class FindRoomByIdCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -45,23 +49,23 @@ public class FindRoomByIdCommand implements Command {
 
                 Optional<Description> description = descriptionService.findDescriptionByRoomId(roomId);
                 if(description.isPresent()){
-                    request.setAttribute(RequestAttribute.DESCRIPTION, description.get());
+                    request.setAttribute(DESCRIPTION_ATR, description.get());
                 }
 
                 List<Review> reviews = reviewService.findReviewsByRoomId(roomId);
 
-                request.setAttribute(RequestAttribute.ROOM, room.get());
-                request.setAttribute(RequestAttribute.IMAGE_LIST, imageList);
-                request.setAttribute(RequestAttribute.REVIEW_LIST, reviews);
+                request.setAttribute(ROOM_ATR, room.get());
+                request.setAttribute(IMAGE_LIST_ATR, imageList);
+                request.setAttribute(REVIEW_LIST_ATR, reviews);
 
-                request.setAttribute(RequestAttribute.TEMP_DATE_FROM, request.getParameter(RequestParameter.DATE_FROM));
-                request.setAttribute(RequestAttribute.TEMP_DATE_TO, request.getParameter(RequestParameter.DATE_TO));
+                request.setAttribute(DATE_FROM_ATR, request.getParameter(DATE_FROM));
+                request.setAttribute(DATE_TO_ATR, request.getParameter(DATE_TO));
 
-                session.setAttribute(SessionAttribute.CURRENT_PAGE, CurrentPageExtractor.extract(request));
+                session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
                 commandResult = new CommandResult(PagePath.ROOM_PAGE, FORWARD);
             } else {
-                request.setAttribute(RequestAttribute.ROOM_NOT_FOUND,true);
-                session.setAttribute(SessionAttribute.CURRENT_PAGE, CurrentPageExtractor.extract(request));
+                request.setAttribute(ROOM_NOT_FOUND_ATR,true);
+                session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
                 commandResult = new CommandResult(PagePath.ROOM_PAGE, FORWARD);
             }
         } catch (ServiceException e) {

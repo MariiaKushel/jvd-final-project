@@ -2,48 +2,33 @@ package by.javacourse.hotel.controller.command;
 
 public final class RequestAttribute {
 
-    public static final String TEMP_EMAIL = "temp_email";
-    public static final String TEMP_NAME = "temp_name";
-    public static final String TEMP_PHONE_NUMBER = "temp_phone_number";
-    public static final String TEMP_PASSWORD = "temp_password";
-    public static final String TEMP_REPEAT_PASSWORD = "temp_repeat_password";
+    public static final String WRONG_DATE_OR_PRICE_RANGE_ATR = "wrong_date_or_price_range_atr";
 
-    public static final String WRONG_EMAIL = "wrong_email";
-    public static final String WRONG_EMAIL_EXIST = "wrong_email_exist";
-    public static final String WRONG_NAME = "wrong_name";
-    public static final String WRONG_PHONE_NUMBER = "wrong_phone_number";
-    public static final String WRONG_PASSWORD = "wrong_password";
-    public static final String WRONG_REPEAT_PASSWORD = "wrong_repeat_password";
-    public static final String WRONG_DATE_OR_PRICE_RANGE = "wrong_date_or_price_range";
+    public static final String ROOM_NOT_FOUND_ATR = "room_not_found_atr";
 
-    public static final String WRONG_EMAIL_OR_PASSWORD = "wrong_email_or_password";
-    public static final String ROOM_NOT_FOUND="room_not_found";
+    public static final String DESCRIPTION_ATR = "description_atr";
 
-    public static final String DESCRIPTION = "description";
+    public static final String ROOM_LIST_ATR = "room_list_atr";
+    public static final String ROOM_ATR = "room_atr";
+    public static final String MIN_PRICE_ATR = "min_price_atr";
+    public static final String MAX_PRICE_ATR = "max_price_atr";
+    public static final String ALL_SLEEPING_PLACE_LIST_ATR = "all_sleeping_place_list_atr";
+    public static final String DATE_FROM_ATR = "date_from_atr";
+    public static final String DATE_TO_ATR = "date_to_atr";
+    public static final String PRICE_FROM_ATR = "price_from_atr";
+    public static final String PRICE_TO_ATR = "price_to_atr";
+    public static final String MAKE_CHOICE_ATR = "make_choice_atr";
+    public static final String ROOM_ID_ATR = "room_id_atr";
+    public static final String DAYS_ATR = "days_atr";
+    public static final String BASE_AMOUNT_ATR = "base_amount_atr";
+    public static final String TOTAL_AMOUNT_ATR = "total_amount_atr";
+    public static final String ROOM_PRICE_ATR = "room_price_atr";
+    public static final String ROOM_NUMBER_ATR = "room_number_atr";
 
-    public static final String ROOM_LIST = "room_list";
-    public static final String ROOM = "room";
-    public static final String PREVIEW_MAP = "preview_map";
-    public static final String MIN_PRICE="min_price";
-    public static final String MAX_PRICE="max_price";
-    public static final String ALL_SLEEPING_PLACE_LIST="all_sleeping_place_list";
-    public static final String TEMP_DATE_FROM="temp_date_from";
-    public static final String TEMP_DATE_TO="temp_date_to";
-    public static final String TEMP_PRICE_FROM="temp_price_from";
-    public static final String TEMP_PRICE_TO="temp_price_to";
-    public static final String MAKE_CHOICE = "make_choice";
-    public static final String TEMP_ROOM_ID="temp_room_id";
-    public static final String ORDER_WAS_CREATED="order_was_created";
-    public static final String TEMP_DAYS="temp_days";
-    public static final String TEMP_BASE_AMOUNT= "temp_base_amount";
-    public static final String TEMP_TOTAL_AMOUNT= "temp_total_amount";
-    public static final String TEMP_ROOM_PRICE= "temp_room_price";
-    public static final String TEMP_ROOM_NUMBER= "temp_room_number";
+    public static final String IMAGE_LIST_ATR = "image_list_atr";
+    public static final String REVIEW_LIST_ATR = "review_list_atr";
 
-    public static final String IMAGE_LIST = "image_list";
-    public static final String REVIEW_LIST = "review_list";
-
-    private RequestAttribute(){
+    private RequestAttribute() {
 
     }
 }

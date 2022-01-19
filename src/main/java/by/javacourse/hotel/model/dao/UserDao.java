@@ -3,6 +3,7 @@ package by.javacourse.hotel.model.dao;
 import by.javacourse.hotel.exception.DaoException;
 import by.javacourse.hotel.entity.User;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public interface UserDao extends BaseDao<Long, User> {
@@ -15,4 +16,8 @@ public interface UserDao extends BaseDao<Long, User> {
     boolean changePassword(String email, String newPassword) throws DaoException;
 
     boolean createUserWithPassword(User user, String password) throws DaoException;
+
+    int findDiscountByUserId(long userId) throws DaoException;
+
+    BigDecimal findBalanceByUserId(long userId) throws DaoException;
 }

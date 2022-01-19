@@ -4,7 +4,7 @@
 
 <c:set var="path" value="${pageContext.request.contextPath}"/>
 
-<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
+<fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="properties.pagecontent"/>
 
 <fmt:message key="title.home" var="title"/>
@@ -21,7 +21,7 @@
     </title>
 </head>
 <header>
-    <jsp:include page="header.jsp"/>
+    <jsp:include page="../header/header.jsp"/>
 </header>
 <body>
 <div class="container text-secondary">
@@ -37,7 +37,7 @@
     </div>
 </div>
 <footer>
-    <jsp:include page="footer.jsp"/>
+    <jsp:include page="../footer/footer.jsp"/>
 </footer>
 </body>
 </html>

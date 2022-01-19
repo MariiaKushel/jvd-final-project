@@ -20,10 +20,8 @@ public class CurrentPageFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        System.out.println("---filter start---");
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String url = request.getRequestURL().toString();
-        System.out.println("url >>> " + url);
         Pattern pattern = Pattern.compile(PAGE_PATH_REGEX);
         Matcher matcher = pattern.matcher(url);
         if (matcher.find()) {
@@ -34,7 +32,6 @@ public class CurrentPageFilter implements Filter {
             HttpSession session = request.getSession();
             session.setAttribute(SessionAttribute.CURRENT_PAGE, currentPage);
         }
-        System.out.println("---filter end---");
         filterChain.doFilter(servletRequest, servletResponse);
     }
     /*

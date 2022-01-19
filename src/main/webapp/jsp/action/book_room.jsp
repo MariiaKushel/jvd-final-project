@@ -4,7 +4,7 @@
 
 <c:set var="path" value="${pageContext.request.contextPath}"/>
 
-<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
+<fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="properties.pagecontent"/>
 
 <fmt:message key="title.book_room" var="title"/>
@@ -19,7 +19,7 @@
 <fmt:message key="message.incorrect_date_or_price_range" var="incorrect_date_or_price_range"/>
 <fmt:message key="message.room_not_found" var="room_not_found"/>
 <fmt:message key="message.room_number" var="number"/>
-<fmt:message key="message.room_sleeping_place" var="sleeping_place"/>
+<fmt:message key="message.room_sleeping_place" var="room_sleeping_place"/>
 <fmt:message key="message.room_description" var="room_description"/>
 <fmt:message key="message.room_price" var="price"/>
 <fmt:message key="message.room_rating" var="rating"/>
@@ -35,25 +35,24 @@
     </title>
 </head>
 <header>
-    <jsp:include page="header.jsp"/>
+    <jsp:include page="../header/header.jsp"/>
 </header>
 <body>
 <div class="container text-secondary">
     <div class="fw-bold">
         ${title}
     </div>
-
     <div class="row">
         <div class="col-sm-3 mb-3 bg-secondary opacity-75 text-white">
             <form method="get" action="${path}/controller">
                 <input type="hidden" name="command" value="find_room_by_parameter"/>
-                <input type="hidden" name="min_price_for_search" value=${min_price}/>
+                <input type="hidden" name="min_price_atr_for_search" value=${min_price_atr}/>
                 <input type="hidden" name="max_price_for_search" value=${max_price}/>
                 <div class="mb-3">
                     <label class="form-label">
                         ${date_from}
                     </label>
-                    <input type="date" min="${sessionScope.today}" name="date_from" value="${temp_date_from}"
+                    <input type="date" min="${today}" name="date_from" value="${date_from_atr}"
                            required oninvalid="this.setCustomValidity('${date_rules}')"
                            class="form-control">
                 </div>
@@ -61,7 +60,7 @@
                     <label class="form-label">
                         ${date_to}
                     </label>
-                    <input type="date" min="${sessionScope.tomorrow}" name="date_to" value="${temp_date_to}"
+                    <input type="date" min="${tomorrow}" name="date_to" value="${date_to_atr}"
                            required oninvalid="this.setCustomValidity('${date_rules}')"
                            class="form-control">
                 </div>
@@ -69,11 +68,11 @@
                     <label class="form-label">
                         ${num_sleeping_place}
                     </label></br>
-                    <c:forEach var="sleeping_place" items="${all_sleeping_place_list}">
+                    <c:forEach var="place" items="${all_sleeping_place_list_atr}">
                         <div class="form-check form-check-inline">
                             <input type="checkbox" class="form-check-input" name="sleeping_places"
-                                   value="${sleeping_place}">
-                            <label class="form-check-label">${sleeping_place}</label>
+                                   value="${place}">
+                            <label class="form-check-label">${place}</label>
                         </div>
                         </br>
                     </c:forEach>
@@ -82,18 +81,18 @@
                     <label class="form-label">
                         ${price_from}
                     </label>
-                    <input type="number" step="0.01" min="${min_price}" max="${max_price}" name="price_from"
-                           value="${temp_price_from}"
-                           oninvalid="this.setCustomValidity('${price_rules} ${min_price}-${max_price}')"
+                    <input type="number" step="0.01" min="${min_price_atr}" max="${max_price_atr}" name="price_from"
+                           value="${price_from_atr}"
+                           oninvalid="this.setCustomValidity('${price_rules} ${min_price_atr}-${max_price_atr}')"
                            class="form-control">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">
                         ${price_to}
                     </label>
-                    <input type="number" step="0.01" min="${min_price}" max="${max_price}" name="price_to"
-                           value="${temp_price_to}"
-                           oninvalid="this.setCustomValidity('${price_rules} ${min_price}-${max_price}')"
+                    <input type="number" step="0.01" min="${min_price_atr}" max="${max_price_atr}" name="price_to"
+                           value="${price_to_atr}"
+                           oninvalid="this.setCustomValidity('${price_rules} ${min_price_atr}-${max_price_atr}')"
                            class="form-control">
                 </div>
                 <button type="submit" class="btn btn-light">
@@ -102,7 +101,7 @@
             </form>
         </div>
         <div class="col-sm-9 mb-3">
-            <c:forEach var="room" items="${room_list}">
+            <c:forEach var="room" items="${room_list_atr}">
                 <div class="card mb-3">
                     <div class="row g-0">
                         <div class="col-auto" style="width: 150px;">
@@ -119,12 +118,12 @@
                             <div class="card-body">
                                 <h5 class="card-title card-text">
                                     <a class="link-secondary text-decoration-none"
-                                       href="${path}/controller?command=find_room_by_id&room_id=${room.entityId}&date_from=${temp_date_from}&date_to=${temp_date_to}">
+                                       href="${path}/controller?command=find_room_by_id&room_id=${room.entityId}&date_from=${date_from_atr}&date_to=${date_to_atr}">
                                             ${number} ${room.number}
                                     </a>
                                 </h5>
                                 <p class="card-text">
-                                        ${sleeping_place}: ${room.sleepingPlace}</br>
+                                        ${room_sleeping_place}: ${room.sleepingPlace}</br>
                                         ${price}: ${room.pricePerDay}
                                 </p>
                             </div>
@@ -140,17 +139,17 @@
                 </div>
             </c:forEach>
             <div class="text-danger">
-                <c:if test="${wrong_date_or_price_range eq true}">
+                <c:if test="${wrong_date_or_price_range_atr eq true}">
                     ${incorrect_date_or_price_range}
                 </c:if>
             </div>
             <div>
-                <c:if test="${empty room_list and wrong_date_or_price_range eq false}">
+                <c:if test="${empty room_list_atr and wrong_date_or_price_range_atr eq false}">
                     ${room_not_found}
                 </c:if>
             </div>
             <div>
-                <c:if test="${make_choice eq true}">
+                <c:if test="${make_choice_atr eq true}">
                     ${need_choice}
                 </c:if>
             </div>
@@ -158,7 +157,7 @@
     </div>
 </div>
 <footer>
-    <jsp:include page="footer.jsp"/>
+    <jsp:include page="../footer/footer.jsp"/>
 </footer>
 </body>
 </html>

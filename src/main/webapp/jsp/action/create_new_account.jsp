@@ -4,7 +4,7 @@
 
 <c:set var="path" value="${pageContext.request.contextPath}"/>
 
-<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
+<fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="properties.pagecontent"/>
 
 <fmt:message key="title.create_new_account" var="title"/>
@@ -39,7 +39,7 @@
 </head>
 <body>
 <header>
-    <jsp:include page="header.jsp"/>
+    <jsp:include page="../header/header.jsp"/>
 </header>
 
 <div class="container text-secondary text-center">
@@ -53,15 +53,15 @@
                     <label class="form-label">
                         ${email}
                     </label>
-                    <input type="text" maxlength="50" name="email" value="${temp_email}"
+                    <input type="text" maxlength="50" name="email" value="${email_ses}"
                            pattern="[\da-z]([\da-z_\-\.]*)[\da-z_\-]@[\da-z_\-]{2,}\.[a-z]{2,6}"
                            required oninvalid="this.setCustomValidity('${email_rules}')"
                            class="form-control">
                     <label class="form-label text-danger">
-                        <c:if test="${not empty wrong_email}">
+                        <c:if test="${not empty wrong_email_ses}">
                             ${incorrect_email}
                         </c:if>
-                        <c:if test="${not empty wrong_email_exist}">
+                        <c:if test="${not empty wrong_email_exist_ses}">
                             ${incorrect_email_exist}
                         </c:if>
                     </label>
@@ -70,12 +70,12 @@
                     <label class="form-label">
                         ${name}
                     </label>
-                    <input type="text" name="name" value="${temp_name}"
+                    <input type="text" name="name" value="${name_ses}"
                            pattern="[\wа-яА-яёЁ][\wа-яА-яёЁ\s]*"
                            required oninvalid="this.setCustomValidity('${name_rules}')"
                            class="form-control">
                     <label class="form-label text-danger">
-                        <c:if test="${not empty wrong_name}">
+                        <c:if test="${not empty wrong_name_ses}">
                             ${incorrect_name}
                         </c:if>
                     </label>
@@ -84,12 +84,12 @@
                     <label class="form-label">
                         ${phone_number}
                     </label>
-                    <input type="text" name="phone_number" value="${temp_phone_number}"
+                    <input type="text" name="phone_number" value="${phone_number_ses}"
                            pattern="\+375(29|44|17|25|33)\d{7}"
                            required oninvalid="this.setCustomValidity('${phone_number_rules}')"
                            class="form-control">
                     <label class="form-label text-danger">
-                        <c:if test="${not empty wrong_phone_number}">
+                        <c:if test="${not empty wrong_phone_number_ses}">
                             ${incorrect_phone_number}
                         </c:if>
                     </label>
@@ -99,12 +99,12 @@
                         ${password}
                     </label>
                     <input type="password" minlength="4" maxlength="12" name="password" id="pass"
-                           value="${temp_password}"
+                           value="${password_ses}"
                            pattern="[\da-zA-Z\-!«»#\$%&'\(\)\*\+,\./:;<=>\?@_`\{\|\}~]+"
                            required oninvalid="this.setCustomValidity('${password_rules} \'')"
                            class="form-control">
                     <label class="form-label text-danger">
-                        <c:if test="${not empty wrong_password}">
+                        <c:if test="${not empty wrong_password_ses}">
                             ${incorrect_password}</br>
                         </c:if>
                     </label>
@@ -119,12 +119,12 @@
                         ${repeat_password}
                     </label>
                     <input type="password" minlength="4" maxlength="12" name="repeat_password"
-                           value="${temp_repeat_password}"
+                           value="${repeat_password_ses}"
                            pattern="[\da-zA-Z\-!«»#\$%&'\(\)\*\+,\./:;<=>\?@_`\{\|\}~]+"
                            required oninvalid="this.setCustomValidity('${password_rules} \'')"
                            class="form-control">
                     <label class="form-label text-danger">
-                        <c:if test="${not empty wrong_repeat_password}">
+                        <c:if test="${not empty wrong_repeat_password_ses}">
                             ${incorrect_repeat_password}
                         </c:if>
                     </label>
@@ -151,7 +151,7 @@
 </div>
 
 <footer>
-    <jsp:include page="footer.jsp"/>
+    <jsp:include page="../footer/footer.jsp"/>
 </footer>
 
 <script type="text/javascript">

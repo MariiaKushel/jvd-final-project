@@ -4,7 +4,7 @@
 
 <c:set var="path" value="${pageContext.request.contextPath}"/>
 
-<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
+<fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="properties.pagecontent"/>
 
 <fmt:message key="title.account" var="title"/>
@@ -19,18 +19,18 @@
     </title>
 </head>
 <header>
-    <jsp:include page="header.jsp"/>
+    <jsp:include page="../../header/header.jsp"/>
 </header>
 <body>
 <div class="container text-secondary">
     <p class="fw-bold">account</p>
-    <p>Hello ${sessionScope.current_user}</p>
-    <p>ID ${sessionScope.current_user_id}</p>
-    <p>Role ${sessionScope.current_role}</p>
-    <p>Language ${sessionScope.locale}</p>
+    <p>Hello ${current_user}</p>
+    <p>ID ${current_user_id}</p>
+    <p>Role ${current_role}</p>
+    <p>Language ${locale}</p>
 </div>
 <footer>
-    <jsp:include page="footer.jsp"/>
+    <jsp:include page="../../footer/footer.jsp"/>
 </footer>
 </body>
 </html>
