@@ -13,7 +13,9 @@ public interface UserService {
 
     Optional<User> authenticate(String email, String password) throws ServiceException;
 
-    Optional<User> updatePersonalData(User user, String password) throws ServiceException;
+    Optional<User> updatePersonalData(Map<String, String> userData) throws ServiceException;
 
-    int findDiscountByUserId (String userId) throws ServiceException;
+    int findDiscountByUserId(String userId) throws ServiceException;
+
+    Optional<User> findUserById(String userId) throws ServiceException;
 }

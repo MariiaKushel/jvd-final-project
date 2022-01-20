@@ -20,4 +20,7 @@ public interface UserDao extends BaseDao<Long, User> {
     int findDiscountByUserId(long userId) throws DaoException;
 
     BigDecimal findBalanceByUserId(long userId) throws DaoException;
+
+    Optional<User> findUserById(long userId) throws DaoException;
+
 }

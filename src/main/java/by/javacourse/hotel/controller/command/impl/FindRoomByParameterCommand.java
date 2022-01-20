@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class FindRoomByParameter implements Command {
+public class FindRoomByParameterCommand implements Command {
     static Logger logger = LogManager.getLogger();
 
     @Override

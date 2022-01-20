@@ -18,6 +18,11 @@ public final class SessionAttribute {
     public static final String PHONE_NUMBER_SES = "phone_number_ses";
     public static final String PASSWORD_SES = "password_ses";
     public static final String REPEAT_PASSWORD_SES = "repeat_password_ses";
+    public static final String ROLE_SES = "role_ses";
+    public static final String USER_STATUS_SES = "user_status_ses";
+    public static final String BALANCE_SES = "balance_ses";
+    public static final String RATE_SES = "rate_ses";
+    public static final String DISCOUNT_ID_SES = "discount_id_ses";
 
     public static final String WRONG_EMAIL_SES = "wrong_email_ses";
     public static final String WRONG_EMAIL_EXIST_SES = "wrong_email_exist_ses";
@@ -25,6 +30,8 @@ public final class SessionAttribute {
     public static final String WRONG_PHONE_NUMBER_SES = "wrong_phone_number_ses";
     public static final String WRONG_REPEAT_PASSWORD_SES = "wrong_repeat_password_ses";
     public static final String WRONG_PASSWORD_SES = "wrong_password_ses";
+
+    public static final String UPDATE_PERSONAL_DATA_RESULT = "update_personal_data_result";
 
     private SessionAttribute() {
 

@@ -257,4 +257,22 @@ public class UserDaoImpl implements UserDao {
         return balance;
     }
 
+    @Override
+    public Optional<User> findUserById(long userId) throws DaoException {
+        Optional<User> user = Optional.empty();
+        Mapper mapper = UserMapper.getInstance();
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_USER + BY_ID)) {
+            statement.setLong(1, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                user = mapper.retrieve(resultSet).stream().findFirst();
+            }
+        } catch (SQLException e) {
+            logger.error("SQL request findUserById from table hotel.users was failed " + e);
+            throw new DaoException("SQL request findUserById from table hotel.users was failed", e);
+        }
+        return user;
+    }
+
 }

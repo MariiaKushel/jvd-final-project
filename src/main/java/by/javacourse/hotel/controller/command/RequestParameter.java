@@ -11,9 +11,10 @@ public final class RequestParameter {
     public static final String ROLE = "role";
     public static final String NAME = "name";
     public static final String PHONE_NUMBER = "phone_number";
-    public static final String USER_STATUS = "status";
+    public static final String USER_STATUS = "user_status";
     public static final String DISCOUNT_ID = "discount_id";
     public static final String BALANCE = "balance";
+    public static final String RATE = "rate";
 
     public static final String ROOM_ID = "room_id";
 

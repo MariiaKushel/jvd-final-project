@@ -16,18 +16,23 @@ public enum CommandName {
     FIND_PREVIEW_IMAGE("find_preview_image"),
     FIND_ROOM_BY_PARAMETER("find_room_by_parameter"),
     CREATE_ORDER("create_order"),
-
-
-
+    UPDATE_PERSONAL_DATA("update_personal_data"),
 
 
     GO_TO_MAIN_PAGE("go_to_main_page"),
+
     GO_TO_SING_IN_PAGE("go_to_sing_in_page"),
+
     GO_TO_CREATE_NEW_ACCOUNT_PAGE("go_to_create_new_account_page"),
+
     GO_TO_HOME_PAGE("go_to_home_page"),
+
     GO_TO_BOOK_ROOM_PAGE("go_to_book_room_page"),
+
     GO_TO_CONTACT_PAGE("go_to_contact_page"),
+
     GO_TO_ACCOUNT_PAGE("go_to_account_page"),
+
     GO_TO_ORDER_PAGE("go_to_order_page");
 
     private String webCommandName;

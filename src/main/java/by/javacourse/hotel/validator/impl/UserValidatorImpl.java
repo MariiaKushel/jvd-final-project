@@ -76,7 +76,7 @@ public final class UserValidatorImpl implements UserValidator {
     }
 
     @Override
-    public boolean validateUserData(Map<String, String> userData) {
+    public boolean validateUserDataCreate(Map<String, String> userData) {
         String email = userData.get(EMAIL);
         String name = userData.get(NAME);
         String phoneNumber = userData.get(PHONE_NUMBER);
@@ -92,6 +92,28 @@ public final class UserValidatorImpl implements UserValidator {
             userData.put(WRONG_EMAIL_SES, WRONG_DATA_MARKER);
             isValid = false;
         }
+        if (!validatePassword(password)) {
+            userData.put(WRONG_PASSWORD_SES, WRONG_DATA_MARKER);
+            isValid = false;
+        }
+        if (!validateName(name)) {
+            userData.put(WRONG_NAME_SES, WRONG_DATA_MARKER);
+            isValid = false;
+        }
+        if (!validatePhoneNumber(phoneNumber)) {
+            userData.put(WRONG_PHONE_NUMBER_SES, WRONG_DATA_MARKER);
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    @Override
+    public boolean validateUserDataUpdate(Map<String, String> userData) {
+        String name = userData.get(NAME);
+        String phoneNumber = userData.get(PHONE_NUMBER);
+        String password = userData.get(PASSWORD);
+
+        boolean isValid = true;
         if (!validatePassword(password)) {
             userData.put(WRONG_PASSWORD_SES, WRONG_DATA_MARKER);
             isValid = false;

@@ -28,6 +28,8 @@ public final class RequestAttribute {
     public static final String IMAGE_LIST_ATR = "image_list_atr";
     public static final String REVIEW_LIST_ATR = "review_list_atr";
 
+    public static final String USER_ATR = "user_atr";
+    public static final String RATE_ATR = "rate_atr";
     private RequestAttribute() {
 
     }

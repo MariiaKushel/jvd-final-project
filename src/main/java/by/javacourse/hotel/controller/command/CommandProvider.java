@@ -19,11 +19,12 @@ public final class CommandProvider {
         commands.put(CommandName.SING_OUT, new SingOutCommand());
         commands.put(CommandName.CREATE_NEW_ACCOUNT, new CreateNewAccountCommand());
         commands.put(CommandName.CREATE_ORDER, new CreateOrderCommand());
+        commands.put(CommandName.UPDATE_PERSONAL_DATA, new UpdatePersonalDataCommand());
 
         commands.put(CommandName.FIND_ALL_ROOMS, new FindAllRoomsCommand());
         commands.put(CommandName.FIND_ALL_VISIBLE_ROOMS, new FindAllVisibleRoomsCommand());
         commands.put(CommandName.FIND_ROOM_BY_ID, new FindRoomByIdCommand());
-        commands.put(CommandName.FIND_ROOM_BY_PARAMETER, new FindRoomByParameter());
+        commands.put(CommandName.FIND_ROOM_BY_PARAMETER, new FindRoomByParameterCommand());
 
         commands.put(CommandName.GO_TO_MAIN_PAGE, new GoToMainPageCommand());
         commands.put(CommandName.GO_TO_SING_IN_PAGE, new GoToSingInPageCommand());

@@ -15,7 +15,7 @@ import by.javacourse.hotel.validator.impl.UserValidatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.xml.validation.Validator;
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
         boolean isCreated = true;
         UserValidator validator = UserValidatorImpl.getInstance();
-        if (!validator.validateUserData(userData)) {
+        if (!validator.validateUserDataCreate(userData)) {
             isCreated = false;
             return isCreated;
         }
@@ -78,14 +78,50 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    @Override //Fixme rewrite
-    public Optional<User> updatePersonalData(User user, String password) throws ServiceException {
+    @Override
+    public Optional<User> updatePersonalData(Map<String, String> userData) throws ServiceException {
         Optional<User> oldUser = Optional.empty();
         UserValidator validator = UserValidatorImpl.getInstance();
-        if (!validator.validate(user, password)) {
+        if (!validator.validateUserDataUpdate(userData)) {
             logger.info("Some personal data has not valid value");
             return oldUser;
         }
+
+        String email = userData.get(EMAIL);
+        String password = userData.get(PASSWORD);
+        String secretPassword = PasswordEncryptor.encrypt(password);
+
+        try {
+            Optional<User> userCheck = userDao.findUserByEmailAndPassword(email,secretPassword);
+            if(userCheck.isEmpty()){
+                logger.info("Wrong password");
+                userData.put(WRONG_PASSWORD_SES, UserValidator.WRONG_DATA_MARKER);
+                return oldUser;
+            }
+        } catch (DaoException e) {
+            logger.error("Try to update personal data was failed " + e);
+            throw new ServiceException("Try to update personal data was failed", e);
+        }
+
+        long userId= Long.parseLong(userData.get(CURRENT_USER_ID));
+        String name = userData.get(NAME);
+        String phoneNumber = userData.get(PHONE_NUMBER);
+        User.Role role = User.Role.valueOf(userData.get(ROLE).toUpperCase());
+        User.Status status = User.Status.valueOf(userData.get(USER_STATUS).toUpperCase());
+        long discountId = Long.parseLong(userData.get(DISCOUNT_ID));
+        BigDecimal balance = new BigDecimal(userData.get(BALANCE));
+
+        User user = User.newBuilder()
+                .setEntityId(userId)
+                .setEmail(email)
+                .setName(name)
+                .setPhoneNumber(phoneNumber)
+                .setRole(role)
+                .setStatus(status)
+                .setDiscountId(discountId)
+                .setBalance(balance)
+                .build();
+
         try {
             oldUser = userDao.update(user);
         } catch (DaoException e) {
@@ -105,5 +141,17 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("Try find discount by user id was failed", e);
         }
         return rate;
+    }
+
+    @Override
+    public Optional<User> findUserById(String userId) throws ServiceException {
+        Optional <User> user = Optional.empty();
+        try{
+            user = userDao.findUserById(Long.parseLong(userId));
+        } catch (DaoException e) {
+            logger.error("Try find user by id was failed " + e);
+            throw new ServiceException("Try find user by id was failed", e);
+        }
+        return user;
     }
 }

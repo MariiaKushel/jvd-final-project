@@ -30,7 +30,6 @@ public class CreateOrderCommand implements Command {
         CommandResult commandResult = null;
         try {
             boolean isCreate = roomOrderService.createOrder(orderData);
-            logger.debug("isCreate "+isCreate);
             session.setAttribute(ORDER_RESULT, isCreate);
             session.setAttribute(CURRENT_PAGE, PagePath.ORDER_PAGE);
             commandResult = new CommandResult(PagePath.ORDER_PAGE, REDIRECT);

@@ -17,6 +17,8 @@ public interface UserValidator {
 
     boolean validate(User user, String password);
 
-    boolean validateUserData(Map<String, String> userData);
+    boolean validateUserDataCreate(Map<String, String> userData);
+
+    boolean validateUserDataUpdate(Map<String, String> userData);
 
 }
