@@ -5,6 +5,7 @@ public final class RequestParameter {
     public static final String LANGUAGE = "language";
 
 
+    public static final String USER_ID = "user_id";
     public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
     public static final String REPEAT_PASSWORD = "repeat_password";
@@ -31,10 +32,20 @@ public final class RequestParameter {
     public static final String ROOM_NUMBER = "room_number";
     public static final String DAYS = "days";
 
-    public static final String MIN_PRICE_FOR_SEARCH = "min_price_for_search";
-    public static final String MAX_PRICE_FOR_SEARCH = "max_price_for_search";
-    public static final String PLACES_FOR_SEARCH = "places_for_search";
+    public static final String ORDER_STATUS = "order_status";
 
+    public static final String NEW_PASSWORD = "new_password";
+
+    public static final String REPLENISH_AMOUNT ="replenish_amount";
+
+
+    public static final String VISIBLE = "visible";
+    public static final String LAST = "last";
+
+    public static final String ORDER_ID = "order_id";
+    public static final String MARK = "mark";
+    public static final String CONTENT = "content";
+    public static final String REVIEW_ID = "review_id";
 
     private RequestParameter() {
 

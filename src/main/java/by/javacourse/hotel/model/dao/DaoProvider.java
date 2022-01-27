@@ -10,6 +10,7 @@ public class DaoProvider {
     private DescriptionDao descriptionDao = new DescriptionDaoImpl();
     private ReviewDao reviewDao = new ReviewDaoImpl();
     private RoomOrderDao roomOrderDao = new RoomOrderDaoImpl();
+    private DiscountDao discountDao = new DiscountDaoImpl();
     //TODO add more dao
 
     private DaoProvider() {
@@ -27,23 +28,27 @@ public class DaoProvider {
         return userDao;
     }
 
-    public RoomDao getRoomDao(){
+    public RoomDao getRoomDao() {
         return roomDao;
     }
 
-    public ImageDao getImageDao(){
+    public ImageDao getImageDao() {
         return imageDao;
     }
 
-    public DescriptionDao getDescriptionDao(){
+    public DescriptionDao getDescriptionDao() {
         return descriptionDao;
     }
 
-    public ReviewDao getReviewDao(){
+    public ReviewDao getReviewDao() {
         return reviewDao;
     }
 
-    public RoomOrderDao getRoomOrderDao(){
+    public RoomOrderDao getRoomOrderDao() {
         return roomOrderDao;
+    }
+
+    public DiscountDao getDiscountDao() {
+        return discountDao;
     }
 }

@@ -42,35 +42,50 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown"
                    href="${path}/controller?command=go_to_account_page" role="button" aria-expanded="false">
-                    User: ${current_user}
+                    User: ${current_email}
                 </a>
                 <c:if test="${current_role eq 'CLIENT'}">
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item text-secondary"
-                               href="${path}/controller?command=go_to_account_page">Account</a></li>
-                        <li><a class="dropdown-item text-secondary" href="${path}/controller?command=sing_out">Change
-                            password</a></li>
-                        <li><a class="dropdown-item text-secondary" href="${path}/controller?command=sing_out">Replenish
-                            balance</a></li>
+                               href="${path}/controller?command=go_to_account_page">
+                            Account</a></li>
                         <li><a class="dropdown-item text-secondary"
-                               href="${path}/controller?command=sing_out">Orders</a></li>
-                        <li><a class="dropdown-item text-secondary" href="${path}/controller?command=sing_out">Leave
-                            review</a></li>
-                        <li><a class="dropdown-item text-secondary" href="${path}/controller?command=sing_out">Sing
-                            out</a></li>
+                               href="${path}/controller?command=go_to_change_password_page">
+                            Change password</a></li>
+                        <li><a class="dropdown-item text-secondary"
+                               href="${path}/controller?command=go_to_replenish_balance_page">
+                            Replenish balance</a></li>
+                        <li><a class="dropdown-item text-secondary"
+                               href="${path}/controller?command=go_to_client_orders_page">
+                            Orders</a></li>
+                        <li><a class="dropdown-item text-secondary"
+                               href="${path}/controller?command=sing_out">
+                            Sing out</a></li>
                     </ul>
                 </c:if>
                 <c:if test="${current_role eq 'ADMIN'}">
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item text-secondary" href="${path}/controller?command=sing_out">Change
-                            password</a></li>
-                        <li><a class="dropdown-item text-secondary" href="${path}/controller?command=sing_out">Users management</a></li>
                         <li><a class="dropdown-item text-secondary"
-                               href="${path}/controller?command=sing_out">Orders management</a></li>
-                        <li><a class="dropdown-item text-secondary" href="${path}/controller?command=sing_out">Room management</a></li>
-                        <li><a class="dropdown-item text-secondary" href="${path}/controller?command=sing_out">Review management</a></li>
-                        <li><a class="dropdown-item text-secondary" href="${path}/controller?command=sing_out">Sing
-                            out</a></li>
+                               href="${path}/controller?command=go_to_change_password_page">
+                            Change password</a></li>
+                        <li><a class="dropdown-item text-secondary"
+                               href="${path}/controller?command=go_to_user_management_page">
+                            Users management</a></li>
+                        <li><a class="dropdown-item text-secondary"
+                               href="${path}/controller?command=go_to_order_management_page">
+                            Orders management</a></li>
+                        <li><a class="dropdown-item text-secondary"
+                               href="${path}/controller?command=go_to_room_management_page">
+                            Room management</a></li>
+                        <li><a class="dropdown-item text-secondary"
+                               href="${path}/controller?command=go_to_review_management_page">
+                            Review management</a></li>
+                        <li><a class="dropdown-item text-secondary"
+                               href="${path}/controller?command=go_to_discount_management_page">
+                            Discount management</a></li>
+                        <li><a class="dropdown-item text-secondary"
+                               href="${path}/controller?command=sing_out">
+                            Sing out</a></li>
                     </ul>
                 </c:if>
             </li>

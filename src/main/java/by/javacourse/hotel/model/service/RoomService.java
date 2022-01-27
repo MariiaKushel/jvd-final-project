@@ -1,6 +1,7 @@
 package by.javacourse.hotel.model.service;
 
 import by.javacourse.hotel.entity.Room;
+import by.javacourse.hotel.entity.RoomOrder;
 import by.javacourse.hotel.exception.DaoException;
 import by.javacourse.hotel.exception.ServiceException;
 
@@ -14,7 +15,15 @@ public interface RoomService {
 
     List<Room> findAllVisibleRooms() throws ServiceException;
 
-    Optional<Room> findRoomById(long roomId) throws ServiceException;
+    Optional<Room> findRoomById(String roomId) throws ServiceException;
+
+    List<Room> findRoomByNumber(Map<String, String> parameters) throws ServiceException;
+
+    List<Room> findRoomBySleepingPlace(Map<String, String> parameters) throws ServiceException;
+
+    List<Room> findRoomByPriceRange(Map<String, String> parameters) throws ServiceException;
+
+    List<Room> findRoomByVisible(Map<String, String> parameters) throws ServiceException;
 
     BigDecimal findMinPrice() throws ServiceException;
 
@@ -22,5 +31,8 @@ public interface RoomService {
 
     List<Integer> findAllPossibleSleepingPlace() throws ServiceException;
 
-    List<Room> findRoomByParameters(Map<String,String> parameters, String...sleepPlaces)throws ServiceException;
+    List<Room> findRoomByParameters(Map<String, String> parameters, String... sleepPlaces) throws ServiceException;
+
+    List<Room> findRoomByParameters(Map<String, String> parameters) throws ServiceException;
+
 }

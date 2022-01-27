@@ -33,6 +33,9 @@ public class RoomDaoImpl implements RoomDao {
 
     private static final String BY_ID = " WHERE hotel.rooms.room_id=? LIMIT 1";
     private static final String BY_VISIBLE = " WHERE visible=?";
+    private static final String BY_NUMBER = " WHERE number=?";
+    private static final String BY_SLEEPING_PLACE = " WHERE sleeping_place=?";
+    private static final String BY_PRICE_RANGE = " WHERE price_per_day BETWEEN ? AND ? ORDER BY price_per_day";
 
     private static final String BY_PARAMETERS = """
              LEFT JOIN hotel.daily_room_states ON hotel.rooms.room_id=hotel.daily_room_states.room_id
@@ -48,6 +51,18 @@ public class RoomDaoImpl implements RoomDao {
             SELECT DISTINCT sleeping_place FROM hotel.rooms
             WHERE visible=true
             ORDER BY sleeping_place""";
+
+    private static final String SQL_UPDATE_RATING = """
+                UPDATE hotel.rooms SET rating=(
+                    SELECT AVG(room_mark) AS new_rating
+                    FROM (
+                        SELECT hotel.room_orders.room_id, room_mark, hotel.reviews.date
+                        FROM hotel.reviews
+                        JOIN hotel.room_orders ON review_id=room_order_id AND hotel.room_orders.room_id=? AND room_mark>0
+                        ORDER BY hotel.reviews.date DESC LIMIT 20
+                    ) AS marks_by_room
+                )
+                WHERE hotel.rooms.room_id=?""";
 
 
     @Override
@@ -98,7 +113,7 @@ public class RoomDaoImpl implements RoomDao {
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM + BY_ID,
-                     ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) { // FIXME need TYPE_SCROLL_INSENSITIVE?
+                     ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
             statement.setLong(1, room.getEntityId());
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -122,13 +137,13 @@ public class RoomDaoImpl implements RoomDao {
     }
 
     @Override
-    public List<Room> findAllVisibleRooms() throws DaoException {
+    public List<Room> findRoomByVisible(boolean visible) throws DaoException {
         List<Room> rooms = new ArrayList<>();
         Mapper mapper = RoomMapper.getInstance();
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM + BY_VISIBLE)) {
-            statement.setBoolean(1, true);
+            statement.setBoolean(1, visible);
             try (ResultSet resultSet = statement.executeQuery()) {
                 rooms = mapper.retrieve(resultSet);
             }
@@ -150,12 +165,66 @@ public class RoomDaoImpl implements RoomDao {
             try (ResultSet resultSet = statement.executeQuery()) {
                 room = mapper.retrieve(resultSet).stream().findFirst();
             }
-            logger.debug("room> " + room);
         } catch (SQLException e) {
             logger.error("SQL request findRoomById from table hotel.rooms was failed " + e);
             throw new DaoException("SQL request findRoomById from table hotel.rooms was failed", e);
         }
         return room;
+    }
+
+    @Override
+    public List<Room> findRoomByNumber(int number) throws DaoException {
+        List<Room> rooms = new ArrayList<>();
+        Mapper mapper = RoomMapper.getInstance();
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM + BY_NUMBER)) {
+            statement.setInt(1, number);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                rooms = mapper.retrieve(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.error("SQL request findRoomByNumber from table hotel.rooms was failed " + e);
+            throw new DaoException("SQL request findRoomByNumber from table hotel.rooms was failed", e);
+        }
+        return rooms;
+    }
+
+    @Override
+    public List<Room> findRoomBySleepingPlace(int sleepingPlace) throws DaoException {
+        List<Room> rooms = new ArrayList<>();
+        Mapper mapper = RoomMapper.getInstance();
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM + BY_SLEEPING_PLACE)) {
+            statement.setInt(1, sleepingPlace);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                rooms = mapper.retrieve(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.error("SQL request findRoomBySleepingPlace from table hotel.rooms was failed " + e);
+            throw new DaoException("SQL request findRoomBySleepingPlace from table hotel.rooms was failed", e);
+        }
+        return rooms;
+    }
+
+    @Override
+    public List<Room> findRoomByPriceRange(BigDecimal priceFrom, BigDecimal priceTo) throws DaoException {
+        List<Room> rooms = new ArrayList<>();
+        Mapper mapper = RoomMapper.getInstance();
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM + BY_PRICE_RANGE)) {
+            statement.setBigDecimal(1, priceFrom);
+            statement.setBigDecimal(2, priceTo);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                rooms = mapper.retrieve(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.error("SQL request findRoomByPriceRange from table hotel.rooms was failed " + e);
+            throw new DaoException("SQL request findRoomByPriceRange from table hotel.rooms was failed", e);
+        }
+        return rooms;
     }
 
     @Override
@@ -242,5 +311,21 @@ public class RoomDaoImpl implements RoomDao {
             throw new DaoException("SQL request findRoomByParameters from table hotel.rooms was failed", e);
         }
         return rooms;
+    }
+
+    @Override
+    public boolean refreshRating(long roomId) throws DaoException {
+        int rowsUpdated = 0;
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_RATING)) {
+            statement.setLong(1, roomId);
+            statement.setLong(2, roomId);
+            rowsUpdated = statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("SQL request refreshRating from table hotel.rooms was failed" + e);
+            throw new DaoException("SQL request refreshRating from table hotel.rooms was failed", e);
+        }
+        return rowsUpdated == 1;
     }
 }

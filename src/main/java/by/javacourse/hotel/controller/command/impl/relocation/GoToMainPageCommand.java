@@ -16,7 +16,7 @@ public class GoToMainPageCommand implements Command {
     public CommandResult execute(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
-        return session.getAttribute(SessionAttribute.CURRENT_USER) != null
+        return session.getAttribute(SessionAttribute.CURRENT_EMAIL) != null
                 ? new CommandResult(PagePath.HOME_PAGE, FORWARD)
                 : new CommandResult(PagePath.MAIN_PAGE, FORWARD);
     }

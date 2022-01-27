@@ -27,10 +27,8 @@
     <jsp:include page="../header/header.jsp"/>
 </header>
 <div class="container text-secondary">
-    <div class="row">
-        <div class="col-md-3 fw-bold">
-            ${title}
-        </div>
+    <div class="mb-3 fw-bold">
+        ${title}
     </div>
     <c:forEach var="room" items="${room_list_atr}">
         <div class="card mb-3">

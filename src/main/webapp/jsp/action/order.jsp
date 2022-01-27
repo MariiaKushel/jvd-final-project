@@ -17,9 +17,11 @@
 <fmt:message key="message.total_amount" var="amount_with_discount"/>
 <fmt:message key="message.base_amount" var="amount_without_discount"/>
 <fmt:message key="message.your_discount" var="your_discount"/>
-<fmt:message key="message.thank" var="thank"/>
-<fmt:message key="message.order_failed" var="order_failed"/>
+<fmt:message key="message.complete" var="complete"/>
+<fmt:message key="message.failed" var="failed"/>
 <fmt:message key="button.confirm" var="confirm"/>
+<fmt:message key="field.prepayment" var="prepay"/>
+<fmt:message key="message.not_found" var="not_found"/>
 
 <html>
 <head>
@@ -35,9 +37,15 @@
 </header>
 <body>
 <div class="container text-secondary">
+    <div class="mb-3 fw-bold">
+        ${title}
+    </div>
     <c:choose>
         <c:when test="${not empty order_result}">
-            ${order_result eq true? thank: order_failed}
+            ${order_result eq true? complete: failed}
+        </c:when>
+        <c:when test="${not empty order_data_ses['not_found_ses']}">
+            ${not_found}
         </c:when>
         <c:otherwise>
             <table class="table text-secondary border-secondary">
@@ -49,47 +57,48 @@
                 <tbody>
                 <tr>
                     <td>${number}</td>
-                    <td>${room_number_atr}</td>
+                    <td>${order_data_ses['room_number_ses']}</td>
                 </tr>
                 <tr>
                     <td>${check_in}</td>
-                    <td>${date_from_atr}</td>
+                    <td>${order_data_ses['date_from_ses']}</td>
                 </tr>
                 <tr>
                     <td>${check_out}</td>
-                    <td>${date_to_atr}</td>
+                    <td>${order_data_ses['date_to_ses']}</td>
                 </tr>
                 <tr>
                     <td>${days_to_stay}</td>
-                    <td>${days_atr}</td>
+                    <td>${order_data_ses['days_ses']}</td>
                 </tr>
                 <tr>
                     <td>${room_price}</td>
-                    <td>${room_price_atr}</td>
+                    <td>${order_data_ses['price_ses']}</td>
                 </tr>
                 <tr>
                     <td>${amount_without_discount}</td>
-                    <td>${base_amount_atr}</td>
+                    <td>${order_data_ses['base_amount_ses']}</td>
                 </tr>
                 <tr>
                     <td>${amount_with_discount}</td>
-                    <td>${total_amount_atr} (${your_discount} ${base_amount_atr-total_amount_atr})</td>
+                    <td>${order_data_ses['total_amount_ses']}
+                        (${your_discount} ${order_data_ses['rate_ses']} %)</td>
                 </tr>
                 </tbody>
             </table>
             <form method="post" action="${path}/controller">
                 <input type="hidden" name="command" value="create_order"/>
-                <input type="hidden" name="date_from" value="${date_from_atr}"/>
-                <input type="hidden" name="date_to" value="${date_to_atr}"/>
-                <input type="hidden" name="room_id" value="${room_id_atr}"/>
-                <input type="hidden" name="total_amount" value="${total_amount_atr}"/>
-                <input type="hidden" name="days" value="${days_atr}"/>
+                <input type="hidden" name="date_from" value="${order_data_ses['date_from_ses']}"/>
+                <input type="hidden" name="date_to" value="${order_data_ses['date_to_ses']}"/>
+                <input type="hidden" name="room_id" value="${order_data_ses['room_id_ses']}"/>
+                <input type="hidden" name="total_amount" value="${order_data_ses['total_amount_ses']}"/>
+                <input type="hidden" name="days" value="${order_data_ses['days_ses']}"/>
 
                 <div class="row border-secondary">
                     <div class="col mb-3 text-center">
                         <div class="form-check form-check-inline">
                             <input type="checkbox" class="form-check-input " name="prepayment" value="true"/>
-                            <label class="form-check-label">Prepayment</label>
+                            <label class="form-check-label">${prepay}</label>
                         </div>
                     </div>
                 </div>

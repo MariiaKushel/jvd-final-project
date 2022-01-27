@@ -4,7 +4,7 @@ import by.javacourse.hotel.controller.command.*;
 
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.ERROR;
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.FORWARD;
-import static by.javacourse.hotel.controller.command.RequestAttribute.ROOM_LIST_ATR;
+import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
 
 import by.javacourse.hotel.entity.Room;
@@ -25,14 +25,11 @@ public class FindRoomByParameterCommand implements Command {
 
     @Override
     public CommandResult execute(HttpServletRequest request) {
+        HttpSession session = request.getSession();
         Map<String, String> searchParameters = new HashMap<>();
-        searchParameters.put(DATE_FROM, request.getParameter(DATE_FROM));
-        searchParameters.put(DATE_TO, request.getParameter(DATE_TO));
-        searchParameters.put(PRICE_FROM, request.getParameter(PRICE_FROM));
-        searchParameters.put(PRICE_TO, request.getParameter(PRICE_TO));
+        updateSearchParametersFromRequest(request, searchParameters);
         String[] sleepingPlaces = request.getParameterValues(SLEEPING_PLACES);
 
-        HttpSession session = request.getSession();
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomService roomService = provider.getRoomService();
         List<Room> rooms = new ArrayList<>();
@@ -40,23 +37,8 @@ public class FindRoomByParameterCommand implements Command {
         try {
             rooms = roomService.findRoomByParameters(searchParameters, sleepingPlaces);
             request.setAttribute(ROOM_LIST_ATR, rooms);
-            if (rooms.isEmpty() && searchParameters.get(DATE_FROM).isEmpty()) {
-                request.setAttribute(RequestAttribute.WRONG_DATE_OR_PRICE_RANGE_ATR, true);
-            } else {
-                request.setAttribute(RequestAttribute.WRONG_DATE_OR_PRICE_RANGE_ATR, false);
-            }
-
-            request.setAttribute(RequestAttribute.MIN_PRICE_ATR, request.getParameter(MIN_PRICE_FOR_SEARCH));
-            request.setAttribute(RequestAttribute.MAX_PRICE_ATR, request.getParameter(MAX_PRICE_FOR_SEARCH));
-
-            List<Integer> allSleepingPlace = roomService.findAllPossibleSleepingPlace();
-            request.setAttribute(RequestAttribute.ALL_SLEEPING_PLACE_LIST_ATR, allSleepingPlace);
-            request.setAttribute(RequestAttribute.DATE_FROM_ATR, searchParameters.get(DATE_FROM));
-            request.setAttribute(RequestAttribute.DATE_TO_ATR, searchParameters.get(DATE_TO));
-            request.setAttribute(RequestAttribute.PRICE_FROM_ATR, searchParameters.get(PRICE_FROM));
-            request.setAttribute(RequestAttribute.PRICE_TO_ATR, searchParameters.get(PRICE_TO));
+            request.setAttribute(SEARCH_PARAMETER_ATR, searchParameters);
             session.setAttribute(SessionAttribute.CURRENT_PAGE, CurrentPageExtractor.extract(request));
-
             commandResult = new CommandResult(PagePath.BOOK_ROOM_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindRoomByParameter was failed " + e);
@@ -65,9 +47,10 @@ public class FindRoomByParameterCommand implements Command {
         return commandResult;
     }
 
-
-    private List<Integer> convertArrayToList(String[] strArray) {
-        List<Integer> integerList = Stream.of(strArray).map(s -> Integer.parseInt(s)).toList();
-        return integerList;
+    private void updateSearchParametersFromRequest(HttpServletRequest request, Map<String, String> searchParameters) {
+        searchParameters.put(DATE_FROM_ATR, request.getParameter(DATE_FROM));
+        searchParameters.put(DATE_TO_ATR, request.getParameter(DATE_TO));
+        searchParameters.put(PRICE_FROM_ATR, request.getParameter(PRICE_FROM));
+        searchParameters.put(PRICE_TO_ATR, request.getParameter(PRICE_TO));
     }
 }

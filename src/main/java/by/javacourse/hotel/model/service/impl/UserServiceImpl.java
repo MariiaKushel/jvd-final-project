@@ -1,5 +1,6 @@
 package by.javacourse.hotel.model.service.impl;
 
+import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
@@ -16,8 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class UserServiceImpl implements UserService {
     static Logger logger = LogManager.getLogger();
@@ -28,10 +28,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean createNewAccount(Map<String, String> userData) throws ServiceException {
 
-        String email = userData.get(EMAIL);
-        String name = userData.get(NAME);
-        String phoneNumber = userData.get(PHONE_NUMBER);
-        String password = userData.get(PASSWORD);
+        String email = userData.get(EMAIL_SES);
+        String name = userData.get(NAME_SES);
+        String phoneNumber = userData.get(PHONE_NUMBER_SES);
+        String password = userData.get(PASSWORD_SES);
 
         boolean isCreated = true;
         UserValidator validator = UserValidatorImpl.getInstance();
@@ -39,7 +39,6 @@ public class UserServiceImpl implements UserService {
             isCreated = false;
             return isCreated;
         }
-
         try {
             if (userDao.isEmailExist(email)) {
                 userData.put(WRONG_EMAIL_EXIST_SES, UserValidator.WRONG_DATA_MARKER);
@@ -61,16 +60,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> authenticate(String email, String password) throws ServiceException {
+    public Optional<User> authenticate(Map<String, String> userData) throws ServiceException {
         Optional<User> user = Optional.empty();
+        String email = userData.get(EMAIL_SES);
+        String password = userData.get(PASSWORD_SES);
+
         UserValidator validator = UserValidatorImpl.getInstance();
         if (!validator.validateEmail(email) || !validator.validatePassword(password)) {
-            logger.info("Email or password has not valid value");
+            userData.put(WRONG_EMAIL_OR_PASSWORD_SES, UserValidator.WRONG_DATA_MARKER);
             return user;
         }
         try {
             String secretPassword = PasswordEncryptor.encrypt(password);
             user = userDao.findUserByEmailAndPassword(email, secretPassword);
+            if(user.isEmpty()){
+                userData.put(NOT_FOUND_SES, UserValidator.WRONG_DATA_MARKER);
+            }
         } catch (DaoException e) {
             logger.error("Try to authenticate user was failed " + e);
             throw new ServiceException("Try to authenticate user was failed", e);
@@ -79,37 +84,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> updatePersonalData(Map<String, String> userData) throws ServiceException {
+    public boolean updatePersonalData(Map<String, String> userData) throws ServiceException {
+        boolean updateResult = false;
         Optional<User> oldUser = Optional.empty();
         UserValidator validator = UserValidatorImpl.getInstance();
         if (!validator.validateUserDataUpdate(userData)) {
             logger.info("Some personal data has not valid value");
-            return oldUser;
+            return updateResult;
         }
 
-        String email = userData.get(EMAIL);
-        String password = userData.get(PASSWORD);
-        String secretPassword = PasswordEncryptor.encrypt(password);
-
-        try {
-            Optional<User> userCheck = userDao.findUserByEmailAndPassword(email,secretPassword);
-            if(userCheck.isEmpty()){
-                logger.info("Wrong password");
-                userData.put(WRONG_PASSWORD_SES, UserValidator.WRONG_DATA_MARKER);
-                return oldUser;
+        String email = userData.get(EMAIL_SES);
+        String password = userData.get(PASSWORD_SES);
+        if (password != null) {
+            String secretPassword = PasswordEncryptor.encrypt(password);
+            try {
+                Optional<User> userCheck = userDao.findUserByEmailAndPassword(email, secretPassword);
+                if (userCheck.isEmpty()) {
+                    logger.info("Wrong password");
+                    userData.put(WRONG_PASSWORD_SES, UserValidator.WRONG_DATA_MARKER);
+                    return updateResult;
+                }
+            } catch (DaoException e) {
+                logger.error("Try to update personal data was failed " + e);
+                throw new ServiceException("Try to update personal data was failed", e);
             }
-        } catch (DaoException e) {
-            logger.error("Try to update personal data was failed " + e);
-            throw new ServiceException("Try to update personal data was failed", e);
         }
 
-        long userId= Long.parseLong(userData.get(CURRENT_USER_ID));
-        String name = userData.get(NAME);
-        String phoneNumber = userData.get(PHONE_NUMBER);
-        User.Role role = User.Role.valueOf(userData.get(ROLE).toUpperCase());
-        User.Status status = User.Status.valueOf(userData.get(USER_STATUS).toUpperCase());
-        long discountId = Long.parseLong(userData.get(DISCOUNT_ID));
-        BigDecimal balance = new BigDecimal(userData.get(BALANCE));
+        long userId = Long.parseLong(userData.get(USER_ID_SES));
+        String name = userData.get(NAME_SES);
+        String phoneNumber = userData.get(PHONE_NUMBER_SES);
+        User.Role role = User.Role.valueOf(userData.get(ROLE_SES).toUpperCase());
+        User.Status status = User.Status.valueOf(userData.get(USER_STATUS_SES).toUpperCase());
+        long discountId = Long.parseLong(userData.get(DISCOUNT_ID_SES));
+        BigDecimal balance = new BigDecimal(userData.get(BALANCE_SES));
 
         User user = User.newBuilder()
                 .setEntityId(userId)
@@ -123,12 +130,12 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         try {
-            oldUser = userDao.update(user);
+            updateResult = userDao.update1(user);
         } catch (DaoException e) {
             logger.error("Try to update personal data was failed " + e);
             throw new ServiceException("Try to update personal data was failed", e);
         }
-        return oldUser;
+        return updateResult;
     }
 
     @Override
@@ -145,13 +152,110 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findUserById(String userId) throws ServiceException {
-        Optional <User> user = Optional.empty();
-        try{
+        Optional<User> user = Optional.empty();
+        try {
             user = userDao.findUserById(Long.parseLong(userId));
         } catch (DaoException e) {
             logger.error("Try find user by id was failed " + e);
             throw new ServiceException("Try find user by id was failed", e);
         }
         return user;
+    }
+
+    @Override
+    public List<User> findUserByParameter(Map<String, String> searchParameter) throws ServiceException {
+        List<User> users = new ArrayList<>();
+        UserValidator validator = UserValidatorImpl.getInstance();
+        if (!validator.validateSearchParameter(searchParameter)) {
+            logger.info("Some search parameters are not valid");
+            return users;
+        }
+        String status = searchParameter.get(USER_STATUS_ATR);
+        String email = searchParameter.get(EMAIL_ATR);
+        String phoneNumber = searchParameter.get(PHONE_NUMBER_ATR);
+        String name = searchParameter.get(NAME_ATR);
+
+        Map<String, String> param=new HashMap<>();
+        searchParameter.forEach((k,v) -> {
+            if(!v.isEmpty()){
+                param.put(k,v);
+            }
+        });
+
+        try {
+            if (status.isEmpty() && email.isEmpty() && phoneNumber.isEmpty() && name.isEmpty()) {
+                users = userDao.findAll();
+            } else {
+                users = userDao.findUserByParameter(status, email, phoneNumber, name);
+            }
+        } catch (DaoException e) {
+            logger.error("Try find user by parameter was failed " + e);
+            throw new ServiceException("Try find user by parameter was failed", e);
+        }
+        return users;
+    }
+
+    @Override
+    public boolean changePassword(Map<String, String> userData) throws ServiceException {
+        long userId = Long.parseLong(userData.get(USER_ID_SES));
+        String email = userData.get(EMAIL_SES);
+        String newPassword = userData.get(NEW_PASSWORD_SES);
+        String oldPassword = userData.get(PASSWORD_SES);
+
+        boolean isChange = false;
+        UserValidator validator = UserValidatorImpl.getInstance();
+        if (!validator.validatePassword(newPassword)) {
+            logger.info("Not valid value");
+            userData.put(WRONG_NEW_PASSWORD_SES, UserValidator.WRONG_DATA_MARKER);
+            return isChange;
+        }
+        if (!validator.validatePassword(oldPassword)) {
+            logger.info("Not valid value");
+            userData.put(WRONG_OLD_PASSWORD_SES, UserValidator.WRONG_DATA_MARKER);
+            return isChange;
+        }
+        String oldSecretPassword = PasswordEncryptor.encrypt(oldPassword);
+        try {
+            Optional<User> userCheck = userDao.findUserByEmailAndPassword(email, oldSecretPassword);
+            if (userCheck.isEmpty()) {
+                logger.info("Wrong password");
+                userData.put(WRONG_PASSWORD_SES, UserValidator.WRONG_DATA_MARKER);
+                return isChange;
+            }
+            String newSecretPassword = PasswordEncryptor.encrypt(newPassword);
+            isChange = userDao.changePassword(userId, newSecretPassword);
+        } catch (DaoException e) {
+            logger.error("Try to update personal data was failed " + e);
+            throw new ServiceException("Try to update personal data was failed", e);
+        }
+        return isChange;
+    }
+
+    @Override
+    public boolean replenishBalance(Map<String, String> userData) throws ServiceException {
+        UserValidator validator = UserValidatorImpl.getInstance();
+        boolean isReplenish = false;
+        String amountAsStr = userData.get(REPLENISH_AMOUNT_SES);
+        if (!validator.validateAmount(amountAsStr)) {
+            logger.info("Not valid value");
+            userData.put(WRONG_AMOUNT_SES, UserValidator.WRONG_DATA_MARKER);
+            return isReplenish;
+        }
+        long userId = Long.parseLong(userData.get(USER_ID_SES));
+        BigDecimal amount = new BigDecimal(amountAsStr);
+        BigDecimal balance = new BigDecimal(userData.get(BALANCE_SES));
+        BigDecimal newBalance = balance.add(amount);
+        if (newBalance.compareTo(UserValidator.MAX_BALANCE) > 0) {
+            logger.info("Amount too much");
+            userData.put(WRONG_AMOUNT_OVERSIZE_SES, UserValidator.WRONG_DATA_MARKER);
+            return isReplenish;
+        }
+        try {
+            isReplenish = userDao.updateBalance(userId, amount);
+        } catch (DaoException e) {
+            logger.error("Try to replenishBalance was failed " + e);
+            throw new ServiceException("Try to replenishBalance data was failed", e);
+        }
+        return isReplenish;
     }
 }

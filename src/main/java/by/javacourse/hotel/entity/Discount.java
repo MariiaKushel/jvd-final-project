@@ -1,15 +1,34 @@
 package by.javacourse.hotel.entity;
 
-public class Discount extends Entity{
+public class Discount extends Entity {
     private int rate;
 
     public Discount() {
     }
 
-    public Discount(long id, int rate) {
-        this.setEntityId(id);
-        this.rate = rate;
+    public static Builder newBuilder() {
+        return new Discount().new Builder();
     }
+
+    public class Builder {
+        private Builder() {
+        }
+
+        public Builder setEntityId(long entityId) {
+            Discount.this.setEntityId(entityId);
+            return this;
+        }
+
+        public Builder setRate(int rate) {
+            Discount.this.rate = rate;
+            return this;
+        }
+
+        public Discount build() {
+            return Discount.this;
+        }
+    }
+
 
     public int getRate() {
         return rate;
@@ -25,7 +44,7 @@ public class Discount extends Entity{
             return true;
         if (obj == null)
             return false;
-        if(getClass() != obj.getClass())
+        if (getClass() != obj.getClass())
             return false;
         if (!super.equals(obj))
             return false;

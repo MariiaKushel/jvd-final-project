@@ -12,7 +12,7 @@
 <fmt:message key="field.email" var="user_email"/>
 <fmt:message key="field.name" var="user_name"/>
 <fmt:message key="field.phone_number" var="user_phone_number"/>
-<fmt:message key="field.user_status" var="user_status"/>
+<fmt:message key="field.user_status" var="user_status_name"/>
 <fmt:message key="field.role" var="user_role"/>
 <fmt:message key="field.balance" var="user_balance"/>
 <fmt:message key="field.discount" var="user_discount"/>
@@ -27,20 +27,10 @@
 <fmt:message key="message.incorrect_name" var="incorrect_name"/>
 <fmt:message key="message.incorrect_phone_number" var="incorrect_phone_number"/>
 <fmt:message key="message.incorrect_password" var="incorrect_password"/>
-
-
-
-
-
-<c:set var="email_value" value="${not empty user_atr?user_atr.email:email_ses}"/>
-<c:set var="name_value" value="${not empty user_atr?user_atr.name:name_ses}"/>
-<%--|${not empty user_atr?user_atr.phoneNumber:phone_number_ses}|</br>
-|${not empty user_atr?user_atr.role:role_ses}|</br>
-|${not empty user_atr?user_atr.status:user_status_ses}|</br>
-|${not empty user_atr?user_atr.balance:balance_ses}|</br>
-|${not empty user_atr?user_atr.discountId:discount_id_ses}|</br>
-|${not empty rate_atr?rate_atr:rate_ses}|</br>--%>
-
+<fmt:message key="message.complete" var="complete"/>
+<fmt:message key="message.need_password" var="need_password"/>
+<fmt:message key="message.error_password" var="error_password"/>
+<fmt:message key="message.not_found" var="not_found"/>
 
 <html>
 <head>
@@ -56,30 +46,32 @@
 </header>
 <body>
 <div class="container text-secondary">
-<%--|${update_personal_data_result}|</br>
-    |${not empty user_atr?user_atr.email:email_ses}|</br>
-    |${not empty user_atr?user_atr.name:name_ses}|</br>
-    |${not empty user_atr?user_atr.phoneNumber:phone_number_ses}|</br>
-    |${not empty user_atr?user_atr.role:role_ses}|</br>
-    |${not empty user_atr?user_atr.status:user_status_ses}|</br>
-    |${not empty user_atr?user_atr.balance:balance_ses}|</br>
-    |${not empty user_atr?user_atr.discountId:discount_id_ses}|</br>
-    |${not empty rate_atr?rate_atr:rate_ses}|</br>--%>
-
+    <div class="mb-3 fw-bold">
+        ${title}
+    </div>
     <c:choose>
-        <c:when test="">${not empty update_personal_data_result}>
-            Updated
+        <c:when test="${not empty not_found_ses}">
+            ${not_found}
         </c:when>
+        <c:when test="${not empty update_personal_data_result}">
+            ${complete}
+        </c:when>
+       <%-- <c:when test="${empty empty user_data_ses['phone_email_ses']}">
+            ${not_found}
+        </c:when>--%>
         <c:otherwise>
             <form method="post" action="${path}/controller" novalidate>
                 <input type="hidden" name="command" value="update_personal_data"/>
+                <input type="hidden" name="discount_id" value="${user_data_ses['discount_id_ses']}">
+                <input type="hidden" name="role" value="${user_data_ses['role_ses']}">
+                <input type="hidden" name="user_status" value="${user_data_ses['user_status_ses']}">
+                <input type="hidden" name="rate" value="${user_data_ses['rate_ses']}">
                 <div class="row">
                     <label class="col-sm-2 col-form-label mb-3">
                             ${user_email}
                     </label>
                     <div class="col-md-10">
-                        <input type="text" name="email" value="${email_value}"
-                               class="form-control" disabled>
+                        <input type="text" value="${user_data_ses['email_ses']}" class="form-control" disabled>
                     </div>
                 </div>
                 <div class="row">
@@ -87,15 +79,15 @@
                             ${user_name}
                     </label>
                     <div class="col-md-10">
-                        <input type="text" name="name" value="${not empty user_atr?user_atr.name:name_ses}"
-                               pattern="[\wа-яА-яёЁ][\wа-яА-яёЁ\s]*"
+                        <input type="text" maxlength="50" name="name" value="${user_data_ses['name_ses']}"
+                               pattern="['\wа-яА-яёЁ']['\wа-яА-яёЁ\s']*"
                                required oninvalid="this.setCustomValidity('${name_rules}')"
                                class="form-control">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col text-danger">
-                        <c:if test="${not empty wrong_name_ses}">
+                        <c:if test="${not empty user_data_ses['wrong_name_ses']}">
                             ${incorrect_name}
                         </c:if>
                     </div>
@@ -105,8 +97,7 @@
                             ${user_phone_number}
                     </label>
                     <div class="col-md-10">
-                        <input type="text" name="phone_number"
-                               value="${not empty user_atr?user_atr.phoneNumber:phone_number_ses}"
+                        <input type="text" name="phone_number" value="${user_data_ses['phone_number_ses']}"
                                pattern="\+375(29|44|17|25|33)\d{7}"
                                required oninvalid="this.setCustomValidity('${phone_number_rules}')"
                                class="form-control">
@@ -114,7 +105,7 @@
                 </div>
                 <div class="row">
                     <div class="col text-danger">
-                        <c:if test="${not empty wrong_phone_number_ses}">
+                        <c:if test="${not empty user_data_ses['wrong_phone_number_ses']}">
                             ${incorrect_phone_number}
                         </c:if>
                     </div>
@@ -124,18 +115,15 @@
                             ${user_role}
                     </label>
                     <div class="col-md-10">
-                        <input type="text" name="role" value="${not empty user_atr?user_atr.role:role_ses}"
-                               class="form-control" disabled>
+                        <input type="text" value="${user_data_ses['role_ses']}" class="form-control" disabled>
                     </div>
                 </div>
                 <div class="row">
                     <label class="col-sm-2 col-form-label mb-3">
-                            ${user_status}
+                            ${user_status_name}
                     </label>
                     <div class="col-md-10">
-                        <input type="text" name="user_status"
-                               value="${not empty user_atr?user_atr.status:user_status_ses}" class="form-control"
-                               disabled>
+                        <input type="text" value="${user_data_ses['user_status_ses']}" class="form-control" disabled>
                     </div>
                 </div>
                 <div class="row">
@@ -143,30 +131,27 @@
                             ${user_balance}
                     </label>
                     <div class="col-md-10">
-                        <input type="text" name="balance"
-                               value="${not empty user_atr?user_atr.balance:balance_ses}" class="form-control"
-                               disabled>
+                        <input type="text" value="${user_data_ses['balance_ses']}" class="form-control" disabled>
                     </div>
                 </div>
                 <div class="row">
                     <label class="col-sm-2 col-form-label mb-3">
                             ${user_discount}
                     </label>
-                    <div class="col-md-10">
-                        <input type="hidden" name="discount_id"
-                               value="${not empty user_atr?user_atr.discountId:discount_id_ses}">
-                        <input type="text" name="rate" value="${not empty rate_atr?rate_atr:rate_ses}%" class="form-control"
-                               disabled>
+                    <div class="col-md-9">
+                        <input type="text" value="${user_data_ses['rate_ses']}" class="form-control" disabled>
+                    </div>
+                    <div class="col-sm-1 mb-3">
+                        %
                     </div>
                 </div>
-
                 <div class="row">
                     <label class="col-sm-4 col-form-label mb-3">
-                        Enter password to update you personal data
+                            ${need_password}
                     </label>
                     <div class="col-md-6">
                         <input type="password" minlength="4" maxlength="12" name="password" id="pass"
-                               pattern="[\da-zA-Z\-!«»#\$%&'\(\)\*\+,\./:;<=>\?@_`\{\|\}~]+"
+                               pattern="['\da-zA-Z\-!«»#\$%&'\(\)\*\+,\./:;=\?@_`\{\|\}~']+"
                                required oninvalid="this.setCustomValidity('${password_rules} \'')"
                                class="form-control">
                     </div>
@@ -178,12 +163,11 @@
                 </div>
                 <div class="row">
                     <div class="col text-danger">
-                        <c:if test="${not empty wrong_password_ses}">
-                            ${incorrect_password}
+                        <c:if test="${not empty user_data_ses['wrong_password_ses']}">
+                            ${error_password}
                         </c:if>
                     </div>
                 </div>
-
                 <div class="container text-center">
                     <button type="submit" class="btn btn-secondary">
                             ${update}

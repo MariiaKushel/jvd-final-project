@@ -27,11 +27,9 @@
 </header>
 <body>
 <div class="container text-secondary ">
-   <div class ="row">
-       <div class="col mb-3 fw-bold">
-           ${title}
-       </div>
-   </div>
+    <div class="mb-3 fw-bold">
+        ${title}
+    </div>
     <div class ="row">
         <div class="col mb-3">
             ${official_name}

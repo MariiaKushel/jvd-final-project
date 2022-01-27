@@ -4,7 +4,6 @@ import by.javacourse.hotel.exception.DaoException;
 
 import static by.javacourse.hotel.model.dao.ColumnName.*;
 
-import by.javacourse.hotel.model.dao.ColumnName;
 import by.javacourse.hotel.model.dao.UserDao;
 import by.javacourse.hotel.entity.User;
 import by.javacourse.hotel.model.dao.mapper.Mapper;
@@ -15,10 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 public class UserDaoImpl implements UserDao {
     static Logger logger = LogManager.getLogger();
@@ -27,13 +23,29 @@ public class UserDaoImpl implements UserDao {
             INSERT INTO hotel.users (email, role, name, phone_number, status, discount_id, balance, password) 
             VALUES (?,?,?,?,?,?,?,?)""";
     private static final String SQL_UPDATE_PASSWORD =
-            "UPDATE hotel.users SET password=? WHERE email=?";
+            "UPDATE hotel.users SET password=? WHERE user_id=?";
+    private static final String SQL_UPDATE_BALANCE =
+            "UPDATE hotel.users SET balance=balance+? WHERE user_id=?";
+
+    private static final String SQL_UPDATE_USER = """
+            UPDATE hotel.users SET name=?, role=?, phone_number=?, status=?, discount_id=? 
+            WHERE user_id=?""";
+
+
     private static final String SQL_SELECT_USER = """
             SELECT user_id, email, role, name, phone_number, status, discount_id, balance 
             FROM hotel.users""";
+
     private static final String BY_EMAIL = " WHERE email=? LIMIT 1";
     private static final String BY_EMAIL_AND_PASSWORD = " WHERE email=? AND password=? LIMIT 1";
     private static final String BY_ID = " WHERE user_id=? LIMIT 1";
+
+    private static final String WHERE_PARAM = " WHERE ";
+    private static final String EMAIL_PART = " email LIKE ? ";
+    private static final String PHONE_PART = " phone_number LIKE ? ";
+    private static final String NAME_PART = " name LIKE ? ";
+    private static final String STATUS = " status=? ";
+    private static final String AND = " AND ";
 
     private static final String SQL_SELECT_DISCOUNT_BY_USER_ID = """
             SELECT rate
@@ -106,9 +118,9 @@ public class UserDaoImpl implements UserDao {
                     oldUser = mapper.retrieve(resultSet).stream().findFirst();
                     //update user
                     resultSet.first();
-                    resultSet.updateString(EMAIL, user.getEmail());
+                    resultSet.updateString(EMAIL_PART, user.getEmail());
                     resultSet.updateString(ROLE, user.getRole().toString());
-                    resultSet.updateString(NAME, user.getName());
+                    resultSet.updateString(NAME_PART, user.getName());
                     resultSet.updateString(PHONE_NUMBER, user.getPhoneNumber());
                     resultSet.updateString(USER_STATUS, user.getStatus().toString());
                     resultSet.updateLong(DISCOUNT_ID, user.getDiscountId());
@@ -182,13 +194,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean changePassword(String email, String newPassword) throws DaoException {//FIXME rename
+    public boolean changePassword(long userId, String newPassword) throws DaoException {
         int rowsUpdated = 0;
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_PASSWORD)) {
             statement.setString(1, newPassword);
-            statement.setString(2, email);
+            statement.setLong(2, userId);
             rowsUpdated = statement.executeUpdate();
         } catch (SQLException e) {
             logger.error("SQL request changePassword from table hotel.users was failed " + e);
@@ -273,6 +285,88 @@ public class UserDaoImpl implements UserDao {
             throw new DaoException("SQL request findUserById from table hotel.users was failed", e);
         }
         return user;
+    }
+
+    @Override
+    public boolean update1(User user) throws DaoException {
+        int rowsUpdated = 0;
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_USER)) {
+            statement.setString(1, user.getName());
+            statement.setString(2, user.getRole().toString());
+            statement.setString(3, user.getPhoneNumber());
+            statement.setString(4, user.getStatus().toString());
+            statement.setLong(5, user.getDiscountId());
+            statement.setLong(6, user.getEntityId());
+            rowsUpdated = statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("SQL request update1 from table hotel.users was failed" + e);
+            throw new DaoException("SQL request update1 from table hotel.users was failed", e);
+        }
+        return rowsUpdated == 1;
+    }
+
+    @Override
+    public List<User> findUserByParameter(String status, String emailPart, String phonePart, String namePart) throws DaoException {
+        List<String> activeParameter = new ArrayList<>();
+        StringBuilder sqlRequest = new StringBuilder();
+        if (!status.isEmpty()) {
+            sqlRequest = sqlRequest.isEmpty()
+                    ? sqlRequest.append(SQL_SELECT_USER).append(WHERE_PARAM).append(STATUS)
+                    : sqlRequest.append(AND).append(STATUS);
+            activeParameter.add(status);
+        }
+        if (!emailPart.isEmpty()) {
+            sqlRequest = sqlRequest.isEmpty()
+                    ? sqlRequest.append(SQL_SELECT_USER).append(WHERE_PARAM).append(EMAIL_PART)
+                    : sqlRequest.append(AND).append(EMAIL_PART);
+            activeParameter.add("%" + emailPart + "%");
+        }
+        if (!phonePart.isEmpty()) {
+            sqlRequest = sqlRequest.isEmpty()
+                    ? sqlRequest.append(SQL_SELECT_USER).append(WHERE_PARAM).append(PHONE_PART)
+                    : sqlRequest.append(AND).append(PHONE_PART);
+            activeParameter.add("%" + phonePart + "%");
+        }
+        if (!namePart.isEmpty()) {
+            sqlRequest = sqlRequest.isEmpty()
+                    ? sqlRequest.append(SQL_SELECT_USER).append(WHERE_PARAM).append(NAME_PART)
+                    : sqlRequest.append(AND).append(NAME_PART);
+            activeParameter.add("%" + namePart + "%");
+        }
+        List<User> users = new ArrayList<>();
+        Mapper mapper = UserMapper.getInstance();
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sqlRequest.toString())) {
+            for (int i = 0; i < activeParameter.size(); i++) {
+                statement.setString(i + 1, activeParameter.get(i));
+            }
+            try (ResultSet resultSet = statement.executeQuery()) {
+                users = mapper.retrieve(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.error("SQL request findUserByParameter from table hotel.users was failed " + e);
+            throw new DaoException("SQL request findUserByParameter from table hotel.users was failed", e);
+        }
+        return users;
+    }
+
+    @Override
+    public boolean updateBalance(long userId, BigDecimal amount) throws DaoException {
+        int rowsUpdated = 0;
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_BALANCE)) {
+            statement.setBigDecimal(1, amount);
+            statement.setLong(2, userId);
+            rowsUpdated = statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("SQL request updateBalance from table hotel.users was failed" + e);
+            throw new DaoException("SQL request updateBalance from table hotel.users was failed", e);
+        }
+        return rowsUpdated == 1;
     }
 
 }

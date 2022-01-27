@@ -10,9 +10,15 @@ import java.util.Optional;
 
 public interface RoomDao extends BaseDao<Long, Room> {
 
-    List<Room> findAllVisibleRooms() throws DaoException;
+    List<Room> findRoomByVisible(boolean visible) throws DaoException;
 
     Optional<Room> findRoomById(long roomId) throws DaoException;
+
+    List<Room> findRoomByNumber(int number) throws DaoException;
+
+    List<Room> findRoomBySleepingPlace(int sleepingPlace) throws DaoException;
+
+    List<Room> findRoomByPriceRange(BigDecimal priceFrom, BigDecimal priceTo) throws DaoException;
 
     BigDecimal minPrice() throws DaoException;
 
@@ -23,5 +29,5 @@ public interface RoomDao extends BaseDao<Long, Room> {
     List<Room> findRoomByParameters(LocalDate dateFrom, LocalDate dateTo, BigDecimal priceFrom, BigDecimal priceTo,
                                     int[] sleepingPlaces) throws DaoException;
 
-
+    boolean refreshRating(long roomId) throws DaoException;
 }

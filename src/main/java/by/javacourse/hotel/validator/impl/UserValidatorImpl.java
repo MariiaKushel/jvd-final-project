@@ -3,8 +3,10 @@ package by.javacourse.hotel.validator.impl;
 import by.javacourse.hotel.entity.User;
 import by.javacourse.hotel.validator.UserValidator;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
+import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
 
@@ -12,17 +14,26 @@ public final class UserValidatorImpl implements UserValidator {
 
     private static final String EMAIL_REGEX =
             "[\\d\\p{Lower}]([\\d\\p{Lower}_\\-\\.]*)[\\d\\p{Lower}_\\-]@[\\d\\p{Lower}_\\-]{2,}\\.\\p{Lower}{2,6}";
+    private static final String PART_OF_EMAIL_REGEX =
+            "[\\d\\p{Lower}_\\-\\.@]+";
     private static final String PASSWORD_REGEX =
-            "[\\p{Graph}]+";
+            "[\\p{Graph}&&[^\\<\\>]]+";
     private static final String NAME_REGEX =
             "[\\wа-яА-яёЁ][\\wа-яА-яёЁ\\s]*";
     private static final String PHONE_NUMBER_REGEX =
             "\\+375(29|44|17|25|33)\\d{7}";
+    private static final String PART_OF_PHONE_NUMBER_REGEX =
+            "[\\+\\d]{1,13}";
+    private static final String AMOUNT_REGEX = "\\d{1,7}(\\.\\d\\d)??";
     private static final int MAX_EMAIL_LENGTH = 50;
     private static final int MIN_PASSWORD_LENGTH = 4;
     private static final int MAX_PASSWORD_LENGTH = 12;
     private static final int MAX_NAME_LENGTH = 50;
     private static final int PHONE_NUMBER_LENGTH = 13;
+
+
+
+
 
     private static final UserValidatorImpl instance = new UserValidatorImpl();
 
@@ -40,6 +51,11 @@ public final class UserValidatorImpl implements UserValidator {
             return false;
         }
         return email.matches(EMAIL_REGEX);
+    }
+
+    @Override
+    public boolean validatePartOfEmail(String partOfEmail) {
+        return partOfEmail.matches(PART_OF_EMAIL_REGEX);
     }
 
     @Override
@@ -67,6 +83,11 @@ public final class UserValidatorImpl implements UserValidator {
     }
 
     @Override
+    public boolean validatePartOfPhoneNumber(String partOfPhoneNumber) {
+        return partOfPhoneNumber.matches(PART_OF_PHONE_NUMBER_REGEX);
+    }
+
+    @Override
     public boolean validate(User user, String password) {
         String email = user.getEmail();
         String name = user.getName();
@@ -77,15 +98,15 @@ public final class UserValidatorImpl implements UserValidator {
 
     @Override
     public boolean validateUserDataCreate(Map<String, String> userData) {
-        String email = userData.get(EMAIL);
-        String name = userData.get(NAME);
-        String phoneNumber = userData.get(PHONE_NUMBER);
-        String password = userData.get(PASSWORD);
-        String repeatPassword = userData.get(REPEAT_PASSWORD);
+        String email = userData.get(EMAIL_SES);
+        String name = userData.get(NAME_SES);
+        String phoneNumber = userData.get(PHONE_NUMBER_SES);
+        String password = userData.get(PASSWORD_SES);
+        String repeatPassword = userData.get(REPEAT_PASSWORD_SES);
 
         boolean isValid = true;
         if (!password.equals(repeatPassword)) {
-            userData.put(WRONG_REPEAT_PASSWORD_SES, WRONG_DATA_MARKER);
+            userData.put(WRONG_MISSMATCH_SES, WRONG_DATA_MARKER);
             isValid = false;
         }
         if (!validateEmail(email)) {
@@ -109,12 +130,12 @@ public final class UserValidatorImpl implements UserValidator {
 
     @Override
     public boolean validateUserDataUpdate(Map<String, String> userData) {
-        String name = userData.get(NAME);
-        String phoneNumber = userData.get(PHONE_NUMBER);
-        String password = userData.get(PASSWORD);
+        String name = userData.get(NAME_SES);
+        String phoneNumber = userData.get(PHONE_NUMBER_SES);
+        String password = userData.get(PASSWORD_SES);
 
         boolean isValid = true;
-        if (!validatePassword(password)) {
+        if (password != null && !validatePassword(password)) {
             userData.put(WRONG_PASSWORD_SES, WRONG_DATA_MARKER);
             isValid = false;
         }
@@ -127,5 +148,32 @@ public final class UserValidatorImpl implements UserValidator {
             isValid = false;
         }
         return isValid;
+    }
+
+    @Override
+    public boolean validateSearchParameter(Map<String, String> searchParameter) {
+        String partOfEmail = searchParameter.get(EMAIL_ATR);
+        String partOfPhoneNumber = searchParameter.get(PHONE_NUMBER_ATR);
+        String name = searchParameter.get(NAME_ATR);
+
+        boolean isValid = true;
+        if (!partOfEmail.isEmpty() && !validatePartOfEmail(partOfEmail)) {
+            searchParameter.put(WRONG_EMAIL_ATR, WRONG_DATA_MARKER);
+            isValid = false;
+        }
+        if (!partOfPhoneNumber.isEmpty() && !validatePartOfPhoneNumber(partOfPhoneNumber)) {
+            searchParameter.put(WRONG_PHONE_NUMBER_ATR, WRONG_DATA_MARKER);
+            isValid = false;
+        }
+        if (!name.isEmpty() && !validateName(name)) {
+            searchParameter.put(WRONG_NAME_ATR, WRONG_DATA_MARKER);
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    @Override
+    public boolean validateAmount(String amount) {
+        return amount.matches(AMOUNT_REGEX);
     }
 }

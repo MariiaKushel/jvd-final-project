@@ -30,7 +30,7 @@ public class FindAllRoomsCommand implements Command {
             List<Room> rooms = service.findAllRooms();
             request.setAttribute(ROOM_LIST_ATR, rooms);
             session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
-            commandResult = new CommandResult(PagePath.SHOW_ROOM_PAGE, FORWARD);
+            commandResult = new CommandResult(PagePath.ROOM_MANAGEMENT_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindAllRoomsCommand was failed " + e);
             commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);

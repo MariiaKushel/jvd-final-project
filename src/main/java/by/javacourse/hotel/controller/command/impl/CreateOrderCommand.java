@@ -22,7 +22,10 @@ public class CreateOrderCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        Map<String, String> orderData = extractOrderData(request, session);
+
+        Map<String, String> orderData = (Map<String, String>)session.getAttribute(ORDER_DATA_SES);
+        orderData.put(DATE_SES, session.getAttribute(TODAY).toString());
+        orderData.put(PREPAYMENT_SES, request.getParameter(PREPAYMENT));
 
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomOrderService roomOrderService = provider.getRoomOrderService();

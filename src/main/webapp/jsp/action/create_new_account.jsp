@@ -27,6 +27,7 @@
 <fmt:message key="message.incorrect_phone_number" var="incorrect_phone_number"/>
 <fmt:message key="message.incorrect_password" var="incorrect_password"/>
 <fmt:message key="message.incorrect_repeat_password" var="incorrect_repeat_password"/>
+<fmt:message key="message.missmatch" var="missmatch"/>
 
 <html>
 <head>
@@ -43,25 +44,28 @@
 </header>
 
 <div class="container text-secondary text-center">
+    <div class="mb-3 fw-bold">
+        ${title}
+    </div>
     <div class="row">
         <div class="col">
         </div>
         <div class="col">
-            <form method="post" action="${path}/controller">
+            <form method="post" action="${path}/controller" novalidate>
                 <input type="hidden" name="command" value="create_new_account"/>
                 <div class="mb-3">
                     <label class="form-label">
                         ${email}
                     </label>
-                    <input type="text" maxlength="50" name="email" value="${email_ses}"
+                    <input type="text" maxlength="50" name="email" value="${user_data_ses['email_ses']}"
                            pattern="[\da-z]([\da-z_\-\.]*)[\da-z_\-]@[\da-z_\-]{2,}\.[a-z]{2,6}"
                            required oninvalid="this.setCustomValidity('${email_rules}')"
                            class="form-control">
                     <label class="form-label text-danger">
-                        <c:if test="${not empty wrong_email_ses}">
+                        <c:if test="${not empty user_data_ses['wrong_email_ses']}">
                             ${incorrect_email}
                         </c:if>
-                        <c:if test="${not empty wrong_email_exist_ses}">
+                        <c:if test="${not empty user_data_ses['wrong_email_exist_ses']}">
                             ${incorrect_email_exist}
                         </c:if>
                     </label>
@@ -70,12 +74,12 @@
                     <label class="form-label">
                         ${name}
                     </label>
-                    <input type="text" name="name" value="${name_ses}"
+                    <input type="text" maxlength="50" name="name" value="${user_data_ses['name_ses']}"
                            pattern="[\wа-яА-яёЁ][\wа-яА-яёЁ\s]*"
                            required oninvalid="this.setCustomValidity('${name_rules}')"
                            class="form-control">
                     <label class="form-label text-danger">
-                        <c:if test="${not empty wrong_name_ses}">
+                        <c:if test="${not empty user_data_ses['wrong_name_ses']}">
                             ${incorrect_name}
                         </c:if>
                     </label>
@@ -84,12 +88,12 @@
                     <label class="form-label">
                         ${phone_number}
                     </label>
-                    <input type="text" name="phone_number" value="${phone_number_ses}"
+                    <input type="text" name="phone_number" value="${user_data_ses['phone_number_ses']}"
                            pattern="\+375(29|44|17|25|33)\d{7}"
                            required oninvalid="this.setCustomValidity('${phone_number_rules}')"
                            class="form-control">
                     <label class="form-label text-danger">
-                        <c:if test="${not empty wrong_phone_number_ses}">
+                        <c:if test="${not empty user_data_ses['wrong_phone_number_ses']}">
                             ${incorrect_phone_number}
                         </c:if>
                     </label>
@@ -99,12 +103,12 @@
                         ${password}
                     </label>
                     <input type="password" minlength="4" maxlength="12" name="password" id="pass"
-                           value="${password_ses}"
-                           pattern="[\da-zA-Z\-!«»#\$%&'\(\)\*\+,\./:;<=>\?@_`\{\|\}~]+"
+                           value="${user_data_ses['password_ses']}"
+                           pattern="[\da-zA-Z\-!«»#\$%&'\(\)\*\+,\./:;=\?@_`\{\|\}~]+"
                            required oninvalid="this.setCustomValidity('${password_rules} \'')"
                            class="form-control">
                     <label class="form-label text-danger">
-                        <c:if test="${not empty wrong_password_ses}">
+                        <c:if test="${not empty user_data_ses['wrong_password_ses']}">
                             ${incorrect_password}</br>
                         </c:if>
                     </label>
@@ -119,13 +123,13 @@
                         ${repeat_password}
                     </label>
                     <input type="password" minlength="4" maxlength="12" name="repeat_password"
-                           value="${repeat_password_ses}"
-                           pattern="[\da-zA-Z\-!«»#\$%&'\(\)\*\+,\./:;<=>\?@_`\{\|\}~]+"
+                           value="${user_data_ses['repeat_password_ses']}"
+                           pattern="[\da-zA-Z\-!«»#\$%&'\(\)\*\+,\./:;=\?@_`\{\|\}~]+"
                            required oninvalid="this.setCustomValidity('${password_rules} \'')"
                            class="form-control">
                     <label class="form-label text-danger">
-                        <c:if test="${not empty wrong_repeat_password_ses}">
-                            ${incorrect_repeat_password}
+                        <c:if test="${not empty user_data_ses['wrong_missmatch_ses']}">
+                            ${missmatch}
                         </c:if>
                     </label>
                 </div>
@@ -137,16 +141,9 @@
         <div class="col">
         </div>
     </div>
-    <div class="row">
-        <div class="col">
-        </div>
-        <div class="col mb-3">
-            <a class="link-secondary text-decoration-none" href="${path}/controller?command=go_to_main_page">
-                ${back_to_main}
-            </a>
-        </div>
-        <div class="col">
-        </div>
+    <div class="mb-3">
+        <a class="link-secondary text-decoration-none" href="${path}/controller?command=go_to_main_page">
+            ${back_to_main}</a>
     </div>
 </div>
 

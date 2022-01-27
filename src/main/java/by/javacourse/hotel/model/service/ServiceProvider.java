@@ -10,6 +10,7 @@ public class ServiceProvider {
     private DescriptionService descriptionService = new DescriptionServiceImpl();
     private ReviewService reviewService = new ReviewServiceImpl();
     private RoomOrderService roomOrderService = new RoomOrderServiceImpl();
+    private DiscountService discountService = new DiscountServiceImpl();
     //TODO add more services
 
     private ServiceProvider() {
@@ -45,5 +46,9 @@ public class ServiceProvider {
 
     public RoomOrderService getRoomOrderService(){
         return roomOrderService;
+    }
+
+    public DiscountService getDiscountService(){
+        return discountService;
     }
 }

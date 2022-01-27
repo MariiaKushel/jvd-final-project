@@ -17,7 +17,7 @@ import java.util.List;
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.ERROR;
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.FORWARD;
 import static by.javacourse.hotel.controller.command.RequestAttribute.*;
-import static by.javacourse.hotel.controller.command.SessionAttribute.CURRENT_PAGE;
+import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
 public class GoToBookRoomPageCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -31,10 +31,10 @@ public class GoToBookRoomPageCommand implements Command {
             BigDecimal minPrice = roomService.findMinPrice();
             BigDecimal maxPrice = roomService.findMaxPrice();
             List<Integer> allSleepingPlace = roomService.findAllPossibleSleepingPlace();
-            request.setAttribute(MIN_PRICE_ATR, minPrice);
-            request.setAttribute(MAX_PRICE_ATR, maxPrice);
-            request.setAttribute(ALL_SLEEPING_PLACE_LIST_ATR, allSleepingPlace);
-            request.setAttribute(MAKE_CHOICE_ATR, true);
+            request.setAttribute(NEW_SEARCH_ATR, true);
+            session.setAttribute(MIN_PRICE_SES, minPrice);
+            session.setAttribute(MAX_PRICE_SES, maxPrice);
+            session.setAttribute(ALL_PLACES_SES, allSleepingPlace);
             session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
             commandResult = new CommandResult(PagePath.BOOK_ROOM_PAGE, FORWARD);
         } catch (ServiceException e) {

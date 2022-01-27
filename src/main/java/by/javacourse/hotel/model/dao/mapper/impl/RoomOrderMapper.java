@@ -27,7 +27,7 @@ public class RoomOrderMapper implements Mapper<RoomOrder> {
        List<RoomOrder> orders = new ArrayList<>();
         while (resultSet.next()) {
             RoomOrder order = RoomOrder.newBuilder()
-                    .setEntityId(resultSet.getLong(USER_ID))
+                    .setEntityId(resultSet.getLong(ROOM_ORDER_ID))
                     .setUserId(resultSet.getLong(USER_ID))
                     .setRoomId(resultSet.getLong(ROOM_ID))
                     .setDate(resultSet.getDate(ROOM_ORDER_DATE).toLocalDate())
@@ -37,6 +37,7 @@ public class RoomOrderMapper implements Mapper<RoomOrder> {
                     .setAmount(resultSet.getBigDecimal(AMOUNT))
                     .setPrepayment(resultSet.getBoolean(PREPAYMENT))
                     .build();
+            System.out.println("order" + order);
             orders.add(order);
         }
         return orders;

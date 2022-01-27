@@ -17,13 +17,13 @@
 <fmt:message key="message.date_rules" var="date_rules"/>
 <fmt:message key="message.price_rules" var="price_rules"/>
 <fmt:message key="message.incorrect_date_or_price_range" var="incorrect_date_or_price_range"/>
-<fmt:message key="message.room_not_found" var="room_not_found"/>
 <fmt:message key="message.room_number" var="number"/>
 <fmt:message key="message.room_sleeping_place" var="room_sleeping_place"/>
 <fmt:message key="message.room_description" var="room_description"/>
 <fmt:message key="message.room_price" var="price"/>
 <fmt:message key="message.room_rating" var="rating"/>
-<fmt:message key="message.make_choice" var="need_choice"/>
+<fmt:message key="message.new_search" var="new_search"/>
+<fmt:message key="message.not_found" var="not_found"/>
 
 <html>
 <head>
@@ -39,20 +39,23 @@
 </header>
 <body>
 <div class="container text-secondary">
-    <div class="fw-bold">
+    <div class="mb-3 fw-bold">
         ${title}
     </div>
     <div class="row">
         <div class="col-sm-3 mb-3 bg-secondary opacity-75 text-white">
-            <form method="get" action="${path}/controller">
+            <form method="get" action="${path}/controller" novalidate>
                 <input type="hidden" name="command" value="find_room_by_parameter"/>
-                <input type="hidden" name="min_price_atr_for_search" value=${min_price_atr}/>
-                <input type="hidden" name="max_price_for_search" value=${max_price}/>
+                <div class="text-dark">
+                    <c:if test="${not empty search_parameter_atr['wrong_date_or_price_range_atr']}">
+                        ${incorrect_date_or_price_range}
+                    </c:if>
+                </div>
                 <div class="mb-3">
                     <label class="form-label">
                         ${date_from}
                     </label>
-                    <input type="date" min="${today}" name="date_from" value="${date_from_atr}"
+                    <input type="date" min="${today}" name="date_from" value="${search_parameter_atr['date_from_atr']}"
                            required oninvalid="this.setCustomValidity('${date_rules}')"
                            class="form-control">
                 </div>
@@ -60,7 +63,7 @@
                     <label class="form-label">
                         ${date_to}
                     </label>
-                    <input type="date" min="${tomorrow}" name="date_to" value="${date_to_atr}"
+                    <input type="date" min="${tomorrow}" name="date_to" value="${search_parameter_atr['date_to_atr']}"
                            required oninvalid="this.setCustomValidity('${date_rules}')"
                            class="form-control">
                 </div>
@@ -68,7 +71,7 @@
                     <label class="form-label">
                         ${num_sleeping_place}
                     </label></br>
-                    <c:forEach var="place" items="${all_sleeping_place_list_atr}">
+                    <c:forEach var="place" items="${all_places_ses}">
                         <div class="form-check form-check-inline">
                             <input type="checkbox" class="form-check-input" name="sleeping_places"
                                    value="${place}">
@@ -81,18 +84,18 @@
                     <label class="form-label">
                         ${price_from}
                     </label>
-                    <input type="number" step="0.01" min="${min_price_atr}" max="${max_price_atr}" name="price_from"
-                           value="${price_from_atr}"
-                           oninvalid="this.setCustomValidity('${price_rules} ${min_price_atr}-${max_price_atr}')"
+                    <input type="number" step="0.01" min="${min_price_ses}" max="${max_price_ses}" name="price_from"
+                           value="${search_parameter_atr['price_from_atr']}"
+                           oninvalid="this.setCustomValidity('${price_rules} ${min_price_ses}-${max_price_ses}')"
                            class="form-control">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">
                         ${price_to}
                     </label>
-                    <input type="number" step="0.01" min="${min_price_atr}" max="${max_price_atr}" name="price_to"
-                           value="${price_to_atr}"
-                           oninvalid="this.setCustomValidity('${price_rules} ${min_price_atr}-${max_price_atr}')"
+                    <input type="number" step="0.01" min="${min_price_ses}" max="${max_price_ses}" name="price_to"
+                           value="${search_parameter_atr['price_to_atr']}"
+                           oninvalid="this.setCustomValidity('${price_rules} ${min_price_ses}-${max_price_ses}')"
                            class="form-control">
                 </div>
                 <button type="submit" class="btn btn-light">
@@ -101,58 +104,59 @@
             </form>
         </div>
         <div class="col-sm-9 mb-3">
-            <c:forEach var="room" items="${room_list_atr}">
-                <div class="card mb-3">
-                    <div class="row g-0">
-                        <div class="col-auto" style="width: 150px;">
-                            <c:choose>
-                                <c:when test="${not empty room.preview}">
-                                    <img src="${room.preview}" class="img-thumbnail">
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="${path}/images/nophoto.jpg" class="img-thumbnail">
-                                </c:otherwise>
-                            </c:choose>
-                        </div>
-                        <div class="col">
-                            <div class="card-body">
-                                <h5 class="card-title card-text">
-                                    <a class="link-secondary text-decoration-none"
-                                       href="${path}/controller?command=find_room_by_id&room_id=${room.entityId}&date_from=${date_from_atr}&date_to=${date_to_atr}">
-                                            ${number} ${room.number}
-                                    </a>
-                                </h5>
-                                <p class="card-text">
-                                        ${room_sleeping_place}: ${room.sleepingPlace}</br>
-                                        ${price}: ${room.pricePerDay}
-                                </p>
+            <c:choose>
+                <c:when test="${not empty new_search_atr and empty room_list_atr}">
+                    ${new_search}
+                </c:when>
+                <c:when test="${empty new_search_atr and empty room_list_atr}">
+                    ${not_found}
+                </c:when>
+                <c:otherwise>
+
+                    <c:forEach var="room" items="${room_list_atr}">
+                        <div class="card mb-3">
+                            <div class="row g-0">
+                                <div class="col-auto" style="width: 150px;">
+                                    <c:choose>
+                                        <c:when test="${not empty room.preview}">
+                                            <img src="${room.preview}" class="img-thumbnail">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img src="${path}/images/nophoto.jpg" class="img-thumbnail">
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                                <div class="col">
+                                    <div class="card-body">
+                                        <h5 class="card-title card-text">
+                                            <a class="link-secondary text-decoration-none"
+                                               href="${path}/controller?command=find_room_by_id&room_id=${room.entityId}&date_from=${search_parameter_atr['date_from_atr']}&date_to=${search_parameter_atr['date_to_atr']}">
+                                                    ${number} ${room.number}
+                                            </a>
+                                        </h5>
+                                        <p class="card-text">
+                                                ${room_sleeping_place}: ${room.sleepingPlace}</br>
+                                                ${price}: ${room.pricePerDay}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-end">
+                                                ${rating}: ${room.rating}
+                                        </h5>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-auto">
-                            <div class="card-body">
-                                <h5 class="card-title text-end">
-                                        ${rating}: ${room.rating}
-                                </h5>
-                            </div>
-                        </div>
+                    </c:forEach>
+                    <div class="text-danger">
+                        <c:if test="${wrong_date_or_price_range_atr eq true}">
+                            ${incorrect_date_or_price_range}
+                        </c:if>
                     </div>
-                </div>
-            </c:forEach>
-            <div class="text-danger">
-                <c:if test="${wrong_date_or_price_range_atr eq true}">
-                    ${incorrect_date_or_price_range}
-                </c:if>
-            </div>
-            <div>
-                <c:if test="${empty room_list_atr and wrong_date_or_price_range_atr eq false}">
-                    ${room_not_found}
-                </c:if>
-            </div>
-            <div>
-                <c:if test="${make_choice_atr eq true}">
-                    ${need_choice}
-                </c:if>
-            </div>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 </div>

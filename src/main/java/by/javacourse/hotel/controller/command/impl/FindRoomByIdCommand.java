@@ -23,6 +23,7 @@ import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.DATE_FROM;
 import static by.javacourse.hotel.controller.command.RequestParameter.DATE_TO;
 import static by.javacourse.hotel.controller.command.SessionAttribute.CURRENT_PAGE;
+import static by.javacourse.hotel.controller.command.SessionAttribute.NOT_FOUND_SES;
 
 public class FindRoomByIdCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -36,14 +37,15 @@ public class FindRoomByIdCommand implements Command {
         ReviewService reviewService = provider.getReviewService();
 
         HttpSession session = request.getSession();
-        long roomId = Long.parseLong(request.getParameter(RequestParameter.ROOM_ID));
-        Optional<Room> room = Optional.empty();
+        session.removeAttribute(NOT_FOUND_SES);
 
+        String roomIdStr = request.getParameter(RequestParameter.ROOM_ID);
         CommandResult commandResult = null;
 
         try {
-            room = roomService.findRoomById(roomId);
+            Optional<Room>  room = roomService.findRoomById(roomIdStr);
             if (room.isPresent()) {
+                long roomId = Long.parseLong(roomIdStr);
                 List<Image> images = imageService.findImagesByRoomId(roomId);
                 List<String> imageList = images.stream().map(i -> ImageEncoder.encode(i.getImageContent())).toList();
 
@@ -58,16 +60,13 @@ public class FindRoomByIdCommand implements Command {
                 request.setAttribute(IMAGE_LIST_ATR, imageList);
                 request.setAttribute(REVIEW_LIST_ATR, reviews);
 
-                request.setAttribute(DATE_FROM_ATR, request.getParameter(DATE_FROM));
-                request.setAttribute(DATE_TO_ATR, request.getParameter(DATE_TO));
-
-                session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
-                commandResult = new CommandResult(PagePath.ROOM_PAGE, FORWARD);
+                request.setAttribute(DATE_FROM_ATR, request.getParameter(DATE_FROM));//fixme
+                request.setAttribute(DATE_TO_ATR, request.getParameter(DATE_TO));//fixme
             } else {
-                request.setAttribute(ROOM_NOT_FOUND_ATR,true);
-                session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
-                commandResult = new CommandResult(PagePath.ROOM_PAGE, FORWARD);
+                session.setAttribute(NOT_FOUND_SES,true);
             }
+            session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
+            commandResult = new CommandResult(PagePath.ROOM_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindRoomByIdCommand was failed " + e);
             commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);

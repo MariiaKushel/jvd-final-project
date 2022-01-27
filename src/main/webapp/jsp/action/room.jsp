@@ -17,7 +17,7 @@
 <fmt:message key="message.room_price" var="price"/>
 <fmt:message key="message.room_rating" var="rating"/>
 <fmt:message key="message.room_reviews" var="reviews"/>
-<fmt:message key="message.incorrect_room" var="incorrect_room"/>
+<fmt:message key="message.not_found" var="not_found"/>
 <fmt:message key="message.mark" var="mark"/>
 <fmt:message key="message.no_comments" var="no_comments"/>
 <fmt:message key="button.make_order" var="make_order"/>
@@ -33,11 +33,9 @@
 <header>
     <jsp:include page="../header/header.jsp"/>
 </header>
-
 <div class="container text-secondary ">
-    <div class="row">
         <c:if test="${empty current_role}">
-            <div class="col mb-3 text-end">
+            <div class="mb-3 text-end">
                 <a class="link-secondary text-decoration-none"
                    href="${path}/controller?command=find_all_visible_rooms">
                         ${back_to_show_room}
@@ -45,23 +43,21 @@
             </div>
         </c:if>
         <c:if test="${not empty date_from_atr}">
-            <div class="col mb-3 text-center">
+            <div class="mb-3 text-center">
                 <form method="get" action="${path}/controller">
                     <input type="hidden" name="command" value="go_to_order_page"/>
                     <input type="hidden" name="date_from" value="${date_from_atr}"/>
                     <input type="hidden" name="date_to" value="${date_to_atr}"/>
                     <input type="hidden" name="room_id" value="${room_atr.entityId}"/>
-                    <input type="hidden" name="room_number" value="${room_atr.number}"/>
-                    <input type="hidden" name="room_price" value="${room_atr.pricePerDay}"/>
                     <button type="submit" class="btn btn-secondary">
                        ${make_order}
                     </button>
                 </form>
             </div>
         </c:if>
-    </div>
+
     <c:choose>
-        <c:when test="${empty room_not_found_atr}">
+        <c:when test="${empty not_found_ses}">
             <div class="row">
                 <div class="col mb-3">
                         ${number} ${room_atr.number}
@@ -133,11 +129,9 @@
             </c:if>
         </c:when>
         <c:otherwise>
-            <div class="row">
-                <div class="col mb-3">
-                        ${incorrect_room}
+                <div class="mb-3">
+                        ${not_found}
                 </div>
-            </div>
         </c:otherwise>
     </c:choose>
 </div>

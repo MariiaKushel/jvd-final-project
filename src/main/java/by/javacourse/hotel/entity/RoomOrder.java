@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 public class RoomOrder extends Entity {
     public enum Status {
-        NEW, CONFIRMED, CANCELED_BY_CLIENT, CANCELED_BY_ADMIN, COMPLETED
+        NEW, CONFIRMED, IN_PROGRESS, CANCELED_BY_CLIENT, CANCELED_BY_ADMIN, COMPLETED
     }
 
     private long userId;

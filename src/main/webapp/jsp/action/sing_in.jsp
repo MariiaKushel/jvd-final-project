@@ -17,6 +17,7 @@
 <fmt:message key="message.email_rules" var="email_rules"/>
 <fmt:message key="reference.show_password" var="show_password"/>
 <fmt:message key="reference.hide_password" var="hide_password"/>
+<fmt:message key="message.not_found" var="not_found"/>
 
 <html>
 <head>
@@ -33,23 +34,22 @@
 </header>
 
 <div class="container text-secondary text-center">
-    <div class="row">
-        <div class="col">
-        </div>
-        <div class="col text-danger">
-            <c:if test="${wrong_email_or_password eq true}">
-                ${incorrect_login_or_password}
-            </c:if>
-        </div>
-        <div class="col">
-        </div>
+    <div class="mb-3 fw-bold">
+        ${title}
+    </div>
+    <div class="mb-3 text-danger">
+        <c:if test="${not empty user_data_ses['wrong_email_or_password_ses']}">
+            ${incorrect_login_or_password}
+        </c:if>
+        <c:if test="${not empty user_data_ses['not_found_ses']}">
+            ${not_found}
+        </c:if>
     </div>
     <div class="row">
-        <div class="col">
+        <div class="col mb-3">
         </div>
-        <div class="col">
-            <form method="post" action="${path}/controller">
-
+        <div class="col mb-3">
+            <form method="post" action="${path}/controller" novalidate>
                 <input type="hidden" name="command" value="sing_in"/>
                 <div class="mb-3">
                     <label class="form-label">
@@ -65,7 +65,7 @@
                         ${password}
                     </label>
                     <input type="password" minlength="4" maxlength="12" name="password" id="pass"
-                           pattern="[\da-zA-Z\-!«»#\$%&'\(\)\*\+,\./:;<=>\?@_`\{\|\}~]+"
+                           pattern="[\da-zA-Z\-!«»#\$%&'\(\)\*\+,\./:;=\?@_`\{\|\}~]+"
                            required oninvalid="this.setCustomValidity('${password_rules} \'')"
                            class="form-control">
                     <label class="form-label">
@@ -74,24 +74,19 @@
                         </a>
                     </label>
                 </div>
-                <button type="submit" class="btn btn-secondary">
-                    ${confirm}
-                </button>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-secondary">
+                        ${confirm}
+                    </button>
+                </div>
             </form>
         </div>
-        <div class="col">
+        <div class="col mb-3">
         </div>
     </div>
-    <div class="row">
-        <div class="col">
-        </div>
-        <div class="col mb-3">
-            <a class="link-secondary text-decoration-none" href="${path}/controller?command=go_to_main_page">
-                ${back_to_main}
-            </a>
-        </div>
-        <div class="col">
-        </div>
+    <div class="mb-3">
+        <a class="link-secondary text-decoration-none" href="${path}/controller?command=go_to_main_page">
+            ${back_to_main}</a>
     </div>
 </div>
 
