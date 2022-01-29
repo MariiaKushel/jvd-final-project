@@ -15,6 +15,7 @@ import java.util.Map;
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class CreateOrderCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -38,7 +39,7 @@ public class CreateOrderCommand implements Command {
             commandResult = new CommandResult(PagePath.ORDER_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute CreateOrderCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }

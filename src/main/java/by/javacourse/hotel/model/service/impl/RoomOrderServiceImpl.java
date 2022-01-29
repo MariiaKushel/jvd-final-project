@@ -75,13 +75,17 @@ public class RoomOrderServiceImpl implements RoomOrderService {
     }
 
     @Override
-    public String countDays(String from, String to) throws ServiceException {
-        String days = null;
+    public int countDays(String from, String to) throws ServiceException {
+        int days;
         try {
             LocalDate dateFrom = LocalDate.parse(from);
             LocalDate dateTo = LocalDate.parse(to);
             Period period = Period.between(dateFrom, dateTo);
-            days = String.valueOf(period.getDays());
+            days = period.getDays();
+            if (days < 1) {
+                logger.error("Try to countDays was failed, wrong date range");
+                throw new ServiceException("Try to countDays  was failed, wrong date range");
+            }
         } catch (DateTimeParseException e) {
             logger.error("Try to countDays was failed " + e);
             throw new ServiceException("Try to countDays  was failed", e);
@@ -90,27 +94,25 @@ public class RoomOrderServiceImpl implements RoomOrderService {
     }
 
     @Override
-    public String countBaseAmount(String days, String roomPrice) throws ServiceException {
-        String baseAmount = null;
-        try {
-            baseAmount = new BigDecimal(roomPrice).multiply(new BigDecimal(days)).toString();
-        } catch (NumberFormatException e) {
-            logger.error("Try to countBaseAmount was failed " + e);
-            throw new ServiceException("Try to countBaseAmount  was failed", e);
+    public BigDecimal countBaseAmount(int days, BigDecimal roomPrice) throws ServiceException {
+        BigDecimal baseAmount;
+        baseAmount = roomPrice.multiply(new BigDecimal(days));
+        if (baseAmount.compareTo(BigDecimal.ZERO) < 0) {
+            logger.error("Try to countBaseAmount was failed");
+            throw new ServiceException("Try to countBaseAmount  was failed");
         }
         return baseAmount;
     }
 
     @Override
-    public String countTotalAmount(String days, String roomPrice, String discount) throws ServiceException {
-        String totalAmount = null;
-        try {
-            BigDecimal dis = (new BigDecimal(100).subtract(new BigDecimal(discount))).divide(new BigDecimal(100));
-            BigDecimal amount = new BigDecimal(countBaseAmount(days, roomPrice));
-            totalAmount = amount.multiply(dis).toString();
-        } catch (NumberFormatException e) {
-            logger.error("Try to countTotalAmount was failed " + e);
-            throw new ServiceException("Try to countTotalAmount  was failed", e);
+    public BigDecimal countTotalAmount(int days, BigDecimal roomPrice, int discount) throws ServiceException {
+        BigDecimal totalAmount = null;
+        BigDecimal dis = (new BigDecimal(100).subtract(new BigDecimal(discount))).divide(new BigDecimal(100));
+        BigDecimal amount = countBaseAmount(days, roomPrice);
+        totalAmount = amount.multiply(dis);
+        if (totalAmount.compareTo(BigDecimal.ZERO) < 0) {
+            logger.error("Try to countTotalAmount was failed");
+            throw new ServiceException("Try to countTotalAmount  was failed");
         }
         return totalAmount;
     }

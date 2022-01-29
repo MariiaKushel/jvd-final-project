@@ -9,10 +9,7 @@ import by.javacourse.hotel.model.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +21,14 @@ public class DescriptionDaoImpl implements DescriptionDao {
             FROM hotel.descriptions""";
 
     private static final String BY_ID = " WHERE description_id=? LIMIT 1";
+
+    private static final String SQL_INSERT_DESCRIPTION = """
+            INSERT INTO hotel.descriptions (description_id, description_ru, description_en)
+            VALUES(?,?,?)""";
+
+    private static final String SQL_UPDATE_DESCRIPTION = """
+            UPDATE hotel.descriptions SET description_ru=?, description_en=?
+            WHERE description_id=?""";
 
     @Override
     public List<Description> findAll() throws DaoException {
@@ -37,7 +42,19 @@ public class DescriptionDaoImpl implements DescriptionDao {
 
     @Override
     public boolean create(Description description) throws DaoException {
-        return false;
+        int insertedRows = 0;
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_INSERT_DESCRIPTION)) {
+            statement.setLong(1, description.getEntityId());
+            statement.setString(2, description.getDescriptionRu());
+            statement.setString(3, description.getDescriptionEn());
+            insertedRows = statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("SQL request create from table hotel.descriptions was failed" + e);
+            throw new DaoException("SQL request create from table hotel.descriptions was failed", e);
+        }
+        return insertedRows == 1;
     }
 
     @Override
@@ -61,5 +78,22 @@ public class DescriptionDaoImpl implements DescriptionDao {
             throw new DaoException("SQL request findDescriptionById from table hotel.descriptions was failed", e);
         }
         return description;
+    }
+
+    @Override
+    public boolean update1(Description description) throws DaoException {
+        int rowsUpdated = 0;
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_DESCRIPTION)) {
+            statement.setString(1, description.getDescriptionRu());
+            statement.setString(2, description.getDescriptionEn());
+            statement.setLong(3, description.getEntityId());
+            rowsUpdated = statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("SQL request update1 from table hotel.descriptions was failed" + e);
+            throw new DaoException("SQL request update1 from table hotel.descriptions was failed", e);
+        }
+        return rowsUpdated == 1;
     }
 }

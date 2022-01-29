@@ -9,4 +9,6 @@ public interface DescriptionDao extends BaseDao<Long, Description> {
 
     Optional<Description> findDescriptionById(long descriptionId) throws DaoException;
 
+    boolean update1(Description description) throws DaoException;
+
 }

@@ -22,6 +22,7 @@ import static by.javacourse.hotel.controller.command.CommandResult.SendingType.R
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.PASSWORD;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class CreateReviewCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -50,7 +51,7 @@ public class CreateReviewCommand implements Command {
             commandResult = new CommandResult(PagePath.CREATE_REVIEW_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute CreateReviewCommand was failed" + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }

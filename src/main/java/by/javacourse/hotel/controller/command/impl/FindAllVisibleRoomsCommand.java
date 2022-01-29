@@ -17,6 +17,7 @@ import java.util.*;
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
 import static by.javacourse.hotel.controller.command.RequestAttribute.ROOM_LIST_ATR;
 import static by.javacourse.hotel.controller.command.SessionAttribute.CURRENT_PAGE;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 
 public class FindAllVisibleRoomsCommand implements Command {
@@ -40,7 +41,7 @@ public class FindAllVisibleRoomsCommand implements Command {
             commandResult = new CommandResult(PagePath.SHOW_ROOM_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindAllVisibleRoomsCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }

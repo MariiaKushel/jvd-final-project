@@ -31,7 +31,7 @@ public final class RequestParameter {
     public static final String ROOM_PRICE = "room_price";
     public static final String ROOM_NUMBER = "room_number";
     public static final String DAYS = "days";
-
+    public static final String SLEEPING_PLACE = "sleeping_place";
     public static final String ORDER_STATUS = "order_status";
 
     public static final String NEW_PASSWORD = "new_password";
@@ -46,6 +46,14 @@ public final class RequestParameter {
     public static final String MARK = "mark";
     public static final String CONTENT = "content";
     public static final String REVIEW_ID = "review_id";
+
+    public static final String PRICE = "price";
+    public static final String IMAGE = "image";
+    public static final String PREVIEW = "preview";
+
+    public static final String DESCRIPTION_ID  = "description_id";
+    public static final String DESCRIPTION_RU  = "description_ru";
+    public static final String DESCRIPTION_EN  = "description_en";
 
     private RequestParameter() {
 

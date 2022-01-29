@@ -26,6 +26,14 @@ public final class CommandProvider {
         commands.put(CommandName.UPDATE_ORDER, new UpdateOrderCommand());
         commands.put(CommandName.CREATE_REVIEW, new CreateReviewCommand());
         commands.put(CommandName.UPDATE_REVIEW, new UpdateReviewCommand());
+        commands.put(CommandName.UPDATE_DISCOUNT, new UpdateDiscountCommand());
+        commands.put(CommandName.CREATE_DISCOUNT, new CreateDiscountCommand());
+        commands.put(CommandName.REMOVE_DISCOUNT, new RemoveDiscountCommand());
+        commands.put(CommandName.CREATE_ROOM, new CreateRoomCommand());
+        commands.put(CommandName.UPDATE_ROOM, new UpdateRoomCommand());
+        commands.put(CommandName.UPDATE_DESCRIPTION, new UpdateDescriptionCommand());
+        commands.put(CommandName.UPLOAD_IMAGE, new UploadImageCommand());
+        commands.put(CommandName.CHANGE_PREVIEW, new ChangePreviewCommand());
 
         commands.put(CommandName.FIND_ALL_ROOMS, new FindAllRoomsCommand());
         commands.put(CommandName.FIND_ALL_VISIBLE_ROOMS, new FindAllVisibleRoomsCommand());
@@ -47,7 +55,6 @@ public final class CommandProvider {
         commands.put(CommandName.FIND_ALL_DISCOUNTS, new FindAllDiscountsCommand());
         commands.put(CommandName.FIND_DISCOUNT_BY_RATE, new FindDiscountByRateCommand());
 
-
         commands.put(CommandName.GO_TO_MAIN_PAGE, new GoToMainPageCommand());
         commands.put(CommandName.GO_TO_SING_IN_PAGE, new GoToSingInPageCommand());
         commands.put(CommandName.GO_TO_CREATE_NEW_ACCOUNT_PAGE, new GoToCreateNewAccountPageCommand());
@@ -68,6 +75,11 @@ public final class CommandProvider {
         commands.put(CommandName.GO_TO_UPDATE_ORDER_PAGE, new GoToUpdateOrderPageCommand());
         commands.put(CommandName.GO_TO_CREATE_REVIEW_PAGE, new GoToCreateReviewPageCommand());
         commands.put(CommandName.GO_TO_UPDATE_REVIEW_PAGE, new GoToUpdateReviewPageCommand());
+        commands.put(CommandName.GO_TO_UPDATE_DISCOUNT_PAGE, new GoToUpdateDiscountPageCommand());
+        commands.put(CommandName.GO_TO_CREATE_DISCOUNT_PAGE, new GoToCreateDiscountPageCommand());
+        commands.put(CommandName.GO_TO_REMOVE_DISCOUNT_PAGE, new GoToRemoveDiscountPageCommand());
+        commands.put(CommandName.GO_TO_CREATE_ROOM_PAGE, new GoToCreateRoomPageCommand());
+        commands.put(CommandName.GO_TO_UPDATE_ROOM_PAGE, new GoToUpdateRoomPageCommand());
     }
 
     public static Command getCommand(String commandName) {

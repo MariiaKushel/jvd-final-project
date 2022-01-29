@@ -5,14 +5,14 @@ import java.math.BigDecimal;
 public class User extends Entity {
 
     public enum Role {
-        ADMIN, CLIENT
+        GUEST, ADMIN, CLIENT
     }
 
     public enum Status {
         NEW, ACTIVE, LOCKED
     }
 
-    private static final long DEFAULT_DISCOUNT_ID = 1L;
+    public static final long DEFAULT_DISCOUNT_ID = 1L;
     private String email;
     private Role role;
     private String name;

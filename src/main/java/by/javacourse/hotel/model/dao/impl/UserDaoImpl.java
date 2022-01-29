@@ -252,7 +252,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public BigDecimal findBalanceByUserId(long userId) throws DaoException {
-        BigDecimal balance = new BigDecimal(0);
+        BigDecimal balance = BigDecimal.ZERO;
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BALANCE_BY_USER_ID)) {

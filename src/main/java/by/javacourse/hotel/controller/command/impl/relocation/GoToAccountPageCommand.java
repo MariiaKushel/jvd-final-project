@@ -3,7 +3,6 @@ package by.javacourse.hotel.controller.command.impl.relocation;
 import by.javacourse.hotel.controller.command.Command;
 import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
-import by.javacourse.hotel.controller.command.RequestParameter;
 import by.javacourse.hotel.entity.Discount;
 import by.javacourse.hotel.entity.User;
 import by.javacourse.hotel.exception.ServiceException;
@@ -23,6 +22,7 @@ import java.util.Optional;
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.USER_ID;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class GoToAccountPageCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -30,6 +30,7 @@ public class GoToAccountPageCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request) {
         HttpSession session = request.getSession();
+        session.removeAttribute(UPDATE_PERSONAL_DATA_RESULT);
 
         ServiceProvider provider = ServiceProvider.getInstance();
         UserService userService = provider.getUserService();
@@ -45,25 +46,25 @@ public class GoToAccountPageCommand implements Command {
             Optional<User> optUser = userService.findUserById(userId);
             if (optUser.isPresent()) {
                 User user = optUser.get();
-                Optional<Discount> discount = discountService.findDiscountById(user.getDiscountId());
-                Map<String, String> userData = convertToUserDataMap(user, discount);
+                Optional<Discount> discount = discountService.findDiscountById(String.valueOf(user.getDiscountId()));
+                Map<String, String> userData = createToUserDataMap(user, discount);
                 session.setAttribute(USER_DATA_SES, userData);
                 session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
             } else {
                 session.setAttribute(NOT_FOUND_SES, true);
             }
             commandResult = userRole == User.Role.ADMIN
-                    ? new CommandResult(PagePath.ACCOUNT_ADMIN_PAGE, FORWARD)
-                    : new CommandResult(PagePath.ACCOUNT_CLIENT_PAGE, FORWARD);
+                    ? new CommandResult(PagePath.ACCOUNT_ADMIN_PAGE, REDIRECT)
+                    : new CommandResult(PagePath.ACCOUNT_CLIENT_PAGE, REDIRECT);
 
         } catch (ServiceException e) {
             logger.error("Try to execute GoToAccountPageCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }
 
-    private Map<String, String> convertToUserDataMap(User user, Optional<Discount> discount) {
+    private Map<String, String> createToUserDataMap(User user, Optional<Discount> discount) {
         Map<String, String> userData = new HashMap<>();
         userData.put(USER_ID_SES, String.valueOf(user.getEntityId()));
         userData.put(EMAIL_SES, user.getEmail());

@@ -6,6 +6,7 @@ import static by.javacourse.hotel.controller.command.CommandResult.SendingType.E
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.FORWARD;
 import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 import by.javacourse.hotel.entity.Room;
 import by.javacourse.hotel.exception.ServiceException;
@@ -42,7 +43,7 @@ public class FindRoomByParameterCommand implements Command {
             commandResult = new CommandResult(PagePath.BOOK_ROOM_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindRoomByParameter was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }

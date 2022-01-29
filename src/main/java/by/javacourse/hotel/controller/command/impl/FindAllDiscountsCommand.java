@@ -22,6 +22,7 @@ import static by.javacourse.hotel.controller.command.CommandResult.SendingType.F
 import static by.javacourse.hotel.controller.command.RequestAttribute.DISCOUNT_LIST_ATR;
 import static by.javacourse.hotel.controller.command.RequestAttribute.REVIEW_LIST_ATR;
 import static by.javacourse.hotel.controller.command.SessionAttribute.CURRENT_PAGE;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class FindAllDiscountsCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -39,7 +40,7 @@ public class FindAllDiscountsCommand implements Command {
             commandResult = new CommandResult(PagePath.DISCOUNT_MANAGEMENT_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindAllDiscountsCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }

@@ -22,6 +22,7 @@
 <fmt:message key="message.incorrect_password" var="incorrect_password"/>
 <fmt:message key="button.update" var="update"/>
 <fmt:message key="message.error_password" var="error_password"/>
+<fmt:message key="message.not_data" var="not_data"/>
 
 <html>
 <head>
@@ -41,8 +42,14 @@
         ${title}
     </div>
     <c:choose>
-        <c:when test="${replenish_balance_result eq 'true'}">
-            ${complete}
+        <c:when test="${not empty not_found_ses}">
+            ${not_found}
+        </c:when>
+        <c:when test="${not empty replenish_balance_result}">
+            ${replenish_balance_result eq true? complete: failed}
+        </c:when>
+        <c:when test="${empty balance_data_ses}">
+            ${not_data}
         </c:when>
         <c:otherwise>
             <form method="post" action="${path}/controller" novalidate>
@@ -52,7 +59,7 @@
                             ${balance}
                     </label>
                     <div class="col-md-10">
-                        <input type="text" value= "${user_data_ses['balance_ses']}" class="form-control" disabled>
+                        <input type="text" value="${balance_data_ses['balance_ses']}" class="form-control" disabled>
                     </div>
                 </div>
                 <div class="row">
@@ -66,18 +73,19 @@
                     </div>
                     <div class="row">
                         <div class="col text-danger">
-                            <c:if test="${not empty user_data_ses['wrong_amount_ses']}">
+                            <c:if test="${not empty balance_data_ses['wrong_amount_ses']}">
                                 ${incorrect_amount}
                             </c:if>
-                            <c:if test="${not empty user_data_ses['wrong_amount_oversize_ses']}">
+                            <c:if test="${not empty balance_data_ses['wrong_amount_oversize_ses']}">
                                 ${incorrect_amount_oversize}//
                             </c:if>
                         </div>
                     </div>
-                <div class="container text-center">
-                    <button type="submit" class="btn btn-secondary">
-                            ${update}
-                    </button>
+                    <div class="container text-center">
+                        <button type="submit" class="btn btn-secondary">
+                                ${update}
+                        </button>
+                    </div>
                 </div>
             </form>
         </c:otherwise>

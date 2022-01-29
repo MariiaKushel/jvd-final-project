@@ -16,6 +16,7 @@ import static by.javacourse.hotel.controller.command.CommandResult.SendingType.E
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.REDIRECT;
 import static by.javacourse.hotel.controller.command.RequestParameter.ORDER_STATUS;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class UpdateOrderCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -38,7 +39,7 @@ public class UpdateOrderCommand implements Command {
             commandResult = new CommandResult(PagePath.CANCEL_ORDER_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute CancelOrderCommand was failed" + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }

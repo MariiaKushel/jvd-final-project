@@ -12,5 +12,11 @@ public interface DiscountService {
 
     List<Discount> findDiscountByRate(Map<String, String> parameters) throws ServiceException;
 
-    Optional<Discount> findDiscountById(long discountId) throws ServiceException;
+    Optional<Discount> findDiscountById(String discountId) throws ServiceException;
+
+    boolean updateDiscount(Map<String, String> parameters) throws ServiceException;
+
+    boolean createDiscount(Map<String, String> parameters) throws ServiceException;
+
+    boolean removeDiscount(Discount discount)throws ServiceException;
 }

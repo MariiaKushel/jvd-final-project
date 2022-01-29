@@ -6,6 +6,7 @@ import by.javacourse.hotel.controller.command.CommandResult;
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 import by.javacourse.hotel.controller.command.PagePath;
 import by.javacourse.hotel.entity.User;
@@ -51,7 +52,7 @@ public class SingInCommand implements Command {
             }
         } catch (ServiceException e) {
             logger.error("Try to execute SingInCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }

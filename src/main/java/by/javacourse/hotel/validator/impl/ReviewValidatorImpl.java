@@ -39,7 +39,6 @@ public class ReviewValidatorImpl implements ReviewValidator {
 
     @Override
     public boolean validateContent(String content) {
-        System.out.println("content "+content);
         return content.matches(CONTENT_REGEX);
     }
 }

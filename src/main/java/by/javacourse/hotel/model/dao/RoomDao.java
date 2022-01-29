@@ -30,4 +30,6 @@ public interface RoomDao extends BaseDao<Long, Room> {
                                     int[] sleepingPlaces) throws DaoException;
 
     boolean refreshRating(long roomId) throws DaoException;
+
+    boolean update1(Room room) throws DaoException;
 }

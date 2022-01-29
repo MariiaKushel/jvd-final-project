@@ -22,12 +22,19 @@ public final class PagePath {
     public static final String CREATE_REVIEW_PAGE = "jsp/account/client/create_review.jsp";
     public static final String UPDATE_ORDER_PAGE = "jsp/account/admin/update_order.jsp";
     public static final String UPDATE_REVIEW_PAGE = "jsp/account/admin/update_review.jsp";
+    public static final String CREATE_DISCOUNT_PAGE = "jsp/account/admin/create_discount.jsp";
+    public static final String UPDATE_DISCOUNT_PAGE = "jsp/account/admin/update_discount.jsp";
+    public static final String REMOVE_DISCOUNT_PAGE = "jsp/account/admin/remove_discount.jsp";
     public static final String ROOM_MANAGEMENT_PAGE = "jsp/account/admin/room_management.jsp";
     public static final String ORDER_MANAGEMENT_PAGE = "jsp/account/admin/order_management.jsp";
     public static final String REVIEW_MANAGEMENT_PAGE = "jsp/account/admin/review_management.jsp";
     public static final String DISCOUNT_MANAGEMENT_PAGE = "jsp/account/admin/discount_management.jsp";
+    public static final String CREATE_ROOM_PAGE = "jsp/account/admin/create_room.jsp";
+    public static final String UPDATE_ROOM_PAGE = "jsp/account/admin/update_room.jsp";
 
-    public static final String ERROR_500_PAGE = "jsp/error500.jsp";
+    public static final String ERROR_500_PAGE = "jsp/error/error500.jsp";
+    public static final String ERROR_403_PAGE = "jsp/error/error403.jsp";
+    public static final String ERROR_404_PAGE = "jsp/error/error404.jsp";
 
     private PagePath() {
 

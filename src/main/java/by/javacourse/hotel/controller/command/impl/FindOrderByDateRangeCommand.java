@@ -23,6 +23,7 @@ import static by.javacourse.hotel.controller.command.CommandResult.SendingType.F
 import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.CURRENT_PAGE;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class FindOrderByDateRangeCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -47,7 +48,7 @@ public class FindOrderByDateRangeCommand implements Command {
             commandResult = new CommandResult(PagePath.ORDER_MANAGEMENT_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindOrderByPrepaymentCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }

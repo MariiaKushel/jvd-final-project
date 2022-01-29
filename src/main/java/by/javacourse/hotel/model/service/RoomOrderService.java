@@ -14,11 +14,11 @@ public interface RoomOrderService {
 
     boolean createOrder(Map<String, String> orderData) throws ServiceException;
 
-    String countDays(String from, String to) throws ServiceException;
+    int countDays(String from, String to) throws ServiceException;
 
-    String countBaseAmount(String days, String roomPrice) throws ServiceException;
+    BigDecimal countBaseAmount(int days, BigDecimal roomPrice) throws ServiceException;
 
-    String countTotalAmount(String days, String roomPrice, String discount) throws ServiceException;
+    BigDecimal countTotalAmount(int days, BigDecimal roomPrice, int discount) throws ServiceException;
 
     List<RoomOrder> findOrderByPrepayment(Map<String, String> parameters) throws ServiceException;
 

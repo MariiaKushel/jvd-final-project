@@ -4,7 +4,7 @@ import by.javacourse.hotel.validator.DiscountValidator;
 
 public final class DiscountValidatorImpl implements DiscountValidator {
 
-    private static final int DEFAULT_MAX_RATE = 99999;
+    private static final int DEFAULT_MAX_RATE = 100;
 
     private static final DiscountValidatorImpl instance = new DiscountValidatorImpl();
 
@@ -19,10 +19,6 @@ public final class DiscountValidatorImpl implements DiscountValidator {
     @Override
     public boolean validateRate(String rate) {
         boolean isValid = false;
-        if (rate.isEmpty()) {
-            isValid = true;
-            return isValid;
-        }
         try {
             int num = Integer.parseInt(rate);
             isValid = num > 0 && num <= DEFAULT_MAX_RATE;

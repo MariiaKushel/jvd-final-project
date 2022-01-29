@@ -17,6 +17,7 @@ import java.util.Map;
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class UpdatePersonalDataCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -33,24 +34,27 @@ public class UpdatePersonalDataCommand implements Command {
         UserService userService = provider.getUserService();
         CommandResult commandResult = null;
         try {
-            if (userService.updatePersonalData(userData)) {
+            int sizeBefore = userData.size();
+            boolean result = userService.updatePersonalData(userData);
+            int sizeAfter = userData.size();
+            if (sizeBefore == sizeAfter) {
                 session.removeAttribute(USER_DATA_SES);
-                session.setAttribute(UPDATE_PERSONAL_DATA_RESULT, true);
+                session.setAttribute(UPDATE_PERSONAL_DATA_RESULT, result);
             } else {
-                session.removeAttribute(UPDATE_PERSONAL_DATA_RESULT);
                 session.setAttribute(USER_DATA_SES, userData);
             }
+
             User.Role role = User.Role.valueOf(session.getAttribute(CURRENT_ROLE).toString());
-            if (role == User.Role.ADMIN){
+            if (role == User.Role.ADMIN) {
                 session.setAttribute(CURRENT_PAGE, PagePath.ACCOUNT_ADMIN_PAGE);
-                commandResult =new CommandResult(PagePath.ACCOUNT_ADMIN_PAGE, REDIRECT);
-            }else {
+                commandResult = new CommandResult(PagePath.ACCOUNT_ADMIN_PAGE, REDIRECT);
+            } else {
                 session.setAttribute(CURRENT_PAGE, PagePath.ACCOUNT_CLIENT_PAGE);
-                commandResult =new CommandResult(PagePath.ACCOUNT_CLIENT_PAGE, REDIRECT);
+                commandResult = new CommandResult(PagePath.ACCOUNT_CLIENT_PAGE, REDIRECT);
             }
         } catch (ServiceException e) {
             logger.error("Try to execute UpdatePersonalDataCommand was failed" + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }

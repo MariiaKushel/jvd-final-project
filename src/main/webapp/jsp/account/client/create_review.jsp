@@ -24,6 +24,7 @@
 <fmt:message key="review.content" var="review_text"/>
 <fmt:message key="message.content_rules" var="content_rules"/>
 <fmt:message key="message.incorrect_data" var="incorrect_data"/>
+<fmt:message key="message.not_data" var="not_data"/>
 
 <html>
 <head>
@@ -51,6 +52,9 @@
         </c:when>
         <c:when test="${empty order_ses}">
             ${not_found}
+        </c:when>
+        <c:when test="${empty review_data_ses}">
+            ${not_data}
         </c:when>
         <c:otherwise>
             <table class="table text-secondary border-secondary">

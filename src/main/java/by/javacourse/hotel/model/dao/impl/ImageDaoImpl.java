@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +22,8 @@ public class ImageDaoImpl implements ImageDao {
     static Logger logger = LogManager.getLogger();
 
     private static final String SQL_INSERT_IMAGE = """
-            INSERT INTO hotel.images (image_id, room_id, image, preview) 
-            VALUES (?,?,?,?)""";
+            INSERT INTO hotel.images (room_id, image, preview) 
+            VALUES (?,?,?)""";
 
     private static final String SQL_DELETE_IMAGE = "DELETE FROM hotel.images WHERE image_id=?";
 
@@ -42,6 +43,11 @@ public class ImageDaoImpl implements ImageDao {
             AND visible=true 
             AND preview=true""";
 
+    private static final String SQL_UPDATE_OLD_PREVIEW = """
+            UPDATE hotel.images SET preview=0 WHERE room_id=? AND preview=1""";
+
+    private static final String SQL_UPDATE_NEW_PREVIEW = """
+            UPDATE hotel.images SET preview=1 WHERE image_id=?""";
 
     @Override
     public List<Image> findAll() throws DaoException {
@@ -80,9 +86,9 @@ public class ImageDaoImpl implements ImageDao {
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_INSERT_IMAGE)) {
-            statement.setLong(1, image.getEntityId());
-            statement.setLong(2, image.getRoomId());
-            statement.setBytes(3, image.getImageContent());
+            statement.setLong(1, image.getRoomId());
+            statement.setBytes(2, image.getImageContent());
+            statement.setBoolean(3, image.isPreview());
             insertedRows = statement.executeUpdate();
         } catch (SQLException e) {
             logger.error("SQL request create from table hotel.images was failed" + e);
@@ -187,4 +193,49 @@ public class ImageDaoImpl implements ImageDao {
         }
         return images;
     }
+
+    @Override
+    public boolean changePreview(long newPreviewId, long roomId) throws DaoException {
+        boolean result = false;
+
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = pool.getConnection();
+            connection.setAutoCommit(false);
+
+            statement = connection.prepareStatement(SQL_UPDATE_OLD_PREVIEW);
+            statement.setLong(1, roomId);
+            statement.executeUpdate();
+
+            statement = connection.prepareStatement(SQL_UPDATE_NEW_PREVIEW);
+            statement.setLong(1, newPreviewId);
+            result = statement.executeUpdate() == 1;
+
+            if (result) {
+                connection.commit();
+            }
+
+        } catch (SQLException e) {
+            logger.error("SQL request changePreview from table hotel.room_orders was failed " + e);
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                logger.error("Rollback changePreview from table hotel.room_orders was failed " + e);
+                throw new DaoException("Rollback changePreview from table hotel.room_orders was failed", e);
+            }
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+                statement.close();
+                connection.close();
+            } catch (SQLException e) {
+                logger.error("Connection or statement close was failed" + e);
+                throw new DaoException("Connection or statement close was failed", e);
+            }
+        }
+        return result;
+    }
+
 }

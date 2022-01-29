@@ -53,16 +53,20 @@ public class RoomDaoImpl implements RoomDao {
             ORDER BY sleeping_place""";
 
     private static final String SQL_UPDATE_RATING = """
-                UPDATE hotel.rooms SET rating=(
-                    SELECT AVG(room_mark) AS new_rating
-                    FROM (
-                        SELECT hotel.room_orders.room_id, room_mark, hotel.reviews.date
-                        FROM hotel.reviews
-                        JOIN hotel.room_orders ON review_id=room_order_id AND hotel.room_orders.room_id=? AND room_mark>0
-                        ORDER BY hotel.reviews.date DESC LIMIT 20
-                    ) AS marks_by_room
-                )
-                WHERE hotel.rooms.room_id=?""";
+            UPDATE hotel.rooms SET rating=(
+                SELECT AVG(room_mark) AS new_rating
+                FROM (
+                    SELECT hotel.room_orders.room_id, room_mark, hotel.reviews.date
+                    FROM hotel.reviews
+                    JOIN hotel.room_orders ON review_id=room_order_id AND hotel.room_orders.room_id=? AND room_mark>0
+                    ORDER BY hotel.reviews.date DESC LIMIT 20
+                ) AS marks_by_room
+            )
+            WHERE hotel.rooms.room_id=?""";
+
+    private static final String SQL_UPDATE_ROOM = """
+            UPDATE hotel.rooms SET number=?, sleeping_place=?, price_per_day=?, visible=?
+            WHERE room_id=?""";
 
 
     @Override
@@ -229,7 +233,7 @@ public class RoomDaoImpl implements RoomDao {
 
     @Override
     public BigDecimal minPrice() throws DaoException {
-        BigDecimal minPrice = new BigDecimal("0.00");
+        BigDecimal minPrice = BigDecimal.ZERO;
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              Statement statement = connection.createStatement();
@@ -246,7 +250,7 @@ public class RoomDaoImpl implements RoomDao {
 
     @Override
     public BigDecimal maxPrice() throws DaoException {
-        BigDecimal maxPrice = new BigDecimal("0.00");
+        BigDecimal maxPrice = BigDecimal.ZERO;
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              Statement statement = connection.createStatement();
@@ -325,6 +329,29 @@ public class RoomDaoImpl implements RoomDao {
         } catch (SQLException e) {
             logger.error("SQL request refreshRating from table hotel.rooms was failed" + e);
             throw new DaoException("SQL request refreshRating from table hotel.rooms was failed", e);
+        }
+        return rowsUpdated == 1;
+    }
+
+    //            UPDATE hotel.rooms SET number=?, sleeping_place=?, price_per_day=?, visible=?
+    //            WHERE room_id=?""";
+
+
+    @Override
+    public boolean update1(Room room) throws DaoException {
+        int rowsUpdated = 0;
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_ROOM)) {
+            statement.setInt(1, room.getNumber());
+            statement.setInt(2, room.getSleepingPlace());
+            statement.setBigDecimal(3, room.getPricePerDay());
+            statement.setBoolean(4, room.isVisible());
+            statement.setLong(5, room.getEntityId());
+            rowsUpdated = statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("SQL request update1 from table hotel.rooms was failed" + e);
+            throw new DaoException("SQL request update1 from table hotel.rooms was failed", e);
         }
         return rowsUpdated == 1;
     }

@@ -41,6 +41,10 @@ public final class SessionAttribute {
     public static final String WRONG_AMOUNT_OVERSIZE_SES = "wrong_amount_oversize_ses";
     public static final String WRONG_EMAIL_OR_PASSWORD_SES = "wrong_email_or_password_ses";
 
+    public static final String WRONG_NUMBER_SES = "wrong_number_ses";
+    public static final String WRONG_SLEEPING_PLACE_SES = "wrong_sleeping_place_ses";
+    public static final String WRONG_PRICE_SES = "wrong_price_ses";
+
     public static final String UPDATE_PERSONAL_DATA_RESULT = "update_personal_data_result";
 
     public static final String USER_DATA_SES = "user_data_ses";
@@ -96,6 +100,35 @@ public final class SessionAttribute {
     public static final String TOTAL_AMOUNT_SES = "total_amount_ses";
     public static final String DAYS_SES = "days_ses";
     public static final String ORDER_DATA_SES = "order_data_ses";
+    public static final String DISCOUNT_DATA_SES = "discount_data_ses";
+
+    public static final String WRONG_DISCOUNT_ID_SES = "wrong_discount_id_ses";
+    public static final String UPDATE_DISCOUNT_RESULT  = "update_discount_result";
+    public static final String CREATE_DISCOUNT_RESULT  = "create_discount_result";
+    public static final String REMOVE_DISCOUNT_RESULT  = "remove_discount_result";
+
+    public static final String WRONG_RATE_SES = "wrong_rate_ses";
+    public static final String BALANCE_DATA_SES = "balance_data_ses";
+
+    public static final String CREATE_ROOM_RESULT  = "create_room_result";
+    public static final String ROOM_DATA_SES  = "room_data_ses";
+    public static final String SLEEPING_PLACE_SES  = "sleeping_place_ses";
+    public static final String UPDATE_ROOM_RESULT  = "update_room_result";
+    public static final String UPDATE_IMAGE_RESULT  = "update_image_result";
+    public static final String UPDATE_DESCRIPTION_RESULT  = "update_description_result";
+    public static final String IMAGE_DATA_SES = "image_data_ses";
+
+    public static final String VISIBLE_SES  = "visible_ses";
+    public static final String RATING_SES  = "rating_ses";
+    public static final String DESCRIPTION_ID_SES  = "description_id_ses";
+    public static final String DESCRIPTION_RU_SES  = "description_ru_ses";
+    public static final String DESCRIPTION_EN_SES  = "description_en_ses";
+    public static final String DESCRIPTION_DATA_SES  = "description_data_ses";
+    public static final String WRONG_DESCRIPTION_RU_SES  = "wrong_description_ru_ses";
+    public static final String WRONG_DESCRIPTION_EN_SES  = "wrong_description_en_ses";
+
+    public static final String UPLOAD_RESULT  = "upload_result";
+    public static final String PREVIEW_MARKER_SES  = "preview_marker_ses";
 
     private SessionAttribute() {
 

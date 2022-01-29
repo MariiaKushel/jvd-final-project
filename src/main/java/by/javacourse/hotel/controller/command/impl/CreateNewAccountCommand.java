@@ -14,6 +14,7 @@ import java.util.Map;
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class CreateNewAccountCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -38,7 +39,7 @@ public class CreateNewAccountCommand implements Command {
             }
         } catch (ServiceException e) {
             logger.error("Try to execute CreateNewAccountCommand was failed" + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }

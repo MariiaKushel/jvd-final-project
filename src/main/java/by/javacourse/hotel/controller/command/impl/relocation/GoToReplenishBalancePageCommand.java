@@ -3,6 +3,7 @@ package by.javacourse.hotel.controller.command.impl.relocation;
 import by.javacourse.hotel.controller.command.Command;
 import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
+import by.javacourse.hotel.entity.Discount;
 import by.javacourse.hotel.entity.User;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.ServiceProvider;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class GoToReplenishBalancePageCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -39,20 +41,20 @@ public class GoToReplenishBalancePageCommand implements Command {
             if (optUser.isPresent()) {
                 User user = optUser.get();
                 BigDecimal balance = user.getBalance();
-                Map<String, String> userData = new HashMap<>();
-                userData.put(BALANCE_SES, balance.toString());
-                userData.put(USER_ID_SES, session.getAttribute(CURRENT_USER_ID).toString());
-                session.setAttribute(USER_DATA_SES, userData);
-                session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
-                commandResult = new CommandResult(PagePath.REPLENISH_BALANCE_PAGE, FORWARD);
+                Map<String, String> balanceData = new HashMap<>();
+                balanceData.put(BALANCE_SES, balance.toString());
+                balanceData.put(USER_ID_SES, session.getAttribute(CURRENT_USER_ID).toString());
+                session.setAttribute(BALANCE_DATA_SES, balanceData);
             } else {
-                session.setAttribute(CURRENT_PAGE, PagePath.INDEX_PAGE);
-                commandResult = new CommandResult(PagePath.INDEX_PAGE, REDIRECT);
+                session.setAttribute(NOT_FOUND_SES, true);
             }
+            session.setAttribute(CURRENT_PAGE, PagePath.REPLENISH_BALANCE_PAGE);
+            commandResult = new CommandResult(PagePath.REPLENISH_BALANCE_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToReplenishBalancePageCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }
+
 }

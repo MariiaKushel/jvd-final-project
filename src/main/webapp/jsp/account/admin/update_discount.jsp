@@ -7,17 +7,15 @@
 <fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="properties.pagecontent"/>
 
-<fmt:message key="title.update_review" var="title"/>
-<fmt:message key="message.failed" var="failed"/>
+<fmt:message key="title.update_discount" var="title"/>
+<fmt:message key="discount.id" var="discount_id"/>
+<fmt:message key="discount.rate" var="discount_rate"/>
+<fmt:message key="button.update" var="update"/>
 <fmt:message key="message.complete" var="complete"/>
+<fmt:message key="message.failed" var="failed"/>
 <fmt:message key="message.not_found" var="not_found"/>
-<fmt:message key="review.id" var="id_table"/>
-<fmt:message key="review.date" var="date_table"/>
-<fmt:message key="review.room_mark" var="room_mark_table"/>
-<fmt:message key="review.content" var="content_table"/>
-<fmt:message key="review.author" var="author_table"/>
-<fmt:message key="button.make_show" var="make_show"/>
-<fmt:message key="button.make_hide" var="make_hide"/>
+<fmt:message key="message.discount_rules" var="discount_rules"/>
+<fmt:message key="message.incorrect_data" var="incorrect_data"/>
 
 <html>
 <head>
@@ -37,48 +35,44 @@
         ${title}
     </div>
     <c:choose>
-        <c:when test="${not empty wrong_review_id_ses}">
+        <c:when test="${not empty wrong_discount_id_ses}">
             ${not_found}
         </c:when>
-        <c:when test="${not empty update_review_result}">
-            ${update_review_result eq true? complete: failed}
+        <c:when test="${not empty update_discount_result}">
+            ${update_discount_result eq true? complete: failed}
         </c:when>
         <c:otherwise>
-            <table class="table text-secondary border-secondary">
-                <thead>
-                <tr>
-                    <th scope="col">${title}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>${id_table}</td>
-                    <td>${review_ses.entityId}</td>
-                </tr>
-                <tr>
-                    <td>${date_table}</td>
-                    <td>${review_ses.date}</td>
-                </tr>
-                <tr>
-                    <td>${room_mark_table}</td>
-                    <td>${review_ses.roomMark}</td>
-                </tr>
-                <tr>
-                    <td>${content_table}</td>
-                    <td>${review_ses.reviewContent}</td>
-                </tr>
-                <tr>
-                    <td>${author}</td>
-                    <td>${review_ses.author}</td>
-                </tr>
-                </tbody>
-            </table>
-            <form method="post" action="${path}/controller">
-                <input type="hidden" name="command" value="update_review"/>
-                <div class="container text-center">
-                    <button type="submit" class="btn btn-secondary text-center">
-                            ${review_ses.hidden eq true? make_show: make_hide}
-                    </button>
+            <form method="post" action="${path}/controller" novalidate>
+                <input type="hidden" name="command" value="update_discount"/>
+                <div class="row">
+                    <label class="col-sm-2 col-form-label mb-3">
+                            ${discount_id}
+                    </label>
+                    <div class="col-md-10">
+                        <input type="text" value= "${discount_data_ses['discount_id_ses']}" class="form-control" disabled>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2 col-form-label mb-3">
+                            ${discount_rate}
+                    </label>
+                    <div class="col-md-10">
+                        <input type="number"  min="0" max ="100" name="rate" value="${discount_data_ses['rate_ses']}"
+                               required oninvalid="this.setCustomValidity('${discount_rules}')"
+                               class="form-control">
+                    </div>
+                    <div class="row">
+                        <div class="col text-danger">
+                            <c:if test="${not empty discount_data_ses['wrong_rate_ses']}">
+                                ${incorrect_data}
+                            </c:if>
+                        </div>
+                    </div>
+                    <div class="container text-center">
+                        <button type="submit" class="btn btn-secondary">
+                                ${update}
+                        </button>
+                    </div>
                 </div>
             </form>
         </c:otherwise>

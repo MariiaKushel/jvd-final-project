@@ -11,4 +11,6 @@ public interface DiscountDao extends BaseDao<Long, Discount> {
 
     Optional<Discount> findDiscountById(long rate) throws DaoException;
 
+    boolean update1(Discount discount) throws DaoException;
+
 }

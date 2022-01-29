@@ -28,9 +28,11 @@
 <fmt:message key="message.incorrect_phone_number" var="incorrect_phone_number"/>
 <fmt:message key="message.incorrect_password" var="incorrect_password"/>
 <fmt:message key="message.complete" var="complete"/>
+<fmt:message key="message.failed" var="failed"/>
 <fmt:message key="message.need_password" var="need_password"/>
 <fmt:message key="message.error_password" var="error_password"/>
 <fmt:message key="message.not_found" var="not_found"/>
+<fmt:message key="message.not_data" var="not_data"/>
 
 <html>
 <head>
@@ -54,11 +56,11 @@
             ${not_found}
         </c:when>
         <c:when test="${not empty update_personal_data_result}">
-            ${complete}
+            ${update_personal_data_result eq true? complete: failed}
         </c:when>
-       <%-- <c:when test="${empty empty user_data_ses['phone_email_ses']}">
-            ${not_found}
-        </c:when>--%>
+        <c:when test="${empty user_data_ses}">
+            ${not_data}
+        </c:when>
         <c:otherwise>
             <form method="post" action="${path}/controller" novalidate>
                 <input type="hidden" name="command" value="update_personal_data"/>

@@ -11,7 +11,7 @@
 <fmt:message key="reference.create_new" var="create_new"/>
 <fmt:message key="reference.find_all" var="find_all"/>
 <fmt:message key="button.find" var="find"/>
-<fmt:message key="reference.update" var="cancel_table"/>
+<fmt:message key="reference.update" var="update"/>
 <fmt:message key="reference.remove" var="remove_table"/>
 <fmt:message key="message.incorrect_data" var="incorrect_data"/>
 <fmt:message key="message.number_rules" var="number_rules"/>
@@ -41,14 +41,24 @@
     </div>
     <div class="row">
         <div class="col-sm-3 mb-3 bg-secondary opacity-75 text-white">
-            <div class="mb-3">
-                <a class="link-light text-decoration-none" href="${path}/controller?command=#">${create_new}</a>
+            <div class="row">
+                <div class="col mb-3">
+                    <form method="get" action="${path}/controller">
+                        <input type="hidden" name="command" value="find_all_discounts"/></br>
+                        <button type="submit" class="btn btn-light">
+                            ${find_all}
+                        </button>
+                    </form>
+                </div>
+                <div class="col-auto mb-3">
+                    <form method="get" action="${path}/controller">
+                        <input type="hidden" name="command" value="go_to_create_discount_page"/></br>
+                        <button type="submit" class="btn btn-light">
+                            ${create_new}
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div class="mb-3">
-                <a class="link-light text-decoration-none"
-                   href="${path}/controller?command=find_all_discounts">${find_all}</a>
-            </div>
-
             <form method="get" action="${path}/controller" novalidate>
                 <input type="hidden" name="command" value="find_discount_by_rate"/>
                 <div class="mb-3">
@@ -90,7 +100,7 @@
                         <tr>
                             <th scope="col">${id_table}</th>
                             <th scope="col">${rate_table}</th>
-                            <th scope="col">${cancel_table}</th>
+                            <th scope="col">${update}</th>
                             <th scope="col">${remove_table}</th>
                         </tr>
                         </thead>
@@ -100,10 +110,10 @@
                                 <td>${element.entityId}</td>
                                 <td>${element.rate}</td>
                                 <td><a class="text-secondary text-decoration-none"
-                                       href="${path}/controller?command=#&discount_id=${element.entityId}">
-                                        ${cancel_table}</a></td>
+                                       href="${path}/controller?command=go_to_update_discount_page&discount_id=${element.entityId}">
+                                        ${update}</a></td>
                                 <td><a class="text-secondary text-decoration-none"
-                                       href="${path}/controller?command=#&discount_id=${element.entityId}">
+                                       href="${path}/controller?command=go_to_remove_discount_page&discount_id=${element.entityId}">
                                         ${remove_table}</a></td>
                             </tr>
                         </c:forEach>

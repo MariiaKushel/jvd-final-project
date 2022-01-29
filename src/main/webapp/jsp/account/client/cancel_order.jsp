@@ -20,6 +20,7 @@
 <fmt:message key="field.room_number" var="room_number_table"/>
 <fmt:message key="room.sleeping_place" var="sleeping_place_table"/>
 <fmt:message key="button.cancel" var="cancel"/>
+<fmt:message key="message.not_data" var="not_data"/>
 
 <html>
 <head>
@@ -44,6 +45,9 @@
         </c:when>
         <c:when test="${not empty update_order_result}">
             ${update_order_result eq true? complete: failed}
+        </c:when>
+        <c:when test="${empty search_parameter_atr}">
+            ${not_data}
         </c:when>
         <c:otherwise>
             <table class="table text-secondary border-secondary">

@@ -15,4 +15,6 @@ public interface ImageDao extends BaseDao<Long, Image> {
     Optional<Image> findFirstImageByRoomId(long roomId) throws DaoException;
 
     List<Image> findPreviewByVisibleRoom() throws DaoException;
+
+    boolean changePreview (long newPreviewId, long roomId)throws DaoException;
 }

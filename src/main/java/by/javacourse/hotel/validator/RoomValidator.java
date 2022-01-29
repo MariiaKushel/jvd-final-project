@@ -9,6 +9,8 @@ public interface RoomValidator {
 
     boolean validatePriceRange(String priceFrom, String priceTo);
 
+    boolean validatePrice(String price);
+
     boolean validateRating(String ratingFrom, String ratingTo);
 
     boolean validateNumber(String number);
@@ -18,5 +20,7 @@ public interface RoomValidator {
     boolean validateSearchParameter(Map<String, String> searchParameter);
 
     boolean validateSearchParameterAdmin(Map<String, String> searchParameter);
+
+    boolean validateRoomData(Map<String, String> roomData);
 
 }

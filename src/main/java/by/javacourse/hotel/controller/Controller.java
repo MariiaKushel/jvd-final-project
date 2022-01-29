@@ -11,6 +11,9 @@ import jakarta.servlet.annotation.*;
 import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 @WebServlet(name = "controller", urlPatterns = "/controller")
+@MultipartConfig(fileSizeThreshold = 1024 * 1024,
+        maxFileSize = 1024 * 1024,
+        maxRequestSize = 1024 * 1024)
 public class Controller extends HttpServlet {
 
     public void init() {
@@ -38,14 +41,12 @@ public class Controller extends HttpServlet {
         switch (sendingType) {
             case FORWARD -> request.getRequestDispatcher(toPage).forward(request, response);
             case REDIRECT -> response.sendRedirect(toPage);
-            default -> {
+            case ERROR -> {
                 int errorCode = result.getErrorCode();
-                if (errorCode != 0) {
-                    response.sendError(errorCode);
-                } else {
-                    response.sendError(SC_INTERNAL_SERVER_ERROR); //FIXME can do this?
-                }
+                String message = result.getMessage();
+                response.sendError(errorCode, message);
             }
+            default -> response.sendError(SC_INTERNAL_SERVER_ERROR); //FIXME can do this?
         }
     }
 

@@ -30,6 +30,12 @@ public class DiscountDaoImpl implements DiscountDao {
     private static final String BY_ID =
             " WHERE discount_id=? LIMIT 1";
 
+    private static final String SQL_UPDATE_DISCOUNT = """
+            UPDATE hotel.discounts SET rate=? WHERE discount_id=?""";
+
+    private static final String SQL_DELETE_DISCOUNT = """
+            DELETE FROM hotel.discounts WHERE discount_id=?""";
+
     @Override
     public List<Discount> findAll() throws DaoException {
         List<Discount> discounts = new ArrayList<>();
@@ -48,7 +54,17 @@ public class DiscountDaoImpl implements DiscountDao {
 
     @Override
     public boolean delete(Discount discount) throws DaoException {
-        return false;
+        int rowsDeleted = 0;
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_DELETE_DISCOUNT)) {
+            statement.setLong(1, discount.getEntityId());
+            rowsDeleted = statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("SQL request delete from table hotel.discounts was failed");
+            throw new DaoException("SQL request delete from table hotel.discounts was failed", e);
+        }
+        return rowsDeleted == 1;
     }
 
     @Override
@@ -68,8 +84,23 @@ public class DiscountDaoImpl implements DiscountDao {
 
     @Override
     public Optional<Discount> update(Discount discount) throws DaoException {
-        logger.error("Unavailable operation to entity <Discount>");
-        throw new UnsupportedOperationException("Unavailable operation to entity <Discount>");
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean update1(Discount discount) throws DaoException {
+        int rowsUpdated = 0;
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_DISCOUNT)) {
+            statement.setLong(1, discount.getRate());
+            statement.setLong(2, discount.getEntityId());
+            rowsUpdated = statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("SQL request update1 from table hotel.discounts was failed");
+            throw new DaoException("SQL request update1 from table hotel.discounts was failed", e);
+        }
+        return rowsUpdated == 1;
     }
 
     @Override
@@ -81,7 +112,7 @@ public class DiscountDaoImpl implements DiscountDao {
              PreparedStatement statement = connection.prepareStatement(SQL_SELECT_DISCOUNT + BY_RATE)) {
             statement.setInt(1, rate);
             try (ResultSet resultSet = statement.executeQuery()) {
-               discounts = mapper.retrieve(resultSet);
+                discounts = mapper.retrieve(resultSet);
             }
         } catch (SQLException e) {
             logger.error("SQL request findDiscountByRate from table hotel.discounts was failed");

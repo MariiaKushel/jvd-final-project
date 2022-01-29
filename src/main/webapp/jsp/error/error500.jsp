@@ -32,8 +32,15 @@
             <td>Request from ${pageContext.errorData.requestURI} is failed</br>
                 Servlet name: ${pageContext.errorData.servletName}</br>
                 Status code: ${pageContext.errorData.statusCode}</br>
-                Exception: ${pageContext.exception}</br>
-                Message from exception: ${pageContext.exception.message}
+                <c:choose>
+                    <c:when test="${not empty pageContext.exception}">
+                        Exception: ${pageContext.exception}</br>
+                        Message from exception: ${pageContext.exception.message}</br>
+                    </c:when>
+                    <c:otherwise>
+                        Message: ${requestScope['jakarta.servlet.error.message']}
+                    </c:otherwise>
+                </c:choose>
             </td>
         </tr>
         </tbody>

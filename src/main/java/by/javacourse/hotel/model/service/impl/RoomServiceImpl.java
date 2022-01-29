@@ -17,6 +17,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static by.javacourse.hotel.controller.command.RequestAttribute.*;
+import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
 public class RoomServiceImpl implements RoomService {
     static Logger logger = LogManager.getLogger();
@@ -60,10 +61,9 @@ public class RoomServiceImpl implements RoomService {
         try {
             long roomIdL = Long.parseLong(roomId);
             room = roomDao.findRoomById(roomIdL);
-        } catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             logger.info("Not valid roomId");
-        }
-        catch (DaoException e) {
+        } catch (DaoException e) {
             logger.error("Try to find rooms by id was failed " + e);
             throw new ServiceException("Try to find rooms by id  was failed", e);
         }
@@ -271,5 +271,71 @@ public class RoomServiceImpl implements RoomService {
 
 
         return rooms;
+    }
+
+    @Override
+    public boolean createRoom(Map<String, String> parameters) throws ServiceException {
+        boolean isCreated = false;
+        RoomValidator validator = RoomValidatorImpl.getInstance();
+        if (!validator.validateRoomData(parameters)) {
+            logger.info("Not valid data");
+            return isCreated;
+        }
+        int number = Integer.parseInt(parameters.get(ROOM_NUMBER_SES));
+        int sleepingPlace = Integer.parseInt(parameters.get(SLEEPING_PLACE_SES));
+        BigDecimal price = new BigDecimal(parameters.get(PRICE_SES));
+        boolean visible = parameters.get(VISIBLE_SES) != null
+                ? Boolean.parseBoolean(parameters.get(VISIBLE_SES))
+                : Boolean.FALSE;
+        Room room = Room.newBuilder()
+                .setNumber(number)
+                .setSleepingPlace(sleepingPlace)
+                .setPricePerDay(price)
+                .setVisible(visible)
+                .setRating(BigDecimal.ZERO)
+                .build();
+        try {
+            isCreated = roomDao.create(room);
+        } catch (DaoException e) {
+            logger.error("Try to createRoom was failed " + e);
+            throw new ServiceException("Try to createRoom  was failed", e);
+        }
+        return isCreated;
+    }
+
+    @Override
+    public boolean updateRoom(Map<String, String> parameters) throws ServiceException {
+        boolean isUpdated = false;
+        RoomValidator validator = RoomValidatorImpl.getInstance();
+        if (!validator.validateRoomData(parameters)) {
+            logger.info("Not valid data");
+            return isUpdated;
+        }
+        int number = Integer.parseInt(parameters.get(ROOM_NUMBER_SES));
+        int sleepingPlace = Integer.parseInt(parameters.get(SLEEPING_PLACE_SES));
+        BigDecimal price = new BigDecimal(parameters.get(PRICE_SES));
+        boolean visible = parameters.get(VISIBLE_SES) != null
+                ? Boolean.parseBoolean(parameters.get(VISIBLE_SES))
+                : Boolean.FALSE;
+        try {
+            long roomId = Long.parseLong(parameters.get(ROOM_ID_SES));
+            BigDecimal rating = new BigDecimal(parameters.get(RATING_SES));
+            Room room = Room.newBuilder()
+                    .setEntityId(roomId)
+                    .setNumber(number)
+                    .setSleepingPlace(sleepingPlace)
+                    .setPricePerDay(price)
+                    .setVisible(visible)
+                    .setRating(rating)
+                    .build();
+
+            isUpdated = roomDao.update1(room);
+        } catch (NumberFormatException e) {
+            logger.info("Not valid room id");
+        } catch (DaoException e) {
+            logger.error("Try to updateRoom was failed " + e);
+            throw new ServiceException("Try to updateRoom  was failed", e);
+        }
+        return isUpdated;
     }
 }

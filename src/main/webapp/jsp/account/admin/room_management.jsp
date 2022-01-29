@@ -22,12 +22,11 @@
 <fmt:message key="room.price" var="price_table"/>
 <fmt:message key="room.rating" var="rating_table"/>
 <fmt:message key="room.visible" var="visible_table"/>
-<fmt:message key="reference.update" var="cancel_table"/>
+<fmt:message key="reference.update" var="update_table"/>
 <fmt:message key="reference.find_all" var="find_all"/>
 <fmt:message key="button.find" var="find"/>
 <fmt:message key="reference.create_new" var="create_new"/>
 
-<%--<fmt:message key="reference.create_new" var="create_new"/>--%>
 <fmt:message key="message.number_rules" var="number_rules"/>
 <fmt:message key="message.price_rules" var="price_rules"/>
 <fmt:message key="message.rating_rules" var="rating_rules"/>
@@ -55,13 +54,23 @@
     </div>
     <div class="row">
         <div class="col-sm-3 mb-3 bg-secondary opacity-75 text-white">
-            <div class="mb-3">
-                <a class="link-light text-decoration-none" href="${path}/controller?command=#">${create_new}</a>
-            </div>
-
-            <div class="mb-3">
-                <a class="link-light text-decoration-none"
-                   href="${path}/controller?command=find_all_rooms">${find_all}</a>
+            <div class="row">
+                <div class="col mb-3">
+                    <form method="get" action="${path}/controller">
+                        <input type="hidden" name="command" value="find_all_rooms"/></br>
+                        <button type="submit" class="btn btn-light">
+                            ${find_all}
+                        </button>
+                    </form>
+                </div>
+                <div class="col-auto mb-3">
+                    <form method="get" action="${path}/controller">
+                        <input type="hidden" name="command" value="go_to_create_room_page"/></br>
+                        <button type="submit" class="btn btn-light">
+                            ${create_new}
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <form method="get" action="${path}/controller" novalidate>
@@ -197,7 +206,7 @@
                             <th scope="col">${price_table}</th>
                             <th scope="col">${rating_table}</th>
                             <th scope="col">${visible_table}</th>
-                            <th scope="col">${cancel_table}</th>
+                            <th scope="col">${update_table}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -210,8 +219,8 @@
                                 <td>${element.rating}</td>
                                 <td>${element.visible}</td>
                                 <td><a class="text-secondary text-decoration-none"
-                                       href="${path}/controller?command=#&room_id=${element.entityId}">
-                                        ${cancel_table}</a></td>
+                                       href="${path}/controller?command=go_to_update_room_page&room_id=${element.entityId}">
+                                        ${update_table}</a></td>
                             </tr>
                         </c:forEach>
                         </tbody>

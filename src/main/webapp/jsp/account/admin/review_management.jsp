@@ -43,10 +43,13 @@
     </div>
     <div class="row">
         <div class="col-sm-3 mb-3 bg-secondary opacity-75 text-white">
-
             <div class="mb-3">
-                <a class="link-light text-decoration-none"
-                   href="${path}/controller?command=find_all_reviews">${find_all}</a>
+                <form method="get" action="${path}/controller">
+                    <input type="hidden" name="command" value="find_all_reviews"/></br>
+                    <button type="submit" class="btn btn-light">
+                        ${find_all}
+                    </button>
+                </form>
             </div>
 
             <form method="get" action="${path}/controller" novalidate>

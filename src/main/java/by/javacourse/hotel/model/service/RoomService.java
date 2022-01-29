@@ -35,4 +35,7 @@ public interface RoomService {
 
     List<Room> findRoomByParameters(Map<String, String> parameters) throws ServiceException;
 
+    boolean createRoom(Map<String, String> parameters) throws ServiceException;
+
+    boolean updateRoom(Map<String, String> parameters) throws ServiceException;
 }

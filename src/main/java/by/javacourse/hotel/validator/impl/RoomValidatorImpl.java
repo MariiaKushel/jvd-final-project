@@ -8,6 +8,8 @@ import java.time.format.DateTimeParseException;
 import java.util.Map;
 
 import static by.javacourse.hotel.controller.command.RequestAttribute.*;
+import static by.javacourse.hotel.controller.command.SessionAttribute.*;
+import static by.javacourse.hotel.controller.command.SessionAttribute.WRONG_NUMBER_SES;
 
 public final class RoomValidatorImpl implements RoomValidator {
 
@@ -99,6 +101,18 @@ public final class RoomValidatorImpl implements RoomValidator {
     }
 
     @Override
+    public boolean validatePrice(String price) {
+        boolean isValid = true;
+        try {
+            BigDecimal priceB = new BigDecimal(price);
+            isValid = priceB.compareTo(BigDecimal.ZERO) >= 0 && priceB.compareTo(new BigDecimal(DEFAULT_MAX_PRICE)) < 0;
+        } catch (NumberFormatException e) {
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    @Override
     public boolean validateVisible(String visible) {
         boolean isValid = false;
         if (visible.isEmpty()) {
@@ -139,6 +153,28 @@ public final class RoomValidatorImpl implements RoomValidator {
         }
         if (!validateRating(ratingFrom, ratingTo)) {
             searchParameter.put(WRONG_RATING_RANGE_ATR, WRONG_DATA_MARKER);
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    @Override
+    public boolean validateRoomData(Map<String, String> roomData) {
+        boolean isValid = true;
+        String tempNumber = roomData.get(ROOM_NUMBER_SES);
+        String tempSleepingPlace = roomData.get(SLEEPING_PLACE_SES);
+        String tempPrice = roomData.get(PRICE_SES);
+        RoomValidator validator = RoomValidatorImpl.getInstance();
+        if (tempNumber.isEmpty() || !validator.validateNumber(tempNumber)) {
+            roomData.put(WRONG_NUMBER_SES, RoomValidator.WRONG_DATA_MARKER);
+            isValid = false;
+        }
+        if (tempSleepingPlace.isEmpty() || !validator.validateNumber(tempSleepingPlace)) {
+            roomData.put(WRONG_SLEEPING_PLACE_SES, RoomValidator.WRONG_DATA_MARKER);
+            isValid = false;
+        }
+        if (tempPrice.isEmpty() || !validator.validatePrice(tempPrice)) {
+            roomData.put(WRONG_PRICE_SES, RoomValidator.WRONG_DATA_MARKER);
             isValid = false;
         }
         return isValid;

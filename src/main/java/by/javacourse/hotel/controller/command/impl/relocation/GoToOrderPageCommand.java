@@ -24,6 +24,7 @@ import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
 
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class GoToOrderPageCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -41,7 +42,7 @@ public class GoToOrderPageCommand implements Command {
             commandResult = new CommandResult(PagePath.ORDER_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToOrderPageCommand was failed" + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }
@@ -63,21 +64,21 @@ public class GoToOrderPageCommand implements Command {
             return orderData;
         }
         Room room = optRoom.get();
-        String price = room.getPricePerDay().toString();
-        String discount = String.valueOf(userService.findDiscountByUserId(userId));
-        String days = roomOrderService.countDays(from, to);
-        String baseAmount = roomOrderService.countBaseAmount(days, price);
-        String totalAmount = roomOrderService.countTotalAmount(days, price, discount);
+        BigDecimal price = room.getPricePerDay();
+        int discount = userService.findDiscountByUserId(userId);
+        int days = roomOrderService.countDays(from, to);
+        BigDecimal baseAmount = roomOrderService.countBaseAmount(days, price);
+        BigDecimal totalAmount = roomOrderService.countTotalAmount(days, price, discount);
 
         orderData.put(DATE_FROM_SES, from);
         orderData.put(DATE_TO_SES, to);
         orderData.put(ROOM_ID_SES, roomId);
         orderData.put(ROOM_NUMBER_SES, String.valueOf(room.getNumber()));
-        orderData.put(PRICE_SES, price);
-        orderData.put(BASE_AMOUNT_SES, baseAmount);
-        orderData.put(TOTAL_AMOUNT_SES, totalAmount);
-        orderData.put(DAYS_SES, days);
-        orderData.put(RATE_SES, discount);
+        orderData.put(PRICE_SES, price.toString());
+        orderData.put(BASE_AMOUNT_SES, baseAmount.toString());
+        orderData.put(TOTAL_AMOUNT_SES, totalAmount.toString());
+        orderData.put(DAYS_SES, String.valueOf(days));
+        orderData.put(RATE_SES, String.valueOf(discount));
         orderData.put(USER_ID_SES, userId);
 
         return orderData;

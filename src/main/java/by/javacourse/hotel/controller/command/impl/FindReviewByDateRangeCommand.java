@@ -25,6 +25,7 @@ import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.DATE_FROM;
 import static by.javacourse.hotel.controller.command.RequestParameter.DATE_TO;
 import static by.javacourse.hotel.controller.command.SessionAttribute.CURRENT_PAGE;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class FindReviewByDateRangeCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -48,7 +49,7 @@ public class FindReviewByDateRangeCommand implements Command {
             commandResult = new CommandResult(PagePath.REVIEW_MANAGEMENT_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindOrderByPrepaymentCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }

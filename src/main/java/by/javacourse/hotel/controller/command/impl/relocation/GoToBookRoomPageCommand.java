@@ -18,6 +18,7 @@ import static by.javacourse.hotel.controller.command.CommandResult.SendingType.E
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.FORWARD;
 import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class GoToBookRoomPageCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -39,7 +40,7 @@ public class GoToBookRoomPageCommand implements Command {
             commandResult = new CommandResult(PagePath.BOOK_ROOM_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToBookRoomPageCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }

@@ -27,6 +27,7 @@ import static by.javacourse.hotel.controller.command.RequestAttribute.ORDER_ID_A
 import static by.javacourse.hotel.controller.command.RequestAttribute.WRONG_ORDER_ID_ATR;
 import static by.javacourse.hotel.controller.command.RequestParameter.ORDER_ID;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class GoToUpdateOrderPageCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -62,7 +63,7 @@ public class GoToUpdateOrderPageCommand implements Command {
             commandResult = new CommandResult(PagePath.UPDATE_ORDER_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToCancelOrderPageCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }

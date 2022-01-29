@@ -25,6 +25,7 @@ import static by.javacourse.hotel.controller.command.CommandResult.SendingType.F
 import static by.javacourse.hotel.controller.command.RequestAttribute.NEW_SEARCH_ATR;
 import static by.javacourse.hotel.controller.command.RequestAttribute.SEARCH_PARAMETER_ATR;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class GoToUserManagementPageCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -51,7 +52,7 @@ public class GoToUserManagementPageCommand implements Command {
             commandResult = new CommandResult(PagePath.USER_MANAGEMENT_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToUserManagementPageCommand was failed" + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, 500);
+            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return commandResult;
     }
