@@ -5,6 +5,7 @@ import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
 import by.javacourse.hotel.entity.Discount;
 import by.javacourse.hotel.entity.User;
+import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.DiscountService;
 import by.javacourse.hotel.model.service.RoomService;
@@ -28,7 +29,7 @@ import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 public class GoToRoomManagementPageCommand implements Command {
     static Logger logger = LogManager.getLogger();
     @Override
-    public CommandResult execute(HttpServletRequest request) {
+    public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomService roomService = provider.getRoomService();
@@ -45,7 +46,7 @@ public class GoToRoomManagementPageCommand implements Command {
             commandResult = new CommandResult(PagePath.ROOM_MANAGEMENT_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToRoomManagementPageCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
+             throw new CommandException("Try to execute GoToRoomManagementPageCommand was failed ", e);
         }
         return commandResult;
     }

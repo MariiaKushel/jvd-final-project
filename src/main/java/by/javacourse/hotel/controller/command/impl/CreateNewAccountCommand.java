@@ -1,6 +1,7 @@
 package by.javacourse.hotel.controller.command.impl;
 
 import by.javacourse.hotel.controller.command.*;
+import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.ServiceProvider;
 import by.javacourse.hotel.model.service.UserService;
@@ -20,7 +21,7 @@ public class CreateNewAccountCommand implements Command {
     static Logger logger = LogManager.getLogger();
 
     @Override
-    public CommandResult execute(HttpServletRequest request) {
+    public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
         Map<String, String> userData = (Map<String, String>) session.getAttribute(USER_DATA_SES);
         cleanWrongMessage(userData);
@@ -39,7 +40,7 @@ public class CreateNewAccountCommand implements Command {
             }
         } catch (ServiceException e) {
             logger.error("Try to execute CreateNewAccountCommand was failed" + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
+             throw new CommandException("Try to execute CreateNewAccountCommand was failed", e);
         }
         return commandResult;
     }

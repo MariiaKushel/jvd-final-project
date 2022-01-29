@@ -5,6 +5,7 @@ import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
 import by.javacourse.hotel.entity.Room;
 import by.javacourse.hotel.entity.RoomOrder;
+import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.RoomOrderService;
 import by.javacourse.hotel.model.service.RoomService;
@@ -31,7 +32,7 @@ public class FindOrderByPrepaymentCommand implements Command {
     static Logger logger = LogManager.getLogger();
 
     @Override
-    public CommandResult execute(HttpServletRequest request) {
+    public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
         Map<String, String> searchParameters = new HashMap<>();
         searchParameters.put(PREPAYMENT_ATR, request.getParameter(PREPAYMENT));
@@ -49,7 +50,7 @@ public class FindOrderByPrepaymentCommand implements Command {
             commandResult = new CommandResult(PagePath.ORDER_MANAGEMENT_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindOrderByPrepaymentCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
+             throw new CommandException("Try to execute FindOrderByPrepaymentCommand was failed ", e);
         }
         return commandResult;
     }

@@ -3,6 +3,7 @@ package by.javacourse.hotel.controller.command.impl;
 import by.javacourse.hotel.controller.command.Command;
 import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
+import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.DescriptionService;
 import by.javacourse.hotel.model.service.RoomService;
@@ -24,7 +25,7 @@ public class UpdateDescriptionCommand implements Command {
     static Logger logger = LogManager.getLogger();
 
     @Override
-    public CommandResult execute(HttpServletRequest request) {
+    public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
         Map<String, String> descriptionData = (Map<String, String>) session.getAttribute(DESCRIPTION_DATA_SES);
         System.out.println("descriptionData0 "+descriptionData);
@@ -51,7 +52,7 @@ public class UpdateDescriptionCommand implements Command {
             commandResult = new CommandResult(PagePath.UPDATE_ROOM_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute UpdateDescriptionCommand was failed" + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
+             throw new CommandException("Try to execute UpdateDescriptionCommand was failed", e);
         }
         return commandResult;
     }

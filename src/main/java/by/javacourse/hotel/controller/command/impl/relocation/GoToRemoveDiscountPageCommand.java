@@ -4,6 +4,7 @@ import by.javacourse.hotel.controller.command.Command;
 import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
 import by.javacourse.hotel.entity.Discount;
+import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.DiscountService;
 import by.javacourse.hotel.model.service.ServiceProvider;
@@ -27,7 +28,7 @@ public class GoToRemoveDiscountPageCommand implements Command {
     static Logger logger = LogManager.getLogger();
 
     @Override
-    public CommandResult execute(HttpServletRequest request) {
+    public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
         session.removeAttribute(WRONG_DISCOUNT_ID_SES);
         session.removeAttribute(REMOVE_DISCOUNT_RESULT);
@@ -49,7 +50,7 @@ public class GoToRemoveDiscountPageCommand implements Command {
             commandResult = new CommandResult(PagePath.REMOVE_DISCOUNT_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToRemoveDiscountPageCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
+             throw new CommandException("Try to execute GoToRemoveDiscountPageCommand was failed ", e);
         }
         return commandResult;
     }

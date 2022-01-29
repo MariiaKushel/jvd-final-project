@@ -2,6 +2,7 @@ package by.javacourse.hotel.controller.command.impl;
 
 import by.javacourse.hotel.controller.command.*;
 import by.javacourse.hotel.entity.Room;
+import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.ImageService;
 import by.javacourse.hotel.model.service.RoomService;
@@ -41,7 +42,11 @@ public class FindAllVisibleRoomsCommand implements Command {
             commandResult = new CommandResult(PagePath.SHOW_ROOM_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindAllVisibleRoomsCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            try {
+                throw new CommandException("Try to execute FindAllVisibleRoomsCommand was failed ", e);
+            } catch (CommandException ex) {
+                ex.printStackTrace();
+            }
         }
         return commandResult;
     }

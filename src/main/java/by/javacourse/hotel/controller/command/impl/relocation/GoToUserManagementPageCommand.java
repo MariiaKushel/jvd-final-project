@@ -5,6 +5,7 @@ import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
 import by.javacourse.hotel.entity.Discount;
 import by.javacourse.hotel.entity.User;
+import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.DiscountService;
 import by.javacourse.hotel.model.service.ServiceProvider;
@@ -31,7 +32,7 @@ public class GoToUserManagementPageCommand implements Command {
     static Logger logger = LogManager.getLogger();
 
     @Override
-    public CommandResult execute(HttpServletRequest request) {
+    public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
         List<String> statuses = Stream.of(User.Status.values())
                 .map(e -> e.name())
@@ -52,7 +53,7 @@ public class GoToUserManagementPageCommand implements Command {
             commandResult = new CommandResult(PagePath.USER_MANAGEMENT_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToUserManagementPageCommand was failed" + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
+             throw new CommandException("Try to execute GoToUserManagementPageCommand was failed", e);
         }
         return commandResult;
     }

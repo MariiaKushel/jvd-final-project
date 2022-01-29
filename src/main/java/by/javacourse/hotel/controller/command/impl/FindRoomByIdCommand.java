@@ -5,6 +5,7 @@ import by.javacourse.hotel.entity.Image;
 import by.javacourse.hotel.entity.Review;
 import by.javacourse.hotel.entity.Room;
 import by.javacourse.hotel.entity.Description;
+import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.*;
 import by.javacourse.hotel.util.CurrentPageExtractor;
@@ -30,7 +31,7 @@ public class FindRoomByIdCommand implements Command {
     static Logger logger = LogManager.getLogger();
 
     @Override
-    public CommandResult execute(HttpServletRequest request) {
+    public CommandResult execute(HttpServletRequest request) throws CommandException {
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomService roomService = provider.getRoomService();
         ImageService imageService = provider.getImageService();
@@ -70,7 +71,7 @@ public class FindRoomByIdCommand implements Command {
             commandResult = new CommandResult(PagePath.ROOM_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindRoomByIdCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
+             throw new CommandException("Try to execute FindRoomByIdCommand was failed ", e);
         }
         return commandResult;
     }

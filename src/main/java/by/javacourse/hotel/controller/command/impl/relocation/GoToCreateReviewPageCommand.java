@@ -5,6 +5,7 @@ import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
 import by.javacourse.hotel.entity.Room;
 import by.javacourse.hotel.entity.RoomOrder;
+import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.ReviewService;
 import by.javacourse.hotel.model.service.RoomOrderService;
@@ -31,7 +32,7 @@ public class GoToCreateReviewPageCommand implements Command {
     private static final List<Integer> marks = Arrays.asList(1, 2, 3, 4, 5);
 
     @Override
-    public CommandResult execute(HttpServletRequest request) {
+    public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
 
         Map<String, String> reviewData = new HashMap<>();
@@ -62,7 +63,7 @@ public class GoToCreateReviewPageCommand implements Command {
             commandResult = new CommandResult(PagePath.CREATE_REVIEW_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToCreateReviewPageCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
+             throw new CommandException("Try to execute GoToCreateReviewPageCommand was failed", e);
         }
         return commandResult;
     }

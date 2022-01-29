@@ -4,6 +4,7 @@ import by.javacourse.hotel.controller.command.Command;
 import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
 import by.javacourse.hotel.entity.RoomOrder;
+import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.RoomOrderService;
 import by.javacourse.hotel.model.service.ServiceProvider;
@@ -22,7 +23,7 @@ public class UpdateOrderCommand implements Command {
     static Logger logger = LogManager.getLogger();
 
     @Override
-    public CommandResult execute(HttpServletRequest request) {
+    public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
 
         ServiceProvider provider = ServiceProvider.getInstance();
@@ -39,7 +40,7 @@ public class UpdateOrderCommand implements Command {
             commandResult = new CommandResult(PagePath.CANCEL_ORDER_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute CancelOrderCommand was failed" + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
+             throw new CommandException("Try to execute CancelOrderCommand was failed", e);
         }
         return commandResult;
     }

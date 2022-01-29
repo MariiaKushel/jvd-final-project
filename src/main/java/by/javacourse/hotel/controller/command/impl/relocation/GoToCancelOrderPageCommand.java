@@ -5,6 +5,7 @@ import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
 import by.javacourse.hotel.entity.Room;
 import by.javacourse.hotel.entity.RoomOrder;
+import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.RoomOrderService;
 import by.javacourse.hotel.model.service.RoomService;
@@ -31,7 +32,7 @@ public class GoToCancelOrderPageCommand implements Command {
     static Logger logger = LogManager.getLogger();
 
     @Override
-    public CommandResult execute(HttpServletRequest request) {
+    public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
 
         Map<String, String> searchParameters = new HashMap<>();
@@ -58,7 +59,7 @@ public class GoToCancelOrderPageCommand implements Command {
             commandResult = new CommandResult(PagePath.CANCEL_ORDER_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToCancelOrderPageCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            throw new CommandException("Try to execute GoToCancelOrderPageCommand was failed", e);
         }
         return commandResult;
     }

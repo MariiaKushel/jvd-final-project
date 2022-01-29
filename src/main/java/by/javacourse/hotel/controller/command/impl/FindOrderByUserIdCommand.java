@@ -5,6 +5,7 @@ import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
 import by.javacourse.hotel.entity.Review;
 import by.javacourse.hotel.entity.RoomOrder;
+import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.ReviewService;
 import by.javacourse.hotel.model.service.RoomOrderService;
@@ -32,7 +33,7 @@ public class FindOrderByUserIdCommand implements Command {
     static Logger logger = LogManager.getLogger();
 
     @Override
-    public CommandResult execute(HttpServletRequest request) {
+    public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
         long userId = (Long) session.getAttribute(CURRENT_USER_ID);
         ServiceProvider provider = ServiceProvider.getInstance();
@@ -53,7 +54,7 @@ public class FindOrderByUserIdCommand implements Command {
             commandResult = new CommandResult(PagePath.CLIENT_ORDERS_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindOrderByUserIdCommand was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
+             throw new CommandException("Try to execute FindOrderByUserIdCommand was failed ", e);
         }
         return commandResult;
     }

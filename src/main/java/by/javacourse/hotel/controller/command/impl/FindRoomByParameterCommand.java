@@ -9,6 +9,7 @@ import static by.javacourse.hotel.controller.command.RequestParameter.*;
 import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 import by.javacourse.hotel.entity.Room;
+import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.RoomService;
 import by.javacourse.hotel.model.service.ServiceProvider;
@@ -25,7 +26,7 @@ public class FindRoomByParameterCommand implements Command {
     static Logger logger = LogManager.getLogger();
 
     @Override
-    public CommandResult execute(HttpServletRequest request) {
+    public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
         Map<String, String> searchParameters = new HashMap<>();
         updateSearchParametersFromRequest(request, searchParameters);
@@ -43,7 +44,7 @@ public class FindRoomByParameterCommand implements Command {
             commandResult = new CommandResult(PagePath.BOOK_ROOM_PAGE, FORWARD);
         } catch (ServiceException e) {
             logger.error("Try to execute FindRoomByParameter was failed " + e);
-            commandResult = new CommandResult(PagePath.ERROR_500_PAGE, ERROR, SC_INTERNAL_SERVER_ERROR, e.getMessage());
+             throw new CommandException("Try to execute FindRoomByParameter was failed ", e);
         }
         return commandResult;
     }

@@ -32,6 +32,8 @@
             <td>Request from ${pageContext.errorData.requestURI} is failed</br>
                 Servlet name: ${pageContext.errorData.servletName}</br>
                 Status code: ${pageContext.errorData.statusCode}</br>
+              <%--  Exception: ${pageContext.exception}</br>
+                Message: ${pageContext.exception.message}--%>
                 <c:choose>
                     <c:when test="${not empty pageContext.exception}">
                         Exception: ${pageContext.exception}</br>
