@@ -3,7 +3,15 @@ package by.javacourse.hotel.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * {@code RoomOrder} class represent a order
+ * @see Entity
+ */
 public class RoomOrder extends Entity {
+
+    /**
+     * {@code Status} enum represent a order status
+     */
     public enum Status {
         NEW, CONFIRMED, IN_PROGRESS, CANCELED_BY_CLIENT, CANCELED_BY_ADMIN, COMPLETED
     }
@@ -21,10 +29,17 @@ public class RoomOrder extends Entity {
         this.status = Status.NEW;
     }
 
+    /**
+     * {@code newBuilder} method to get {@link Builder}
+     * @return {@link Builder}
+     */
     public static Builder newBuilder() {
         return new RoomOrder().new Builder();
     }
 
+    /**
+     * {@code Builder} class to build {@link RoomOrder}
+     */
     public class Builder {
         private Builder() {
         }
@@ -54,27 +69,28 @@ public class RoomOrder extends Entity {
             return this;
 
         }
+
         public Builder setTo(LocalDate to) {
             RoomOrder.this.to = to;
             return this;
         }
 
-        public Builder setAmount (BigDecimal amount){
+        public Builder setAmount(BigDecimal amount) {
             RoomOrder.this.amount = amount;
             return this;
         }
 
-        public Builder setStatus (Status status){
+        public Builder setStatus(Status status) {
             RoomOrder.this.status = status;
             return this;
         }
 
-        public Builder setPrepayment(boolean prepayment){
+        public Builder setPrepayment(boolean prepayment) {
             RoomOrder.this.prepayment = prepayment;
             return this;
         }
 
-        public RoomOrder build(){
+        public RoomOrder build() {
             return RoomOrder.this;
         }
     }

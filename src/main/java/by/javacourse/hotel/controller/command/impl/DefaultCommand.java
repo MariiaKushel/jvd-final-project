@@ -3,7 +3,6 @@ package by.javacourse.hotel.controller.command.impl;
 import by.javacourse.hotel.controller.command.Command;
 import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
-import by.javacourse.hotel.controller.command.SessionAttribute;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 

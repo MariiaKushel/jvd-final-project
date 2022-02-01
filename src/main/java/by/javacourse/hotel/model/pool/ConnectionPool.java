@@ -14,6 +14,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * {@code ConnectionPool} class represent thread-safe pool of connection to database
+ */
 public class ConnectionPool {
     private static Logger logger = LogManager.getLogger();
 
@@ -53,6 +56,9 @@ public class ConnectionPool {
         }
     }
 
+    /**
+     * Constructor creates queue of free {@link ProxyConnection}
+     */
     private ConnectionPool() {
         for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
             try {
@@ -70,6 +76,11 @@ public class ConnectionPool {
         }
     }
 
+    /**
+     * {@code getInstance} method represent thread-safe singleton
+     *
+     * @return instance of {@link ConnectionPool}
+     */
     public static ConnectionPool getInstance() {
         if (!instanceIsExist.get()) {
             instanceLocker.lock();
@@ -84,6 +95,11 @@ public class ConnectionPool {
         return instance;
     }
 
+    /**
+     * {@code getConnection} method get free {@link Connection} from {@link ConnectionPool}
+     *
+     * @return free {@link Connection} from {@link ConnectionPool}
+     */
     public Connection getConnection() {
         ProxyConnection proxyConnection = null;
         try {
@@ -96,6 +112,9 @@ public class ConnectionPool {
         return proxyConnection;
     }
 
+    /**
+     * {@code releaseConnection} method release {@link Connection} into {@link ConnectionPool}
+     */
     public void releaseConnection(Connection connection) {
         if (connection instanceof ProxyConnection proxyConnection) {
             try {
@@ -111,6 +130,9 @@ public class ConnectionPool {
         }
     }
 
+    /**
+     * {@code destroyPool} method destroy {@link ConnectionPool}
+     */
     public void destroyPool() {
         for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
             try {
@@ -121,6 +143,25 @@ public class ConnectionPool {
             } catch (SQLException e) {
                 logger.error("Try to destroy connection into pool was failed, SQLException");
             }
+        }
+        deregisterDriver();
+    }
+
+    /**
+     * {@code destroyPoolOther} other version of method {@code destroyPool} with clean both of queue
+     */
+    public void destroyPoolOther() {
+        try {
+            while (!freeConnections.isEmpty() && !givenAwayConnections.isEmpty()) {
+                if (!freeConnections.isEmpty()) {
+                    freeConnections.remove().reallyClose();
+                }
+                if (!givenAwayConnections.isEmpty()) {
+                    givenAwayConnections.remove().reallyClose();
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("Try to destroy connection into pool was failed, SQLException");
         }
         deregisterDriver();
     }

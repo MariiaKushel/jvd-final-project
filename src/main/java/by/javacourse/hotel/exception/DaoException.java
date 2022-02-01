@@ -1,5 +1,9 @@
 package by.javacourse.hotel.exception;
 
+/**
+ * {@code DaoException} class represent a checked exception from {@link by.javacourse.hotel.model.dao}
+ * @see Exception
+ */
 public class DaoException extends Exception {
     public DaoException() {
 

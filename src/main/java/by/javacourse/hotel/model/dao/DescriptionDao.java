@@ -1,14 +1,10 @@
 package by.javacourse.hotel.model.dao;
 
 import by.javacourse.hotel.entity.Description;
-import by.javacourse.hotel.exception.DaoException;
 
-import java.util.Optional;
-
+/**
+ * {@code DescriptionDao} class implements functional of {@link BaseDao}
+ */
 public interface DescriptionDao extends BaseDao<Long, Description> {
-
-    Optional<Description> findDescriptionById(long descriptionId) throws DaoException;
-
-    boolean update1(Description description) throws DaoException;
 
 }

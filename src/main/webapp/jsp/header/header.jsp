@@ -6,17 +6,16 @@
 <fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="properties.pagecontent"/>
 
-<fmt:message key="title.header" var="title"/>
+<fmt:message key="language.en" var="en"/>
+<fmt:message key="language.ru" var="ru"/>
 <fmt:message key="message.name" var="name"/>
-<fmt:message key="message.phone" var="phone"/>
 <fmt:message key="message.need_account_to_book1" var="info_part1"/>
 <fmt:message key="message.need_account_to_book2" var="info_part2"/>
 <fmt:message key="message.need_account_to_book3" var="info_part3"/>
 <fmt:message key="message.need_account_to_book4" var="info_part4"/>
 <fmt:message key="message.need_account_to_book5" var="info_part5"/>
-<fmt:message key="language.ru" var="ru"/>
-<fmt:message key="language.en" var="en"/>
-
+<fmt:message key="message.phone" var="phone"/>
+<fmt:message key="title.header" var="title"/>
 
 <!DOCTYPE html>
 <html>

@@ -1,7 +1,11 @@
 package by.javacourse.hotel.model.service;
 
+import by.javacourse.hotel.model.dao.BaseDao;
 import by.javacourse.hotel.model.service.impl.*;
 
+/**
+ * {@code ServiceProvider} class hold and provide instance of all service classes
+ */
 public class ServiceProvider {
 
     private UserService userService = new UserServiceImpl();
@@ -11,7 +15,6 @@ public class ServiceProvider {
     private ReviewService reviewService = new ReviewServiceImpl();
     private RoomOrderService roomOrderService = new RoomOrderServiceImpl();
     private DiscountService discountService = new DiscountServiceImpl();
-    //TODO add more services
 
     private ServiceProvider() {
     }

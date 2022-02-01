@@ -21,7 +21,7 @@ public class ImageServiceImpl implements ImageService {
     private ImageDao imageDao = provider.getImageDao();
 
     @Override
-    public boolean addNewImage(byte[] imageAsBytes, String roomId) throws ServiceException {
+    public boolean createImage(byte[] imageAsBytes, String roomId) throws ServiceException {
         boolean isCreate = false;
         Image image = Image.newBuilder()
                 .setRoomId(Long.parseLong(roomId))
@@ -30,10 +30,10 @@ public class ImageServiceImpl implements ImageService {
         try {
             isCreate = imageDao.create(image);
         } catch (NumberFormatException e) {
-            logger.error("Not valid room id");
+            logger.info("Not valid room id");
         } catch (DaoException e) {
-            logger.error("Try to addNewImage was failed " + e);
-            throw new ServiceException("Try to addNewImage was failed", e);
+            logger.error("Try to createImage was failed " + e);
+            throw new ServiceException("Try to createImage was failed", e);
         }
         return isCreate;
     }
@@ -51,30 +51,6 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Optional<Image> findPreviewImageByRoomId(long roomId) throws ServiceException {
-        Optional<Image> image = Optional.empty();
-        try {
-            image = imageDao.findFirstImageByRoomId(roomId);
-        } catch (DaoException e) {
-            logger.error("Try to findPreviewImageByRoomId was failed " + e);
-            throw new ServiceException("Try to findPreviewImageByRoomId was failed", e);
-        }
-        return image;
-    }
-
-    @Override
-    public List<Image> findPreviewByVisibleRoom() throws ServiceException {
-        List<Image> images = new ArrayList<>();
-        try {
-            images = imageDao.findPreviewByVisibleRoom();
-        } catch (DaoException e) {
-            logger.error("Try to findPreviewByVisibleRoom was failed " + e);
-            throw new ServiceException("Try to findPreviewByVisibleRoom was failed", e);
-        }
-        return images;
-    }
-
-    @Override
     public boolean changePreview(String newPreviewId, String roomId) throws ServiceException {
         boolean result = false;
         try {
@@ -82,7 +58,7 @@ public class ImageServiceImpl implements ImageService {
             long roomIdL = Long.parseLong(roomId);
             result = imageDao.changePreview(newPreviewIdL, roomIdL);
         } catch (NumberFormatException e) {
-            logger.info("Not valid preview or room id");
+            logger.info("Not valid image or room id");
         } catch (DaoException e) {
             logger.error("Try to changePreview was failed " + e);
             throw new ServiceException("Try to changePreview was failed", e);

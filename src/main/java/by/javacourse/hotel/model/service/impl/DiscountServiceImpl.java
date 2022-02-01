@@ -23,6 +23,7 @@ import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
 public class DiscountServiceImpl implements DiscountService {
     static Logger logger = LogManager.getLogger();
+
     private DaoProvider provider = DaoProvider.getInstance();
     private DiscountDao discountDao = provider.getDiscountDao();
 
@@ -41,7 +42,6 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public List<Discount> findDiscountByRate(Map<String, String> parameters) throws ServiceException {
         List<Discount> discounts = new ArrayList<>();
-
         try {
             String tempRate = parameters.get(RATE_ATR);
             if (!tempRate.isEmpty()) {
@@ -66,9 +66,9 @@ public class DiscountServiceImpl implements DiscountService {
         Optional<Discount> discount = Optional.empty();
         try {
             long disId = Long.parseLong(discountId);
-            discount = discountDao.findDiscountById(disId);
+            discount = discountDao.findEntityById(disId);
         } catch (NumberFormatException e) {
-            logger.error("Not valid discount id");
+            logger.info("Not valid discount id");
             return discount;
         } catch (DaoException e) {
             logger.error("Try to findDiscountById was failed " + e);
@@ -78,24 +78,40 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public boolean updateDiscount(Map<String, String> parameters) throws ServiceException {
+    public Optional<Discount> findDiscountByUserId(String userId) throws ServiceException {
+        Optional<Discount> discount = Optional.empty();
+        try {
+            long userIdL = Long.parseLong(userId);
+            discount = discountDao.findDiscountByUserId(userIdL);
+        } catch (NumberFormatException e) {
+            logger.info("Not valid user id");
+            return discount;
+        } catch (DaoException e) {
+            logger.error("Try to findDiscountByUserId was failed " + e);
+            throw new ServiceException("Try to findDiscountByUserId was failed", e);
+        }
+        return discount;
+    }
+
+    @Override
+    public boolean updateDiscount(Map<String, String> discountData) throws ServiceException {
         boolean result = false;
-        String discountId = parameters.get(DISCOUNT_ID_SES);
-        String rate = parameters.get(RATE_SES);
+        String discountId = discountData.get(DISCOUNT_ID_SES);
+        String rate = discountData.get(RATE_SES);
         try {
             DiscountValidator validator = DiscountValidatorImpl.getInstance();
             if (!validator.validateRate(rate)) {
-                logger.error("Not valid rate");
-                parameters.put(WRONG_RATE_SES, DiscountValidator.WRONG_DATA_MARKER);
+                logger.info("Not valid rate");
+                discountData.put(WRONG_RATE_SES, DiscountValidator.WRONG_DATA_MARKER);
                 return result;
             }
             Discount discount = Discount.newBuilder()
                     .setEntityId(Long.parseLong(discountId))
                     .setRate(Integer.parseInt(rate))
                     .build();
-            result = discountDao.update1(discount);
+            result = discountDao.update(discount);
         } catch (NumberFormatException e) {
-            logger.error("Not valid discount id");
+            logger.info("Not valid discount id");
             return result;
         } catch (DaoException e) {
             logger.error("Try to updateDiscount was failed " + e);
@@ -105,14 +121,14 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public boolean createDiscount(Map<String, String> parameters) throws ServiceException {
+    public boolean createDiscount(Map<String, String> discountData) throws ServiceException {
         boolean result = false;
-        String rate = parameters.get(RATE_SES);
+        String rate = discountData.get(RATE_SES);
         try {
             DiscountValidator validator = DiscountValidatorImpl.getInstance();
             if (!validator.validateRate(rate)) {
-                logger.error("Not valid rate");
-                parameters.put(WRONG_RATE_SES, DiscountValidator.WRONG_DATA_MARKER);
+                logger.info("Not valid rate");
+                discountData.put(WRONG_RATE_SES, DiscountValidator.WRONG_DATA_MARKER);
                 return result;
             }
             Discount discount = Discount.newBuilder()

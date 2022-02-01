@@ -21,12 +21,10 @@ import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
 public class RoomServiceImpl implements RoomService {
     static Logger logger = LogManager.getLogger();
+
     private static final String DEFAULT_MIN_PRICE = "0";
     private static final String DEFAULT_MAX_PRICE = "9999999.99";
     private static final int[] DEFAULT_SLEEPING_PLACES = new int[0];
-    private static final int DEFAULT_NUMBER = -1;
-    private static final int DEFAULT_SlEEPING_PLACE = -1;
-
     private DaoProvider provider = DaoProvider.getInstance();
     private RoomDao roomDao = provider.getRoomDao();
 
@@ -60,9 +58,9 @@ public class RoomServiceImpl implements RoomService {
         Optional<Room> room = Optional.empty();
         try {
             long roomIdL = Long.parseLong(roomId);
-            room = roomDao.findRoomById(roomIdL);
+            room = roomDao.findEntityById(roomIdL);
         } catch (NumberFormatException e) {
-            logger.info("Not valid roomId");
+            logger.info("Not valid room id");
         } catch (DaoException e) {
             logger.error("Try to find rooms by id was failed " + e);
             throw new ServiceException("Try to find rooms by id  was failed", e);
@@ -158,7 +156,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public BigDecimal findMinPrice() throws ServiceException {
-        BigDecimal minPrice = new BigDecimal(DEFAULT_MIN_PRICE);
+        BigDecimal minPrice = BigDecimal.ZERO;
         try {
             minPrice = roomDao.minPrice();
         } catch (DaoException e) {
@@ -170,7 +168,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public BigDecimal findMaxPrice() throws ServiceException {
-        BigDecimal maxPrice = new BigDecimal(DEFAULT_MAX_PRICE);
+        BigDecimal maxPrice = BigDecimal.ZERO;
         try {
             maxPrice = roomDao.maxPrice();
         } catch (DaoException e) {
@@ -230,62 +228,18 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<Room> findRoomByParameters(Map<String, String> parameters) throws ServiceException {
-        List<Room> rooms = new ArrayList<>();
-        RoomValidator validator = RoomValidatorImpl.getInstance();
-        if (!validator.validateSearchParameterAdmin(parameters)) {
-            logger.info("Some search parameters are not valid");
-            return rooms;
-        }
-        String tempNumber = parameters.get(ROOM_NUMBER_ATR);
-        int number = tempNumber.isEmpty()
-                ? DEFAULT_NUMBER
-                : Integer.parseInt(tempNumber);
-        String tempPlace = parameters.get(SLEEPING_PLACES_ATR);
-        int sleepingPlace = tempPlace.isEmpty()
-                ? DEFAULT_SlEEPING_PLACE
-                : Integer.parseInt(tempPlace);
-        String tempPriceFrom = parameters.get(PRICE_FROM_ATR);
-        BigDecimal priceFrom = tempPriceFrom.isEmpty()
-                ? new BigDecimal(DEFAULT_MIN_PRICE)
-                : new BigDecimal(tempPriceFrom);
-        String tempPriceTo = parameters.get(PRICE_TO_ATR);
-        BigDecimal priceTo = tempPriceTo.isEmpty()
-                ? new BigDecimal(DEFAULT_MAX_PRICE)
-                : new BigDecimal(tempPriceTo);
-        String tempRatingFrom = parameters.get(RATING_FROM_ATR);
-        /*BigDecimal ratingFrom = tempRatingFrom.isEmpty()
-                ? DEFAULT_MIN_PRICE
-                : new BigDecimal(tempRatingFrom);
-        String tempRatingTo = parameters.get(RATING_TO_ATR);
-        BigDecimal ratingTo = tempRatingTo.isEmpty()
-                ? DEFAULT_MAX_PRICE
-                : new BigDecimal(tempRatingTo);*/
-        String tempVisible = parameters.get(VISIBLE_ATR);
-        boolean[] visible = tempVisible.isEmpty()
-                ? new boolean[0]
-                : new boolean[]{Boolean.parseBoolean(tempVisible)};
-
-
-        //roomDao.findRoomByParameters(parameters);
-
-
-        return rooms;
-    }
-
-    @Override
-    public boolean createRoom(Map<String, String> parameters) throws ServiceException {
+    public boolean createRoom(Map<String, String> roomData) throws ServiceException {
         boolean isCreated = false;
         RoomValidator validator = RoomValidatorImpl.getInstance();
-        if (!validator.validateRoomData(parameters)) {
+        if (!validator.validateRoomData(roomData)) {
             logger.info("Not valid data");
             return isCreated;
         }
-        int number = Integer.parseInt(parameters.get(ROOM_NUMBER_SES));
-        int sleepingPlace = Integer.parseInt(parameters.get(SLEEPING_PLACE_SES));
-        BigDecimal price = new BigDecimal(parameters.get(PRICE_SES));
-        boolean visible = parameters.get(VISIBLE_SES) != null
-                ? Boolean.parseBoolean(parameters.get(VISIBLE_SES))
+        int number = Integer.parseInt(roomData.get(ROOM_NUMBER_SES));
+        int sleepingPlace = Integer.parseInt(roomData.get(SLEEPING_PLACE_SES));
+        BigDecimal price = new BigDecimal(roomData.get(PRICE_SES));
+        boolean visible = roomData.get(VISIBLE_SES) != null
+                ? Boolean.parseBoolean(roomData.get(VISIBLE_SES))
                 : Boolean.FALSE;
         Room room = Room.newBuilder()
                 .setNumber(number)
@@ -304,22 +258,22 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public boolean updateRoom(Map<String, String> parameters) throws ServiceException {
+    public boolean updateRoom(Map<String, String> roomData) throws ServiceException {
         boolean isUpdated = false;
         RoomValidator validator = RoomValidatorImpl.getInstance();
-        if (!validator.validateRoomData(parameters)) {
+        if (!validator.validateRoomData(roomData)) {
             logger.info("Not valid data");
             return isUpdated;
         }
-        int number = Integer.parseInt(parameters.get(ROOM_NUMBER_SES));
-        int sleepingPlace = Integer.parseInt(parameters.get(SLEEPING_PLACE_SES));
-        BigDecimal price = new BigDecimal(parameters.get(PRICE_SES));
-        boolean visible = parameters.get(VISIBLE_SES) != null
-                ? Boolean.parseBoolean(parameters.get(VISIBLE_SES))
+        int number = Integer.parseInt(roomData.get(ROOM_NUMBER_SES));
+        int sleepingPlace = Integer.parseInt(roomData.get(SLEEPING_PLACE_SES));
+        BigDecimal price = new BigDecimal(roomData.get(PRICE_SES));
+        boolean visible = roomData.get(VISIBLE_SES) != null
+                ? Boolean.parseBoolean(roomData.get(VISIBLE_SES))
                 : Boolean.FALSE;
         try {
-            long roomId = Long.parseLong(parameters.get(ROOM_ID_SES));
-            BigDecimal rating = new BigDecimal(parameters.get(RATING_SES));
+            long roomId = Long.parseLong(roomData.get(ROOM_ID_SES));
+            BigDecimal rating = new BigDecimal(roomData.get(RATING_SES));
             Room room = Room.newBuilder()
                     .setEntityId(roomId)
                     .setNumber(number)
@@ -329,7 +283,7 @@ public class RoomServiceImpl implements RoomService {
                     .setRating(rating)
                     .build();
 
-            isUpdated = roomDao.update1(room);
+            isUpdated = roomDao.update(room);
         } catch (NumberFormatException e) {
             logger.info("Not valid room id");
         } catch (DaoException e) {

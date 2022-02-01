@@ -1,28 +1,25 @@
 package by.javacourse.hotel.controller.command;
 
+/**
+ * {@code CommandResult} class represent complex form response of {@link Command}
+ * It includes the page to which the transition should be made and sending type.
+ */
 public class CommandResult {
+
+    /**
+     * {@code SendingType} enum represent a sending type
+     */
     public enum SendingType {
-        FORWARD, REDIRECT, ERROR
+        FORWARD, REDIRECT
     }
 
     private String page;
     private SendingType sendingType;
-   /* private int errorCode;
-    private String message;*/
 
     public CommandResult(String page, SendingType sendingType) {
         this.page = page;
         this.sendingType = sendingType;
     }
-/*
-    public CommandResult(String page, SendingType sendingType, int errorCode, String message) {
-        this.page = page;
-        this.sendingType = sendingType;
-        if (sendingType == SendingType.ERROR){
-            this.errorCode = errorCode;
-            this.message = message;
-        }
-    }*/
 
     public String getPage() {
         return page;
@@ -31,12 +28,4 @@ public class CommandResult {
     public SendingType getSendingType() {
         return sendingType;
     }
-
-    /*public int getErrorCode() {
-        return errorCode;
-    }
-
-    public String getMessage(){
-        return  message;
-    }*/
 }

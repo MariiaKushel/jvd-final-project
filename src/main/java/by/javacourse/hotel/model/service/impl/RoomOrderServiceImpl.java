@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class RoomOrderServiceImpl implements RoomOrderService {
@@ -62,7 +63,6 @@ public class RoomOrderServiceImpl implements RoomOrderService {
                     .setPrepayment(prepayment)
                     .build();
 
-
             result = roomOrderDao.createOrderWithRoomStates(order, days);
         } catch (NumberFormatException | DateTimeParseException e) {
             logger.info("Not valid data");
@@ -80,9 +80,8 @@ public class RoomOrderServiceImpl implements RoomOrderService {
         try {
             LocalDate dateFrom = LocalDate.parse(from);
             LocalDate dateTo = LocalDate.parse(to);
-            Period period = Period.between(dateFrom, dateTo);
-            days = period.getDays();
-            if (days < 1) {
+            days = (int)ChronoUnit.DAYS.between(dateFrom, dateTo);
+            if (days < 1 && days > 180) {
                 logger.error("Try to countDays was failed, wrong date range");
                 throw new ServiceException("Try to countDays  was failed, wrong date range");
             }
@@ -115,24 +114,6 @@ public class RoomOrderServiceImpl implements RoomOrderService {
             throw new ServiceException("Try to countTotalAmount  was failed");
         }
         return totalAmount;
-    }
-
-    @Override
-    public List<RoomOrder> findOrderByPrepayment(Map<String, String> parameters) throws ServiceException {
-        List<RoomOrder> orders = new ArrayList<>();
-        String tempPrepayment = parameters.get(PREPAYMENT_ATR);
-        try {
-            if (!tempPrepayment.isEmpty()) {
-                boolean prepayment = Boolean.parseBoolean(tempPrepayment);
-                orders = roomOrderDao.findOrderByPrepayment(prepayment);
-            } else {
-                orders = roomOrderDao.findAll();
-            }
-        } catch (DaoException e) {
-            logger.error("Try to find Order By Prepayment was failed " + e);
-            throw new ServiceException("Try to find Order By Prepayment was failed", e);
-        }
-        return orders;
     }
 
     @Override
@@ -178,6 +159,24 @@ public class RoomOrderServiceImpl implements RoomOrderService {
         } catch (DaoException e) {
             logger.error("Try to find Order By date range was failed " + e);
             throw new ServiceException("Try to find Order By date range was failed", e);
+        }
+        return orders;
+    }
+
+    @Override
+    public List<RoomOrder> findOrderByPrepayment(Map<String, String> parameters) throws ServiceException {
+        List<RoomOrder> orders = new ArrayList<>();
+        String tempPrepayment = parameters.get(PREPAYMENT_ATR);
+        try {
+            if (!tempPrepayment.isEmpty()) {
+                boolean prepayment = Boolean.parseBoolean(tempPrepayment);
+                orders = roomOrderDao.findOrderByPrepayment(prepayment);
+            } else {
+                orders = roomOrderDao.findAll();
+            }
+        } catch (DaoException e) {
+            logger.error("Try to find Order By Prepayment was failed " + e);
+            throw new ServiceException("Try to find Order By Prepayment was failed", e);
         }
         return orders;
     }
@@ -230,16 +229,13 @@ public class RoomOrderServiceImpl implements RoomOrderService {
     }
 
     @Override
-    public Optional<RoomOrder> findOrderById(Map<String, String> parameters) throws ServiceException {
+    public Optional<RoomOrder> findOrderById(String orderId) throws ServiceException {
         Optional<RoomOrder> order = Optional.empty();
-        String tempOrderId = parameters.get(ORDER_ID_SES);
         try {
-            if (!tempOrderId.isEmpty()) {
-                long orderId = Long.parseLong(tempOrderId);
-                order = roomOrderDao.findOrderById(orderId);
-            } else {
-                parameters.put(WRONG_ORDER_ID_SES, RoomOrderValidator.WRONG_DATA_MARKER);
-            }
+            long orderIdL = Long.parseLong(orderId);
+            order = roomOrderDao.findEntityById(orderIdL);
+        } catch (NumberFormatException e) {
+            logger.info("Not valid order id");
         } catch (DaoException e) {
             logger.error("Try to findOrderById was failed " + e);
             throw new ServiceException("Try to findOrderById was failed", e);
@@ -274,7 +270,7 @@ public class RoomOrderServiceImpl implements RoomOrderService {
                     .setUserId(order.getUserId())
                     .build();
 
-            result = roomOrderDao.update1(orderWithNewStatus);
+            result = roomOrderDao.update(orderWithNewStatus);
         } catch (DaoException e) {
             logger.error("Try to updateStatus was failed " + e);
             throw new ServiceException("Try to updateStatus was failed", e);

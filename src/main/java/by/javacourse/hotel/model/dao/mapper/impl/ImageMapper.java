@@ -11,6 +11,9 @@ import java.util.List;
 
 import static by.javacourse.hotel.model.dao.ColumnName.*;
 
+/**
+ * {@code ImageMapper} class implements functional of {@link Mapper}
+ */
 public class ImageMapper implements Mapper<Image> {
     private static final ImageMapper instance = new ImageMapper();
 

@@ -7,6 +7,9 @@ import jakarta.servlet.annotation.WebListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * {@code UserValidatorImpl} class implements functional of {@link ServletContextListener}
+ */
 @WebListener
 public class ServletContextListenerImpl implements ServletContextListener {
     static Logger logger = LogManager.getLogger();

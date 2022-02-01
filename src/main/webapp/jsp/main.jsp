@@ -8,12 +8,12 @@
 <fmt:setBundle basename="properties.pagecontent"/>
 
 <fmt:message key="title.main" var="title"/>
+<fmt:message key="language.en" var="en"/>
+<fmt:message key="language.ru" var="ru"/>
 <fmt:message key="message.welcom" var="message"/>
+<fmt:message key="reference.create_new_account" var="create_new_account"/>
 <fmt:message key="reference.show_rooms" var="show_rooms"/>
 <fmt:message key="reference.sing_in" var="sing_in"/>
-<fmt:message key="reference.create_new_account" var="create_new_account"/>
-<fmt:message key="language.ru" var="ru"/>
-<fmt:message key="language.en" var="en"/>
 
 <!DOCTYPE html>
 <html>

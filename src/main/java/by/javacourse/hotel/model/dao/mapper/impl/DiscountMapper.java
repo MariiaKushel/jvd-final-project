@@ -11,6 +11,9 @@ import java.util.List;
 import static by.javacourse.hotel.model.dao.ColumnName.DISCOUNT_ID;
 import static by.javacourse.hotel.model.dao.ColumnName.RATE;
 
+/**
+ * {@code DiscountMapper} class implements functional of {@link Mapper}
+ */
 public class DiscountMapper implements Mapper<Discount> {
     private static final DiscountMapper instance = new DiscountMapper();
 

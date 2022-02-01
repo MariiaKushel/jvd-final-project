@@ -11,12 +11,16 @@ import java.util.Map;
 
 import static by.javacourse.hotel.controller.command.RequestParameter.PREPAYMENT;
 import static by.javacourse.hotel.controller.command.RequestParameter.TOTAL_AMOUNT;
+import static by.javacourse.hotel.controller.command.SessionAttribute.PREPAYMENT_SES;
+import static by.javacourse.hotel.controller.command.SessionAttribute.TOTAL_AMOUNT_SES;
 import static by.javacourse.hotel.entity.RoomOrder.Status.*;
-import static by.javacourse.hotel.entity.User.Role.CLIENT;
 
+/**
+ * {@code RoomOrderValidatorImpl} class implements functional of {@link RoomOrderValidator}
+ */
 public class RoomOrderValidatorImpl implements RoomOrderValidator {
-    private static final int DEFAULT_MAX_LAST = 99999;
 
+    private static final int DEFAULT_MAX_LAST = 99999;
     private static final RoomOrderValidatorImpl instance = new RoomOrderValidatorImpl();
 
     private RoomOrderValidatorImpl() {
@@ -30,9 +34,9 @@ public class RoomOrderValidatorImpl implements RoomOrderValidator {
     @Override
     public boolean validateOrderData(Map<String, String> orderData, BigDecimal balance) {
         boolean isValid = true;
-        boolean isPrerayment = Boolean.parseBoolean(orderData.get(PREPAYMENT));
+        boolean isPrerayment = Boolean.parseBoolean(orderData.get(PREPAYMENT_SES));
         if (isPrerayment) {
-            BigDecimal totalAmount = new BigDecimal(orderData.get(TOTAL_AMOUNT));
+            BigDecimal totalAmount = new BigDecimal(orderData.get(TOTAL_AMOUNT_SES));
             isValid = balance.compareTo(totalAmount) >= 0 ? true : false;
         }
         return isValid;
@@ -88,10 +92,7 @@ public class RoomOrderValidatorImpl implements RoomOrderValidator {
         isValid = switch (oldStatus) {
             case NEW -> newStatus == CONFIRMED || newStatus == CANCELED_BY_ADMIN;
             case CONFIRMED -> newStatus == IN_PROGRESS || newStatus == CANCELED_BY_ADMIN;
-            case IN_PROGRESS -> newStatus==COMPLETED;
-          /*  case CANCELED_BY_CLIENT -> false;
-            case CANCELED_BY_ADMIN -> false;
-            case COMPLETED -> false;*/
+            case IN_PROGRESS -> newStatus == COMPLETED;
             default -> false;
         };
         return isValid;

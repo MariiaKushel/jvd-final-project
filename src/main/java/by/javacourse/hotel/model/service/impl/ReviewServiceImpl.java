@@ -23,8 +23,8 @@ import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
 public class ReviewServiceImpl implements ReviewService {
     static Logger logger = LogManager.getLogger();
-    private static final String DEFAULT_DATE_FROM = "2020-01-01";
 
+    private static final String DEFAULT_DATE_FROM = "2020-01-01";
     private DaoProvider provider = DaoProvider.getInstance();
     private ReviewDao reviewDao = provider.getReviewDao();
 
@@ -145,7 +145,7 @@ public class ReviewServiceImpl implements ReviewService {
         Optional<Review> review = Optional.empty();
         try {
             long reviewIdL = Long.parseLong(reviewId);
-            review = reviewDao.findReviewById(reviewIdL);
+            review = reviewDao.findEntityById(reviewIdL);
         } catch (NumberFormatException e) {
             logger.info("Not valid review id");
             return review;
@@ -164,7 +164,7 @@ public class ReviewServiceImpl implements ReviewService {
                .setHidden(!oldHiddenMark)
                .build();
         try {
-            isUpdate = reviewDao.update1(review);
+            isUpdate = reviewDao.update(review);
         } catch (DaoException e) {
             logger.error("Try to updateHidden was failed " + e);
             throw new ServiceException("Try to updateHidden was failed", e);

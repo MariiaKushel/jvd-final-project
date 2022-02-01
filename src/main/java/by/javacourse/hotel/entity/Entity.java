@@ -1,6 +1,10 @@
 package by.javacourse.hotel.entity;
 
+/**
+ * {@code Entity} class represent an abstract entity from database
+ */
 public abstract class Entity {
+
     private long entityId;
 
     public Entity() {

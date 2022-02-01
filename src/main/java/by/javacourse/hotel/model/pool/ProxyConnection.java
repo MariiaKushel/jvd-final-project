@@ -1,10 +1,16 @@
 package by.javacourse.hotel.model.pool;
 
+import jakarta.servlet.Filter;
+
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
+/**
+ * {@code ProxyConnection} class implements functional of {@link Connection}
+ * Delegate all methods, change method close() and add method reallyClose();
+ */
 class ProxyConnection implements Connection {
     private Connection connection;
 
@@ -12,6 +18,9 @@ class ProxyConnection implements Connection {
         this.connection = connection;
     }
 
+    /**
+     * {@code close} method set auto commit and return connection into connection pool
+     */
     @Override
     public void close() throws SQLException {
         if (!connection.getAutoCommit()) {
@@ -20,6 +29,9 @@ class ProxyConnection implements Connection {
         ConnectionPool.getInstance().releaseConnection(this);
     }
 
+    /**
+     * {@code reallyClose} method close connection
+     */
     void reallyClose() throws SQLException {
         connection.close();
     }

@@ -1,14 +1,17 @@
 package by.javacourse.hotel.model.dao.mapper.impl;
 
 import by.javacourse.hotel.entity.RoomOrder;
-import by.javacourse.hotel.entity.User;
 import by.javacourse.hotel.model.dao.mapper.Mapper;
+import by.javacourse.hotel.validator.DescriptionValidator;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * {@code RoomOrderMapper} class implements functional of {@link Mapper}
+ */
 import static by.javacourse.hotel.model.dao.ColumnName.*;
 
 public class RoomOrderMapper implements Mapper<RoomOrder> {

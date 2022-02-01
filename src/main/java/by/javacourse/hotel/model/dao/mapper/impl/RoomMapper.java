@@ -12,6 +12,9 @@ import java.util.List;
 
 import static by.javacourse.hotel.model.dao.ColumnName.*;
 
+/**
+ * {@code RoomMapper} class implements functional of {@link Mapper}
+ */
 public class RoomMapper implements Mapper<Room> {
     private static final RoomMapper instance = new RoomMapper();
 

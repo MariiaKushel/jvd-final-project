@@ -10,6 +10,9 @@ import java.util.List;
 
 import static by.javacourse.hotel.model.dao.ColumnName.*;
 
+/**
+ * {@code ReviewMapper} class implements functional of {@link Mapper}
+ */
 public class ReviewMapper implements Mapper<Review> {
     private static final ReviewMapper instanse = new ReviewMapper();
 

@@ -2,6 +2,9 @@ package by.javacourse.hotel.validator.impl;
 
 import by.javacourse.hotel.validator.DiscountValidator;
 
+/**
+ * {@code DiscountValidatorImpl} class implements functional of {@link DiscountValidator}
+ */
 public final class DiscountValidatorImpl implements DiscountValidator {
 
     private static final int DEFAULT_MAX_RATE = 100;

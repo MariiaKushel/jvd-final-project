@@ -5,20 +5,43 @@ import by.javacourse.hotel.exception.DaoException;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * {@code ReviewDao} class implements functional of {@link BaseDao}
+ */
 public interface ReviewDao extends BaseDao<Long, Review> {
 
-    List<Review> findReviewByRoomId(long reviewId) throws DaoException;
+    /**
+     * Find review by room id
+     * @param roomId - room id
+     * @return list of review or empty list if review not found
+     * @throws DaoException - if request from database was failed
+     */
+    List<Review> findReviewByRoomId(long roomId) throws DaoException;
 
+    /**
+     * Find review by date range
+     * @param from - low border of range
+     * @param to - upper border of range
+     * @return list of review or empty list if review not found
+     * @throws DaoException - if request from database was failed
+     */
     List<Review> findReviewByDateRange(LocalDate from, LocalDate to) throws DaoException;
 
+    /**
+     * Find review by user id
+     * @param userId - user id
+     * @return list of review or empty list if review not found
+     * @throws DaoException - if request from database was failed
+     */
     List<Review> findReviewByUserId(long userId) throws DaoException;
 
+    /**
+     * Find review by user id from concrete date
+     * @param userId - user id
+     * @param date - from which date should search
+     * @return list of review or empty list if review not found
+     * @throws DaoException - if request from database was failed
+     */
     List<Review> findReviewByUserIdFromDate(long userId, LocalDate date) throws DaoException;
-
-    Optional<Review> findReviewById(long reviewId) throws DaoException;
-
-    boolean update1(Review review) throws DaoException;
-
 }

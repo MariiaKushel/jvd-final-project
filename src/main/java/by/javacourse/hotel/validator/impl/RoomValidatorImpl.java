@@ -11,16 +11,13 @@ import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.WRONG_NUMBER_SES;
 
+/**
+ * {@code RoomValidatorImpl} class implements functional of {@link RoomValidator}
+ */
 public final class RoomValidatorImpl implements RoomValidator {
 
-    private static final String DEFAULT_MIN_PRICE = "0";
     private static final String DEFAULT_MAX_PRICE = "9999999.99";
-
-    private static final String DEFAULT_MIN_RATING = "0";
-    private static final String DEFAULT_MAX_RATING = "5.00";
-
     private static final int DEFAULT_MAX_NUMBER = 99999;
-
     private static final RoomValidatorImpl instance = new RoomValidatorImpl();
 
     private RoomValidatorImpl() {
@@ -53,30 +50,6 @@ public final class RoomValidatorImpl implements RoomValidator {
         try {
             BigDecimal from = new BigDecimal(priceFrom);
             BigDecimal to = new BigDecimal(priceTo);
-            isValid = from.compareTo(new BigDecimal(0)) >= 0 && from.compareTo(to) < 0;
-        } catch (NumberFormatException e) {
-            isValid = false;
-        }
-        return isValid;
-    }
-
-
-    @Override
-    public boolean validateRating(String ratingFrom, String ratingTo) {
-        boolean isValid = false;
-        if (ratingFrom.isEmpty() && ratingTo.isEmpty()) {
-            isValid = true;
-            return isValid;
-        }
-        if (ratingFrom.isEmpty()) {
-            ratingFrom = DEFAULT_MIN_RATING;
-        }
-        if (ratingTo.isEmpty()) {
-            ratingTo = DEFAULT_MAX_RATING;
-        }
-        try {
-            BigDecimal from = new BigDecimal(ratingFrom);
-            BigDecimal to = new BigDecimal(ratingTo);
             isValid = from.compareTo(new BigDecimal(0)) >= 0 && from.compareTo(to) < 0;
         } catch (NumberFormatException e) {
             isValid = false;
@@ -132,29 +105,6 @@ public final class RoomValidatorImpl implements RoomValidator {
         String priceTo = searchParameter.get(PRICE_TO_ATR);
 
         isValid = validateDateRange(dateFrom, dateTo) && validatePriceRange(priceFrom, priceTo);
-        return isValid;
-    }
-
-    public boolean validateSearchParameterAdmin(Map<String, String> searchParameter) {
-        boolean isValid = true;
-        String number = searchParameter.get(ROOM_NUMBER_ATR);
-        String priceFrom = searchParameter.get(PRICE_FROM_ATR);
-        String priceTo = searchParameter.get(PRICE_TO_ATR);
-        String ratingFrom = searchParameter.get(RATING_FROM_ATR);
-        String ratingTo = searchParameter.get(RATING_TO_ATR);
-
-        if (!validateNumber(number)) {
-            searchParameter.put(WRONG_NUMBER_ATR, WRONG_DATA_MARKER);
-            isValid = false;
-        }
-        if (!validatePriceRange(priceFrom, priceTo)) {
-            searchParameter.put(WRONG_PRICE_RANGE_ATR, WRONG_DATA_MARKER);
-            isValid = false;
-        }
-        if (!validateRating(ratingFrom, ratingTo)) {
-            searchParameter.put(WRONG_RATING_RANGE_ATR, WRONG_DATA_MARKER);
-            isValid = false;
-        }
         return isValid;
     }
 

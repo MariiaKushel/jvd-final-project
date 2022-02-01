@@ -19,8 +19,8 @@ import java.util.Optional;
 public class RoomOrderDaoImpl implements RoomOrderDao {
     static Logger logger = LogManager.getLogger();
 
-    private static final String STATE_BOOKED = "booked"; // FIXME maybe enum
-    private static final String STATE_BUSY = "busy";
+    private static final String DAILY_ROOM_STATE_BOOKED = "booked";
+    private static final String DAILY_ROOM_STATE_BUSY = "busy";
 
     private static final String SQL_INSERT_ROOM_ORDER = """
             INSERT INTO hotel.room_orders (user_id, room_id, hotel.room_orders.date, hotel.room_orders.from, 
@@ -29,22 +29,62 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
     private static final String SQL_INSERT_DAILY_ROOM_STATE = """
             INSERT INTO hotel.daily_room_states (room_id, room_state, hotel.daily_room_states.date) 
             VALUES (?,?,?)""";
-    private static final String SQL_UPDATE_USER_BALANCE = """
-            UPDATE hotel.users SET balance=balance-? WHERE user_id=?;
-            """;
-
     private static final String SQL_UPDATE_ROOM_ORDER = """
             UPDATE hotel.room_orders SET status=? 
             WHERE room_order_id=?""";
-
-    private static final String SQL_DELETE_DAILY_ROOM_STATE = """
-            DELETE FROM hotel.daily_room_states 
-            WHERE room_id=? AND hotel.daily_room_states.date BETWEEN ? AND ?""";
-
     private static final String SQL_UPDATE_DAILY_ROOM_STATE = """
             UPDATE hotel.daily_room_states 
             SET room_state=?
             WHERE room_id=? AND hotel.daily_room_states.date BETWEEN ? AND ?""";
+    private static final String SQL_UPDATE_USER_BALANCE = """
+            UPDATE hotel.users SET balance=balance-? WHERE user_id=?;
+            """;
+    private static final String SQL_DELETE_DAILY_ROOM_STATE = """
+            DELETE FROM hotel.daily_room_states 
+            WHERE room_id=? AND hotel.daily_room_states.date BETWEEN ? AND ?""";
+    private static final String SQL_SELECT_ALL_ROOM_ORDER = """
+            SELECT room_order_id, user_id, room_id, date, hotel.room_orders.from, hotel.room_orders.to, amount, status, 
+             prepayment
+            FROM hotel.room_orders
+            ORDER BY date""";
+    private static final String SQL_SELECT_ROOM_ORDER_BY_ID = """
+            SELECT room_order_id, user_id, room_id, date, hotel.room_orders.from, hotel.room_orders.to, amount, status, 
+             prepayment
+            FROM hotel.room_orders
+            WHERE room_order_id=? LIMIT 1""";
+    private static final String SQL_SELECT_ROOM_ORDER_BY_PREPAYMENT = """
+            SELECT room_order_id, user_id, room_id, date, hotel.room_orders.from, hotel.room_orders.to, amount, status, 
+             prepayment
+            FROM hotel.room_orders
+            WHERE prepayment=?""";
+    private static final String SQL_SELECT_ROOM_ORDER_BY_STATUS = """
+            SELECT room_order_id, user_id, room_id, date, hotel.room_orders.from, hotel.room_orders.to, amount, status, 
+             prepayment
+            FROM hotel.room_orders
+            WHERE status=?""";
+    private static final String SQL_SELECT_ROOM_ORDER_BY_DATE_RANGE = """
+            SELECT room_order_id, user_id, room_id, date, hotel.room_orders.from, hotel.room_orders.to, amount, status, 
+             prepayment
+            FROM hotel.room_orders
+            WHERE date BETWEEN ? AND ? 
+            ORDER BY date DESC""";
+    private static final String SQL_SELECT_ROOM_ORDER_BY_USER_ID = """
+            SELECT room_order_id, user_id, room_id, date, hotel.room_orders.from, hotel.room_orders.to, amount, status, 
+             prepayment
+            FROM hotel.room_orders
+            WHERE user_id=? 
+            ORDER BY date DESC""";
+    private static final String SQL_SELECT_ROOM_ORDER_BY_USER_ID_LAST = """
+            SELECT room_order_id, user_id, room_id, date, hotel.room_orders.from, hotel.room_orders.to, amount, status, 
+             prepayment
+            FROM hotel.room_orders
+            WHERE user_id=? 
+            ORDER BY date DESC LIMIT ?""";
+    private static final String SQL_SELECT_CHECK_ROOM_STATE = """
+            SELECT room_id, room_state
+            FROM hotel.daily_room_states
+            WHERE room_id=? AND date BETWEEN ? and ?""";
+
 
     private static final String SQL_SELECT_ROOM_ORDER = """
             SELECT room_order_id, user_id, room_id, date, hotel.room_orders.from, hotel.room_orders.to, amount, status, 
@@ -58,10 +98,7 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
     private static final String BY_USER_ID_LAST = " WHERE user_id=? ORDER BY date DESC LIMIT ?";
     private static final String BY_ID = " WHERE room_order_id=? LIMIT 1";
 
-    private static final String SQL_SELECT_CHECK_ROOM_STATE = """
-            SELECT room_id, room_state
-            FROM hotel.daily_room_states
-            WHERE room_id=? AND date BETWEEN ? and ?""";
+
 
     @Override
     public List<RoomOrder> findAll() throws DaoException {
@@ -70,7 +107,7 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ROOM_ORDER)) {
+             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_ROOM_ORDER)) {
             orders = mapper.retrieve(resultSet);
         } catch (SQLException e) {
             logger.error("SQL request findAll from table hotel.room_orders was failed" + e);
@@ -81,12 +118,14 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
 
     @Override
     public boolean delete(RoomOrder roomOrder) throws DaoException {
-        return false;
+        logger.error("Unavailable operation to entity <RoomOrder>");
+        throw new UnsupportedOperationException("Unavailable operation to entity <RoomOrder>");
     }
 
     @Override
     public boolean create(RoomOrder roomOrder) throws DaoException {
-        return false;
+        logger.error("Unavailable operation to entity <RoomOrder>");
+        throw new UnsupportedOperationException("Unavailable operation to entity <RoomOrder>");
     }
 
     @Override
@@ -125,7 +164,7 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
             statement = connection.prepareStatement(SQL_INSERT_DAILY_ROOM_STATE);
             for (int i = 0; i < days; i++) {
                 statement.setLong(1, roomOrder.getRoomId());
-                statement.setString(2, STATE_BOOKED);
+                statement.setString(2, DAILY_ROOM_STATE_BOOKED);
                 statement.setDate(3, Date.valueOf(dateForStateChange));
                 statement.executeUpdate();
                 dateForStateChange = dateForStateChange.plusDays(1);
@@ -168,7 +207,7 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
         Mapper mapper = RoomOrderMapper.getInstance();
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM_ORDER + BY_PREPAYMENT)) {
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM_ORDER_BY_PREPAYMENT)){
             statement.setBoolean(1, prepayment);
             try (ResultSet resultSet = statement.executeQuery()) {
                 orders = mapper.retrieve(resultSet);
@@ -186,7 +225,7 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
         Mapper mapper = RoomOrderMapper.getInstance();
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM_ORDER + BY_STATUS)) {
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM_ORDER_BY_STATUS)) {
             statement.setString(1, status.name());
             try (ResultSet resultSet = statement.executeQuery()) {
                 orders = mapper.retrieve(resultSet);
@@ -204,7 +243,7 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
         Mapper mapper = RoomOrderMapper.getInstance();
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM_ORDER + BY_DATE_RANGE)) {
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM_ORDER_BY_DATE_RANGE)) {
             statement.setDate(1, Date.valueOf(from));
             statement.setDate(2, Date.valueOf(to));
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -223,7 +262,7 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
         Mapper mapper = RoomOrderMapper.getInstance();
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM_ORDER + BY_USER_ID)) {
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM_ORDER_BY_USER_ID)) {
             statement.setLong(1, userId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 orders = mapper.retrieve(resultSet);
@@ -241,7 +280,7 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
         Mapper mapper = RoomOrderMapper.getInstance();
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM_ORDER + BY_USER_ID_LAST)) {
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM_ORDER_BY_USER_ID_LAST)) {
             statement.setLong(1, userId);
             statement.setInt(2, last);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -255,12 +294,12 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
     }
 
     @Override
-    public Optional<RoomOrder> findOrderById(long orderId) throws DaoException {
+    public Optional<RoomOrder> findEntityById(Long orderId) throws DaoException {
         Optional<RoomOrder> order = Optional.empty();
         Mapper mapper = RoomOrderMapper.getInstance();
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM_ORDER + BY_ID)) {
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ROOM_ORDER_BY_ID)) {
             statement.setLong(1, orderId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 order = mapper.retrieve(resultSet).stream().findFirst();
@@ -273,13 +312,7 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
     }
 
     @Override
-    public Optional<RoomOrder> update(RoomOrder roomOrder) throws DaoException {
-
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean update1(RoomOrder roomOrder) throws DaoException {
+    public boolean update(RoomOrder roomOrder) throws DaoException {
         boolean result = false;
 
         ConnectionPool pool = ConnectionPool.getInstance();
@@ -312,31 +345,25 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
                         statement.executeUpdate();
                     }
                 }
-                case CONFIRMED -> {
-                    //nothing todo
-                }
                 case IN_PROGRESS -> {
                     statement = connection.prepareStatement(SQL_UPDATE_DAILY_ROOM_STATE);
-                    statement.setString(1, STATE_BUSY);
+                    statement.setString(1, DAILY_ROOM_STATE_BUSY);
                     statement.setLong(2, roomOrder.getRoomId());
                     statement.setDate(3, Date.valueOf(roomOrder.getFrom()));
                     statement.setDate(4, Date.valueOf(roomOrder.getTo()));
                     statement.executeUpdate();
-                }
-                case COMPLETED -> {
-                    //nothing todo
                 }
             }
             result = true;
             connection.commit();
 
         } catch (SQLException e) {
-            logger.error("SQL request update1 from table hotel.room_orders was failed " + e);
+            logger.error("SQL request update from table hotel.room_orders was failed " + e);
             try {
                 connection.rollback();
             } catch (SQLException ex) {
-                logger.error("Rollback update1 from table hotel.room_orders was failed " + e);
-                throw new DaoException("Rollback update1 from table hotel.room_orders was failed", e);
+                logger.error("Rollback update from table hotel.room_orders was failed " + e);
+                throw new DaoException("Rollback update from table hotel.room_orders was failed", e);
             }
         } finally {
             try {

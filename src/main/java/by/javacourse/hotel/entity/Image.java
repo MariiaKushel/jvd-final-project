@@ -2,7 +2,12 @@ package by.javacourse.hotel.entity;
 
 import java.util.Arrays;
 
+/**
+ * {@code Image} class represent an image
+ * @see Entity
+ */
 public class Image extends Entity {
+
     private long roomId;
     private byte[] imageContent;
     private boolean preview;
@@ -10,10 +15,17 @@ public class Image extends Entity {
     private Image() {
     }
 
+    /**
+     * {@code newBuilder} method to get {@link Builder}
+     * @return {@link Builder}
+     */
     public static Builder newBuilder() {
         return new Image().new Builder();
     }
 
+    /**
+     * {@code Builder} class to build {@link Image}
+     */
     public class Builder {
         private Builder() {
 

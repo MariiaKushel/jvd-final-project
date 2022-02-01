@@ -2,6 +2,9 @@ package by.javacourse.hotel.model.dao;
 
 import by.javacourse.hotel.model.dao.impl.*;
 
+/**
+ * {@code DaoProvider} class hold and provide instance of all classes extends {@link BaseDao}
+ */
 public class DaoProvider {
 
     private UserDao userDao = new UserDaoImpl();
@@ -11,7 +14,6 @@ public class DaoProvider {
     private ReviewDao reviewDao = new ReviewDaoImpl();
     private RoomOrderDao roomOrderDao = new RoomOrderDaoImpl();
     private DiscountDao discountDao = new DiscountDaoImpl();
-    //TODO add more dao
 
     private DaoProvider() {
     }

@@ -2,17 +2,31 @@ package by.javacourse.hotel.entity;
 
 import java.math.BigDecimal;
 
+/**
+ * {@code User} class represent a user
+ * @see Entity
+ */
 public class User extends Entity {
 
+    /**
+     * {@code Role} enum represent a user role
+     */
     public enum Role {
         GUEST, ADMIN, CLIENT
     }
 
+    /**
+     * {@code Status} enum represent a user status
+     */
     public enum Status {
         NEW, ACTIVE, LOCKED
     }
 
+    /**
+     * {@code DEFAULT_DISCOUNT_ID} constant represent default discount id
+     */
     public static final long DEFAULT_DISCOUNT_ID = 1L;
+
     private String email;
     private Role role;
     private String name;
@@ -25,13 +39,20 @@ public class User extends Entity {
         this.role = Role.CLIENT;
         this.status = Status.NEW;
         this.discountId = DEFAULT_DISCOUNT_ID;
-        this.balance = new BigDecimal("0.00");
+        this.balance = BigDecimal.ZERO;
     }
 
+    /**
+     * {@code newBuilder} method to get {@link Builder}
+     * @return {@link Builder}
+     */
     public static Builder newBuilder() {
         return new User().new Builder();
     }
 
+    /**
+     * {@code Builder} class to build {@link User}
+     */
     public class Builder {
         private Builder() {
         }

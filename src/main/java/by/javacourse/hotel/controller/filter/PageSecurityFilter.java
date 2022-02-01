@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSessionListener;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -14,8 +15,13 @@ import java.util.Set;
 import static by.javacourse.hotel.controller.command.PagePath.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.CURRENT_ROLE;
 
+/**
+ * {@code PageSecurityFilter} class implements functional of {@link Filter}
+ * Restricts access to the page depending on the user's role.
+ */
 @WebFilter(urlPatterns = {"/jsp/*"})
 public class PageSecurityFilter implements Filter {
+
     private Set<String> guestPages;
     private Set<String> clientPages;
     private Set<String> adminPages;
@@ -47,7 +53,7 @@ public class PageSecurityFilter implements Filter {
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
-            filterChain.doFilter(servletRequest, servletResponse);
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override

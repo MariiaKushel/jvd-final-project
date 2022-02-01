@@ -3,7 +3,6 @@ package by.javacourse.hotel.controller.filter;
 import by.javacourse.hotel.controller.command.CommandName;
 import by.javacourse.hotel.controller.command.RequestParameter;
 import by.javacourse.hotel.entity.User;
-import by.javacourse.hotel.model.dao.UserDao;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,17 +11,15 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.EnumSet;
-import java.util.Set;
 
-import static by.javacourse.hotel.controller.command.CommandName.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.CURRENT_ROLE;
 
+/**
+ * {@code ControllerSecurityFilter} class implements functional of {@link Filter}
+ * Restricts access to the commands depending on the user's role.
+ */
 @WebFilter(urlPatterns = {"/controller"}, servletNames = {"controller"})
 public class ControllerSecurityFilter implements Filter {
-
-    private Set<String> guestCommands;
-    private Set<String> clientCommands;
-    private Set<String> adminCommands;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

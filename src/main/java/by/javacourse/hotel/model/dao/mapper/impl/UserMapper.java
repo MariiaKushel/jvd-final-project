@@ -2,6 +2,7 @@ package by.javacourse.hotel.model.dao.mapper.impl;
 
 import by.javacourse.hotel.entity.User;
 import by.javacourse.hotel.model.dao.mapper.Mapper;
+import by.javacourse.hotel.validator.DescriptionValidator;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,6 +11,9 @@ import java.util.List;
 
 import static by.javacourse.hotel.model.dao.ColumnName.*;
 
+/**
+ * {@code UserMapper} class implements functional of {@link Mapper}
+ */
 public class UserMapper implements Mapper<User> {
     private static final UserMapper instance = new UserMapper();
 
@@ -23,7 +27,7 @@ public class UserMapper implements Mapper<User> {
 
     @Override
     public List<User> retrieve(ResultSet resultSet) throws SQLException {
-       List<User> users = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         while (resultSet.next()) {
             User user = User.newBuilder()
                     .setEntityId(resultSet.getLong(USER_ID))

@@ -6,7 +6,12 @@ import java.util.EnumSet;
 
 import static by.javacourse.hotel.entity.User.Role.*;
 
+/**
+ * {@code CommandName} enum represent all commands,
+ * contains jsp command name and user roles, who can call that command
+ */
 public enum CommandName {
+
     ADD_NEW_IMAGE("add_new_image", EnumSet.of(ADMIN)),
     CANCEL_ORDER("cancel_order", EnumSet.of(CLIENT)),
     CHANGE_LOCALE("change_locale", EnumSet.of(GUEST, CLIENT, ADMIN)),

@@ -1,15 +1,27 @@
 package by.javacourse.hotel.entity;
 
+/**
+ * {@code Discount} class represent a discount
+ * @see Entity
+ */
 public class Discount extends Entity {
+
     private int rate;
 
     public Discount() {
     }
 
+    /**
+     * {@code newBuilder} method to get {@link Builder}
+     * @return {@link Builder}
+     */
     public static Builder newBuilder() {
         return new Discount().new Builder();
     }
 
+    /**
+     * {@code Builder} class to build {@link Discount}
+     */
     public class Builder {
         private Builder() {
         }

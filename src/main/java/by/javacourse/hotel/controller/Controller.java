@@ -1,7 +1,6 @@
 package by.javacourse.hotel.controller;
 
 import java.io.*;
-import java.util.Locale;
 
 import by.javacourse.hotel.controller.command.*;
 import by.javacourse.hotel.exception.CommandException;
@@ -11,6 +10,10 @@ import jakarta.servlet.annotation.*;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
+/**
+ * {@code Controller} class extends functional of {@link HttpServlet}
+ * Processes all requests after filtering.
+ */
 @WebServlet(name = "controller", urlPatterns = "/controller")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024,
         maxFileSize = 1024 * 1024,

@@ -1,15 +1,15 @@
 package by.javacourse.hotel.validator.impl;
 
-import by.javacourse.hotel.entity.User;
 import by.javacourse.hotel.validator.UserValidator;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
 import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
-import static by.javacourse.hotel.controller.command.RequestParameter.*;
 
+/**
+ * {@code UserValidatorImpl} class implements functional of {@link UserValidator}
+ */
 public final class UserValidatorImpl implements UserValidator {
 
     private static final String EMAIL_REGEX =
@@ -32,9 +32,6 @@ public final class UserValidatorImpl implements UserValidator {
     private static final int PHONE_NUMBER_LENGTH = 13;
 
 
-
-
-
     private static final UserValidatorImpl instance = new UserValidatorImpl();
 
     private UserValidatorImpl() {
@@ -54,8 +51,8 @@ public final class UserValidatorImpl implements UserValidator {
     }
 
     @Override
-    public boolean validatePartOfEmail(String partOfEmail) {
-        return partOfEmail.matches(PART_OF_EMAIL_REGEX);
+    public boolean validatePartOfEmail(String emailPart) {
+        return emailPart.matches(PART_OF_EMAIL_REGEX);
     }
 
     @Override
@@ -83,18 +80,10 @@ public final class UserValidatorImpl implements UserValidator {
     }
 
     @Override
-    public boolean validatePartOfPhoneNumber(String partOfPhoneNumber) {
-        return partOfPhoneNumber.matches(PART_OF_PHONE_NUMBER_REGEX);
+    public boolean validatePartOfPhoneNumber(String phoneNumberPart) {
+        return phoneNumberPart.matches(PART_OF_PHONE_NUMBER_REGEX);
     }
 
-    @Override
-    public boolean validate(User user, String password) {
-        String email = user.getEmail();
-        String name = user.getName();
-        String phoneNumber = user.getPhoneNumber();
-        return validateEmail(email) && validatePassword(password)
-                && validateName(name) && validatePhoneNumber(phoneNumber);
-    }
 
     @Override
     public boolean validateUserDataCreate(Map<String, String> userData) {
@@ -106,7 +95,7 @@ public final class UserValidatorImpl implements UserValidator {
 
         boolean isValid = true;
         if (!password.equals(repeatPassword)) {
-            userData.put(WRONG_MISSMATCH_SES, WRONG_DATA_MARKER);
+            userData.put(WRONG_MISMATCH_SES, WRONG_DATA_MARKER);
             isValid = false;
         }
         if (!validateEmail(email)) {
@@ -151,22 +140,22 @@ public final class UserValidatorImpl implements UserValidator {
     }
 
     @Override
-    public boolean validateSearchParameter(Map<String, String> searchParameter) {
-        String partOfEmail = searchParameter.get(EMAIL_ATR);
-        String partOfPhoneNumber = searchParameter.get(PHONE_NUMBER_ATR);
-        String name = searchParameter.get(NAME_ATR);
+    public boolean validateUserSearchParameters(Map<String, String> parameters) {
+        String partOfEmail = parameters.get(EMAIL_ATR);
+        String partOfPhoneNumber = parameters.get(PHONE_NUMBER_ATR);
+        String name = parameters.get(NAME_ATR);
 
         boolean isValid = true;
         if (!partOfEmail.isEmpty() && !validatePartOfEmail(partOfEmail)) {
-            searchParameter.put(WRONG_EMAIL_ATR, WRONG_DATA_MARKER);
+            parameters.put(WRONG_EMAIL_ATR, WRONG_DATA_MARKER);
             isValid = false;
         }
         if (!partOfPhoneNumber.isEmpty() && !validatePartOfPhoneNumber(partOfPhoneNumber)) {
-            searchParameter.put(WRONG_PHONE_NUMBER_ATR, WRONG_DATA_MARKER);
+            parameters.put(WRONG_PHONE_NUMBER_ATR, WRONG_DATA_MARKER);
             isValid = false;
         }
         if (!name.isEmpty() && !validateName(name)) {
-            searchParameter.put(WRONG_NAME_ATR, WRONG_DATA_MARKER);
+            parameters.put(WRONG_NAME_ATR, WRONG_DATA_MARKER);
             isValid = false;
         }
         return isValid;

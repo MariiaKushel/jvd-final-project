@@ -15,26 +15,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * {@code DiscountDaoImpl} class implements functional of {@link DiscountDao}
+ */
 public class DiscountDaoImpl implements DiscountDao {
     static Logger logger = LogManager.getLogger();
 
-    private static final String SQL_INSERT_DISCOUNT =
-            "INSERT INTO hotel.discounts (rate) VALUES (?)";
-
-    private static final String SQL_SELECT_DISCOUNT =
-            "SELECT discount_id, rate FROM hotel.discounts";
-
-    private static final String BY_RATE =
-            " WHERE rate=? LIMIT 1";
-
-    private static final String BY_ID =
-            " WHERE discount_id=? LIMIT 1";
-
+    private static final String SQL_INSERT_DISCOUNT = """
+            INSERT INTO hotel.discounts (rate) VALUES (?)""";
     private static final String SQL_UPDATE_DISCOUNT = """
             UPDATE hotel.discounts SET rate=? WHERE discount_id=?""";
-
     private static final String SQL_DELETE_DISCOUNT = """
             DELETE FROM hotel.discounts WHERE discount_id=?""";
+    private static final String SQL_SELECT_ALL_DISCOUNT = """
+            SELECT discount_id, rate FROM hotel.discounts
+            ORDER BY rate""";
+    private static final String SQL_SELECT_DISCOUNT_BY_ID = """
+            SELECT discount_id, rate FROM hotel.discounts
+            WHERE discount_id=? LIMIT 1""";
+    private static final String SQL_SELECT_DISCOUNT_BY_RATE = """
+            SELECT discount_id, rate FROM hotel.discounts
+            WHERE rate=? LIMIT 1""";
+    private static final String SQL_SELECT_DISCOUNT_BY_USER_ID = """
+            SELECT hotel.discounts.discount_id, rate
+            FROM hotel.users
+            JOIN hotel.discounts ON hotel.users.discount_id=hotel.discounts.discount_id
+            AND user_id=? LIMIT 1""";
 
     @Override
     public List<Discount> findAll() throws DaoException {
@@ -43,7 +49,7 @@ public class DiscountDaoImpl implements DiscountDao {
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(SQL_SELECT_DISCOUNT)) {
+             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_DISCOUNT)) {
             discounts = mapper.retrieve(resultSet);
         } catch (SQLException e) {
             logger.error("SQL request findAll from table hotel.discounts was failed");
@@ -54,41 +60,36 @@ public class DiscountDaoImpl implements DiscountDao {
 
     @Override
     public boolean delete(Discount discount) throws DaoException {
-        int rowsDeleted = 0;
+        int rows = 0;
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_DELETE_DISCOUNT)) {
             statement.setLong(1, discount.getEntityId());
-            rowsDeleted = statement.executeUpdate();
+            rows = statement.executeUpdate();
         } catch (SQLException e) {
             logger.error("SQL request delete from table hotel.discounts was failed");
             throw new DaoException("SQL request delete from table hotel.discounts was failed", e);
         }
-        return rowsDeleted == 1;
+        return rows == 1;
     }
 
     @Override
     public boolean create(Discount discount) throws DaoException {
-        int rowsInsert = 0;
+        int rows = 0;
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_INSERT_DISCOUNT)) {
             statement.setInt(1, discount.getRate());
-            rowsInsert = statement.executeUpdate();
+            rows = statement.executeUpdate();
         } catch (SQLException e) {
             logger.error("SQL request create from table hotel.discounts was failed");
             throw new DaoException("SQL request create from table hotel.discounts was failed", e);
         }
-        return rowsInsert == 1;
+        return rows == 1;
     }
 
     @Override
-    public Optional<Discount> update(Discount discount) throws DaoException {
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean update1(Discount discount) throws DaoException {
+    public boolean update(Discount discount) throws DaoException {
         int rowsUpdated = 0;
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
@@ -109,7 +110,7 @@ public class DiscountDaoImpl implements DiscountDao {
         DiscountMapper mapper = DiscountMapper.getInstance();
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_DISCOUNT + BY_RATE)) {
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_DISCOUNT_BY_RATE)) {
             statement.setInt(1, rate);
             try (ResultSet resultSet = statement.executeQuery()) {
                 discounts = mapper.retrieve(resultSet);
@@ -122,27 +123,37 @@ public class DiscountDaoImpl implements DiscountDao {
     }
 
     @Override
-    public Optional<Discount> findDiscountById(long discountId) throws DaoException {
+    public Optional<Discount> findDiscountByUserId(long userId) throws DaoException {
         Optional<Discount> discount = Optional.empty();
         DiscountMapper mapper = DiscountMapper.getInstance();
         ConnectionPool pool = ConnectionPool.getInstance();
         try (Connection connection = pool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_DISCOUNT + BY_ID)) {
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_DISCOUNT_BY_USER_ID)) {
+            statement.setLong(1, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                    discount = mapper.retrieve(resultSet).stream().findFirst();
+            }
+        } catch (SQLException e) {
+            logger.error("SQL request findDiscountByUserId from table hotel.users was failed" + e);
+            throw new DaoException("SQL request findDiscountByUserId from table hotel.users was failed", e);
+        }
+        return discount;
+    }
+
+    public Optional<Discount> findEntityById(Long discountId) throws DaoException {
+        Optional<Discount> discount = Optional.empty();
+        DiscountMapper mapper = DiscountMapper.getInstance();
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_DISCOUNT_BY_ID)) {
             statement.setLong(1, discountId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 discount = mapper.retrieve(resultSet).stream().findFirst();
             }
         } catch (SQLException e) {
-            logger.error("SQL request findDiscountByRate from table hotel.discounts was failed");
-            throw new DaoException("SQL request findDiscountByRate from table hotel.discounts was failed", e);
+            logger.error("SQL request findEntityById from table hotel.discounts was failed");
+            throw new DaoException("SQL request findEntityById from table hotel.discounts was failed", e);
         }
-        return discount;
-    }
-
-    private Discount createDiscountFromResultSet(ResultSet resultSet) throws SQLException {//TODO maybe make separate class
-        Discount discount = new Discount();
-        //discount.setEntityId(resultSet.getLong(DISCOUNT_ID));
-        discount.setRate(resultSet.getInt(RATE));
         return discount;
     }
 }

@@ -2,7 +2,12 @@ package by.javacourse.hotel.entity;
 
 import java.time.LocalDate;
 
+/**
+ * {@code Review} class represent a review
+ * @see Entity
+ */
 public class Review extends Entity {
+
     private LocalDate date;
     private int roomMark;
     private String reviewContent;
@@ -13,10 +18,17 @@ public class Review extends Entity {
 
     }
 
+    /**
+     * {@code newBuilder} method to get {@link Builder}
+     * @return {@link Builder}
+     */
     public static Builder newBuilder() {
         return new Review().new Builder();
     }
 
+    /**
+     * {@code Builder} class to build {@link Review}
+     */
     public class Builder {
         private Builder() {
         }
@@ -46,7 +58,7 @@ public class Review extends Entity {
             return this;
         }
 
-        public Builder setAuthor(String author){
+        public Builder setAuthor(String author) {
             Review.this.author = author;
             return this;
         }
@@ -72,7 +84,7 @@ public class Review extends Entity {
         return hidden;
     }
 
-    public String getAuthor(){
+    public String getAuthor() {
         return author;
     }
 

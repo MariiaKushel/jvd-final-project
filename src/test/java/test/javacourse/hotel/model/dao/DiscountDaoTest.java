@@ -33,10 +33,7 @@ public class DiscountDaoTest {
 
     }
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
-    public void testUpdateException() throws DaoException {
-        discountDao.update(discount);
-    }
+
 
     @Test
     public void testFindDiscountByRate() {

@@ -1,5 +1,9 @@
 package by.javacourse.hotel.exception;
 
+/**
+ * {@code ServiceException} class represent a checked exception from {@link by.javacourse.hotel.model.service}
+ * @see Exception
+ */
 public class ServiceException extends Exception {
     public ServiceException() {
 

@@ -3,15 +3,14 @@ package by.javacourse.hotel.validator.impl;
 import by.javacourse.hotel.validator.ReviewValidator;
 import by.javacourse.hotel.validator.RoomOrderValidator;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Map;
 
-import static by.javacourse.hotel.controller.command.RequestParameter.PREPAYMENT;
-import static by.javacourse.hotel.controller.command.RequestParameter.TOTAL_AMOUNT;
-
+/**
+ * {@code ReviewValidatorImpl} class implements functional of {@link ReviewValidator}
+ */
 public class ReviewValidatorImpl implements ReviewValidator {
+
     private static final String CONTENT_REGEX = "[^><]+";
 
     private static final ReviewValidatorImpl instance = new ReviewValidatorImpl();

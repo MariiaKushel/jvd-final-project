@@ -1,8 +1,11 @@
 package by.javacourse.hotel.entity;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
+/**
+ * {@code Room} class represent a room
+ * @see Entity
+ */
 public class Room extends Entity {
 
     private int number;
@@ -15,10 +18,17 @@ public class Room extends Entity {
     private Room() {
     }
 
+    /**
+     * {@code newBuilder} method to get {@link Builder}
+     * @return {@link Builder}
+     */
     public static Builder newBuilder() {
         return new Room().new Builder();
     }
 
+    /**
+     * {@code Builder} class to build {@link Room}
+     */
     public class Builder {
         private Builder() {
         }

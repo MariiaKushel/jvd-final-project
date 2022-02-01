@@ -1,6 +1,11 @@
 package by.javacourse.hotel.entity;
 
+/**
+ * {@code Description} class represent a description of room
+ * @see Entity
+ */
 public class Description extends Entity {
+
     private String descriptionRu;
     private String descriptionEn;
 
@@ -8,10 +13,17 @@ public class Description extends Entity {
 
     }
 
+    /**
+     * {@code newBuilder} method to get {@link Builder}
+     * @return {@link Builder}
+     */
     public static Builder newBuilder() {
         return new Description().new Builder();
     }
 
+    /**
+     * {@code Builder} class to build {@link Description}
+     */
     public class Builder {
         private Builder() {
         }
@@ -50,7 +62,7 @@ public class Description extends Entity {
             return true;
         if (o == null)
             return false;
-        if(getClass() != o.getClass())
+        if (getClass() != o.getClass())
             return false;
         if (!super.equals(o))
             return false;
