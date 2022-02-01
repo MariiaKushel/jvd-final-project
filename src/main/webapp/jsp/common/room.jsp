@@ -13,7 +13,6 @@
 <fmt:message key="message.mark" var="mark"/>
 <fmt:message key="message.no_comments" var="no_comments"/>
 <fmt:message key="message.not_found" var="not_found"/>
-<fmt:message key="reference.back_to_book_room" var="back_to_book_room"/>
 <fmt:message key="reference.back_to_show_room" var="back_to_show_room"/>
 <fmt:message key="room.description" var="room_description"/>
 <fmt:message key="room.number" var="number"/>

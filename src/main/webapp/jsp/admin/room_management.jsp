@@ -11,8 +11,6 @@
 <fmt:message key="field.num_sleeping_place" var="num_sleeping_place"/>
 <fmt:message key="field.price_from" var="pricefrom"/>
 <fmt:message key="field.price_to" var="priceto"/>
-<fmt:message key="field.rating_from" var="ratingfrom"/>
-<fmt:message key="field.rating_to" var="ratingto"/>
 <fmt:message key="field.room_number" var="number"/>
 <fmt:message key="field.visible" var="visible_flag"/>
 <fmt:message key="message.incorrect_data" var="incorrect_data"/>
@@ -20,7 +18,6 @@
 <fmt:message key="message.not_found" var="not_found"/>
 <fmt:message key="message.number_rules" var="number_rules"/>
 <fmt:message key="message.price_rules" var="price_rules"/>
-<fmt:message key="message.rating_rules" var="rating_rules"/>
 <fmt:message key="reference.create_new" var="create_new"/>
 <fmt:message key="reference.find_all" var="find_all"/>
 <fmt:message key="reference.update" var="update_table"/>
