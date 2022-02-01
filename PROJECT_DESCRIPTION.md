@@ -41,9 +41,6 @@ Functional depend on the user's role.
 - order status can be changed in a certain order which is described in business logic
 - entity which have an important role in system can not be remove
 	but there is an option not to display them on the site
-	
-<<<<<<< HEAD:PROJECT_DESCRIPTION.md
+
 ![Alt-текст](https://github.com/MariyaKushel/jvd-final-project/blob/main/src/main/resources/db_shema.png "db_shema")
-=======
-![Alt-текст](https://github.com/MariyaKushel/jvd-final-project/blob/main/src/main/resources/db_shema.png "db_shema")
->>>>>>> 94283282ded9dbd6d4acece2be67c6898062d917:PROJECT_DESCRIPTION
+
