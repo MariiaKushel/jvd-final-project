@@ -1,6 +1,7 @@
 package by.javacourse.hotel.controller.filter;
 
 import by.javacourse.hotel.controller.command.CommandName;
+import by.javacourse.hotel.controller.command.PagePath;
 import by.javacourse.hotel.controller.command.RequestParameter;
 import by.javacourse.hotel.entity.User;
 import jakarta.servlet.*;
@@ -28,6 +29,10 @@ public class ControllerSecurityFilter implements Filter {
         HttpSession session = request.getSession();
 
         String commandName = request.getParameter(RequestParameter.COMMAND);
+        if(commandName == null){
+            response.sendRedirect(PagePath.INDEX_PAGE);
+            return;
+        }
 
         try {
             CommandName command = CommandName.valueOf(commandName.toUpperCase());

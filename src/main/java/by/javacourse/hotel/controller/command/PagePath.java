@@ -6,6 +6,7 @@ package by.javacourse.hotel.controller.command;
  */
 public final class PagePath {
 
+    public static final String INDEX_PAGE = "index.jsp";
     public static final String ACCOUNT_ADMIN_PAGE = "jsp/admin/account_admin.jsp";
     public static final String ACCOUNT_CLIENT_PAGE = "jsp/client/account_client.jsp";
     public static final String BOOK_ROOM_PAGE = "jsp/common/book_room.jsp";
