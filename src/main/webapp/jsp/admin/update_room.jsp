@@ -48,7 +48,12 @@
 
     <c:choose>
         <c:when test="${not empty not_fount_ses}">
+            <div class="mb-3 fw-bold">${room_title}</div>
             ${not_found}
+        </c:when>
+        <c:when test="${empty room_data_ses}">
+            <div class="mb-3 fw-bold">${room_title}</div>
+            ${not_data}
         </c:when>
         <c:when test="${not empty update_room_result}">
             <div class="mb-3 fw-bold">${room_title}</div>

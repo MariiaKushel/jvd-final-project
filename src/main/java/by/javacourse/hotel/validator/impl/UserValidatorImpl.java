@@ -23,7 +23,7 @@ public final class UserValidatorImpl implements UserValidator {
     private static final String PHONE_NUMBER_REGEX =
             "\\+375(29|44|17|25|33)\\d{7}";
     private static final String PART_OF_PHONE_NUMBER_REGEX =
-            "[\\+\\d]{1,13}";
+            "[\\+\\d]{1,12}";
     private static final String AMOUNT_REGEX = "\\d{1,7}(\\.\\d\\d)??";
     private static final int MAX_EMAIL_LENGTH = 50;
     private static final int MIN_PASSWORD_LENGTH = 4;

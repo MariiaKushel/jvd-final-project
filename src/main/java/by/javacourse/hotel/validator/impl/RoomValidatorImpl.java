@@ -96,18 +96,6 @@ public final class RoomValidatorImpl implements RoomValidator {
         return isValid;
     }
 
-    public boolean validateSearchParameter(Map<String, String> searchParameter) {
-        boolean isValid = true;
-
-        String dateFrom = searchParameter.get(DATE_FROM_ATR);
-        String dateTo = searchParameter.get(DATE_TO_ATR);
-        String priceFrom = searchParameter.get(PRICE_FROM_ATR);
-        String priceTo = searchParameter.get(PRICE_TO_ATR);
-
-        isValid = validateDateRange(dateFrom, dateTo) && validatePriceRange(priceFrom, priceTo);
-        return isValid;
-    }
-
     @Override
     public boolean validateRoomData(Map<String, String> roomData) {
         boolean isValid = true;

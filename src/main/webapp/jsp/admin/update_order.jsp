@@ -11,6 +11,7 @@
 <fmt:message key="field.room_number" var="room_number_table"/>
 <fmt:message key="message.complete" var="complete"/>
 <fmt:message key="message.failed" var="failed"/>
+<fmt:message key="message.not_data" var="not_data"/>
 <fmt:message key="message.not_found" var="not_found"/>
 <fmt:message key="order.amount" var="amount_table"/>
 <fmt:message key="order.check_in" var="check_in_table"/>
@@ -45,6 +46,9 @@
         </c:when>
         <c:when test="${not empty update_order_result}">
             ${update_order_result eq true? complete: failed}
+        </c:when>
+        <c:when test="${empty order_ses}">
+            ${not_data}
         </c:when>
         <c:otherwise>
             <table class="table text-secondary border-secondary">

@@ -12,14 +12,12 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
 import java.util.Map;
 
 
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.REDIRECT;
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
-import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class ReplenishBalanceCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -27,20 +25,24 @@ public class ReplenishBalanceCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
-        Map<String, String> userData = (Map<String, String>) session.getAttribute(USER_DATA_SES);
-        cleanWrongMessage(userData);
-        updateUserDataFromRequest(request, userData);
+        Map<String, String> balanceData = (Map<String, String>) session.getAttribute(BALANCE_DATA_SES);
+
+        cleanWrongMessage(balanceData);
+        updateBalanceDataFromRequest(request, balanceData);
+
         ServiceProvider provider = ServiceProvider.getInstance();
         UserService userService = provider.getUserService();
+
         CommandResult commandResult = null;
         try {
-
-            if (userService.replenishBalance(userData)) {
-                session.removeAttribute(USER_DATA_SES);
-                session.setAttribute(REPLENISH_BALANCE_RESULT, true);
-            } else {
-                session.removeAttribute(REPLENISH_BALANCE_RESULT);
-                session.setAttribute(USER_DATA_SES, userData);
+            int sizeBefore = balanceData.size();
+            boolean result = userService.replenishBalance(balanceData);
+            int sizeAfter = balanceData.size();
+            if (sizeBefore == sizeAfter){
+                session.setAttribute(REPLENISH_BALANCE_RESULT, result);
+                session.removeAttribute(BALANCE_DATA_SES);
+            }else{
+                session.setAttribute(BALANCE_DATA_SES, balanceData);
             }
             session.setAttribute(CURRENT_PAGE, PagePath.REPLENISH_BALANCE_PAGE);
             commandResult = new CommandResult(PagePath.REPLENISH_BALANCE_PAGE, REDIRECT);
@@ -51,7 +53,7 @@ public class ReplenishBalanceCommand implements Command {
         return commandResult;
     }
 
-    private void updateUserDataFromRequest(HttpServletRequest request, Map<String, String> userData) {
+    private void updateBalanceDataFromRequest(HttpServletRequest request, Map<String, String> userData) {
         userData.put(REPLENISH_AMOUNT_SES, request.getParameter(REPLENISH_AMOUNT));
     }
 

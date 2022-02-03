@@ -21,6 +21,7 @@ public class GoToCreateRoomPageCommand implements Command {
     public CommandResult execute(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.removeAttribute(CREATE_ROOM_RESULT);
+
         Map<String, String> roomData = new HashMap<>();
         session.setAttribute(ROOM_DATA_SES, roomData);
         session.setAttribute(CURRENT_PAGE, PagePath.CREATE_ROOM_PAGE);

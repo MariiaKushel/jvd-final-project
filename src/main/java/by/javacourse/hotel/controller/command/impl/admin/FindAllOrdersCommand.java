@@ -31,8 +31,10 @@ public class FindAllOrdersCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
+
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomOrderService service = provider.getRoomOrderService();
+
         CommandResult commandResult = null;
         try {
             List<RoomOrder> orders = service.findAllOrders();

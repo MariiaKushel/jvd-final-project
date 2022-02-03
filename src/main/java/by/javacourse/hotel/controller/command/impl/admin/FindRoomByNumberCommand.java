@@ -34,7 +34,6 @@ public class FindRoomByNumberCommand implements Command {
         HttpSession session = request.getSession();
         Map<String, String> searchParameters = new HashMap<>();
         searchParameters.put(ROOM_NUMBER_ATR, request.getParameter(ROOM_NUMBER));
-        System.out.println("searchParameters 1" +searchParameters);
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomService service = provider.getRoomService();
         CommandResult commandResult = null;

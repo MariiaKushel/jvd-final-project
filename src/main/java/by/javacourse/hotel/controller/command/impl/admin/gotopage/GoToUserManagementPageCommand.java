@@ -35,8 +35,10 @@ public class GoToUserManagementPageCommand implements Command {
         List<String> roles = Stream.of(User.Role.values())
                 .map(e -> e.name())
                 .toList();
+
         ServiceProvider provider = ServiceProvider.getInstance();
         DiscountService discountService = provider.getDiscountService();
+
         CommandResult commandResult = null;
         try {
             List<Discount> discounts = discountService.findAllDiscount();

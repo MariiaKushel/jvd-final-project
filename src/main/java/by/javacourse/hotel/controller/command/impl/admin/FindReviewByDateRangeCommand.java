@@ -37,7 +37,6 @@ public class FindReviewByDateRangeCommand implements Command {
         Map<String, String> searchParameters = new HashMap<>();
         searchParameters.put(DATE_FROM_ATR, request.getParameter(DATE_FROM));
         searchParameters.put(DATE_TO_ATR, request.getParameter(DATE_TO));
-        System.out.println("searchParameters 1" +searchParameters);
         ServiceProvider provider = ServiceProvider.getInstance();
         ReviewService service = provider.getReviewService();
         CommandResult commandResult = null;

@@ -33,21 +33,24 @@ public class CreateReviewCommand implements Command {
 
         ServiceProvider provider = ServiceProvider.getInstance();
         ReviewService reviewService = provider.getReviewService();
-        RoomService roomService = provider.getRoomService();
 
         CommandResult commandResult = null;
         try {
-            long roomId = ((Room)session.getAttribute(ROOM_SES)).getEntityId();
+            long roomId = ((Room) session.getAttribute(ROOM_SES)).getEntityId();
+            int sizeBefore = reviewData.size();
             boolean result = reviewService.createReview(reviewData, roomId);
-            if (result){
-                session.setAttribute(CREATE_REVIEW_RESULT, true);
+            int sizeAfter = reviewData.size();
+            if (sizeBefore == sizeAfter){
+                session.setAttribute(CREATE_REVIEW_RESULT, result);
+                session.removeAttribute(REVIEW_DATA_SES);
+            }else{
+                session.setAttribute(REVIEW_DATA_SES, reviewData);
             }
-            session.setAttribute(REVIEW_DATA_SES, reviewData);
             session.setAttribute(CURRENT_PAGE, PagePath.CREATE_REVIEW_PAGE);
             commandResult = new CommandResult(PagePath.CREATE_REVIEW_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute CreateReviewCommand was failed" + e);
-             throw new CommandException("Try to execute CreateReviewCommand was failed", e);
+            throw new CommandException("Try to execute CreateReviewCommand was failed", e);
         }
         return commandResult;
     }

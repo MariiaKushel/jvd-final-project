@@ -14,7 +14,6 @@ import static by.javacourse.hotel.controller.command.RequestAttribute.NEW_SEARCH
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
 public class GoToClientOrdersPageCommand implements Command {
-    static Logger logger = LogManager.getLogger();
 
     @Override
     public CommandResult execute(HttpServletRequest request) {

@@ -36,7 +36,6 @@ public class FindDiscountByRateCommand implements Command {
         HttpSession session = request.getSession();
         Map<String, String> searchParameters = new HashMap<>();
         searchParameters.put(RATE_ATR, request.getParameter(RATE));
-        System.out.println("searchParameters 1" +searchParameters);
         ServiceProvider provider = ServiceProvider.getInstance();
         DiscountService service = provider.getDiscountService();
         CommandResult commandResult = null;

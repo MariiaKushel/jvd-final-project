@@ -16,18 +16,14 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.FORWARD;
 import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.CURRENT_PAGE;
 import static by.javacourse.hotel.controller.command.SessionAttribute.CURRENT_USER_ID;
-import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class FindOrderByUserIdCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -36,9 +32,11 @@ public class FindOrderByUserIdCommand implements Command {
     public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
         long userId = (Long) session.getAttribute(CURRENT_USER_ID);
+
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomOrderService roomOrderService = provider.getRoomOrderService();
         ReviewService reviewService = provider.getReviewService();
+
         CommandResult commandResult = null;
         try {
             List<RoomOrder> orders = roomOrderService.findOrderByUserId(userId);

@@ -33,6 +33,7 @@ public class UpdatePersonalDataCommand implements Command {
 
         ServiceProvider provider = ServiceProvider.getInstance();
         UserService userService = provider.getUserService();
+
         CommandResult commandResult = null;
         try {
             int sizeBefore = userData.size();

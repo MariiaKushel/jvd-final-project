@@ -75,7 +75,7 @@
                                 ${incorrect_data}
                             </c:if>
                             <c:if test="${not empty balance_data_ses['wrong_amount_oversize_ses']}">
-                                ${incorrect_amount_oversize}//
+                                ${incorrect_amount_oversize}
                             </c:if>
                         </div>
                     </div>

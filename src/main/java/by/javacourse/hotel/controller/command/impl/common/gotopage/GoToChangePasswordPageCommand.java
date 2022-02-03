@@ -4,6 +4,7 @@ import by.javacourse.hotel.controller.command.Command;
 import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
 import by.javacourse.hotel.util.CurrentPageExtractor;
+import com.oracle.wls.shaded.org.apache.regexp.REDebugCompiler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.FORWARD;
+import static by.javacourse.hotel.controller.command.CommandResult.SendingType.REDIRECT;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
 public class GoToChangePasswordPageCommand implements Command {
@@ -24,7 +26,7 @@ public class GoToChangePasswordPageCommand implements Command {
         userData.put(EMAIL_SES, session.getAttribute(CURRENT_EMAIL).toString());
 
         session.setAttribute(USER_DATA_SES, userData);
-        session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
-        return new CommandResult(PagePath.CHANGE_PASSWORD_PAGE, FORWARD);
+        session.setAttribute(CURRENT_PAGE, PagePath.CHANGE_PASSWORD_PAGE);
+        return new CommandResult(PagePath.CHANGE_PASSWORD_PAGE, REDIRECT);
     }
 }

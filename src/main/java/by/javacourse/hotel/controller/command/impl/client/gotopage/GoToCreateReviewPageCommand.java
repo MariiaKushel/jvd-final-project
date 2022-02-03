@@ -30,10 +30,7 @@ public class GoToCreateReviewPageCommand implements Command {
         HttpSession session = request.getSession();
         session.removeAttribute(CREATE_REVIEW_RESULT);
 
-        Map<String, String> reviewData = new HashMap<>();
-        reviewData.put(ORDER_ID_SES, request.getParameter(ORDER_ID));
-        reviewData.put(USER_ID_SES, session.getAttribute(CURRENT_USER_ID).toString());
-        reviewData.put(DATE_SES, session.getAttribute(TODAY).toString());
+        Map<String, String> reviewData = createReviewDataMap(request, session);
 
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomOrderService roomOrderService = provider.getRoomOrderService();
@@ -60,5 +57,13 @@ public class GoToCreateReviewPageCommand implements Command {
              throw new CommandException("Try to execute GoToCreateReviewPageCommand was failed", e);
         }
         return commandResult;
+    }
+
+    private Map<String, String> createReviewDataMap(HttpServletRequest request,  HttpSession session){
+        Map<String, String> reviewData = new HashMap<>();
+        reviewData.put(ORDER_ID_SES, request.getParameter(ORDER_ID));
+        reviewData.put(USER_ID_SES, session.getAttribute(CURRENT_USER_ID).toString());
+        reviewData.put(DATE_SES, session.getAttribute(TODAY).toString());
+        return reviewData;
     }
 }

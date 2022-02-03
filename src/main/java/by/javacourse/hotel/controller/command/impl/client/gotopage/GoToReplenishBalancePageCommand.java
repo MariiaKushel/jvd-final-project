@@ -22,6 +22,7 @@ import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
 public class GoToReplenishBalancePageCommand implements Command {
+
     static Logger logger = LogManager.getLogger();
 
     @Override
@@ -39,9 +40,7 @@ public class GoToReplenishBalancePageCommand implements Command {
             if (optUser.isPresent()) {
                 User user = optUser.get();
                 BigDecimal balance = user.getBalance();
-                Map<String, String> balanceData = new HashMap<>();
-                balanceData.put(BALANCE_SES, balance.toString());
-                balanceData.put(USER_ID_SES, session.getAttribute(CURRENT_USER_ID).toString());
+                Map<String, String> balanceData = createBalanceDataMap(balance, userId);
                 session.setAttribute(BALANCE_DATA_SES, balanceData);
             } else {
                 session.setAttribute(NOT_FOUND_SES, true);
@@ -50,9 +49,16 @@ public class GoToReplenishBalancePageCommand implements Command {
             commandResult = new CommandResult(PagePath.REPLENISH_BALANCE_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToReplenishBalancePageCommand was failed " + e);
-             throw new CommandException("Try to execute GoToReplenishBalancePageCommand was failed ", e);
+            throw new CommandException("Try to execute GoToReplenishBalancePageCommand was failed ", e);
         }
         return commandResult;
+    }
+
+    private Map<String, String> createBalanceDataMap (BigDecimal balance, String userId){
+        Map<String, String> balanceData = new HashMap<>();
+        balanceData.put(BALANCE_SES, balance.toString());
+        balanceData.put(USER_ID_SES, userId);
+        return  balanceData;
     }
 
 }

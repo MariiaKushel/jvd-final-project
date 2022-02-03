@@ -27,7 +27,6 @@ import static by.javacourse.hotel.controller.command.CommandResult.SendingType.F
 import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.LAST;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
-import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class FindOrderByUserIdLastCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -35,6 +34,7 @@ public class FindOrderByUserIdLastCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
+
         Map<String, String> searchParameters = new HashMap<>();
         searchParameters.put(LAST_ATR, request.getParameter(LAST));
         long userId = (Long) session.getAttribute(CURRENT_USER_ID);
@@ -42,6 +42,7 @@ public class FindOrderByUserIdLastCommand implements Command {
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomOrderService roomOrderService = provider.getRoomOrderService();
         ReviewService reviewService = provider.getReviewService();
+
         CommandResult commandResult = null;
         try {
             List<RoomOrder> orders = roomOrderService.findOrderByUserIdLast(userId, searchParameters);

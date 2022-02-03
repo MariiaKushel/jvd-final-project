@@ -23,6 +23,7 @@ import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
 public class GoToRoomManagementPageCommand implements Command {
     static Logger logger = LogManager.getLogger();
+
     @Override
     public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();

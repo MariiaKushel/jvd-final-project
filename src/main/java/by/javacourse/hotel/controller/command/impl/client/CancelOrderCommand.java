@@ -26,6 +26,7 @@ public class CancelOrderCommand implements Command {
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomOrderService roomOrderService = provider.getRoomOrderService();
         RoomOrder order = (RoomOrder) session.getAttribute(ORDER_SES);
+
         String role = session.getAttribute(CURRENT_ROLE).toString();
         RoomOrder.Status newStatus = RoomOrder.Status.CANCELED_BY_CLIENT;
 
@@ -33,6 +34,8 @@ public class CancelOrderCommand implements Command {
         try {
             boolean result = roomOrderService.updateStatus(role, newStatus, order);
             session.setAttribute(UPDATE_ORDER_RESULT, result);
+            session.removeAttribute(ROOM_SES);
+            session.removeAttribute(ORDER_SES);
             session.setAttribute(CURRENT_PAGE, PagePath.CANCEL_ORDER_PAGE);
             commandResult = new CommandResult(PagePath.CANCEL_ORDER_PAGE, REDIRECT);
         } catch (ServiceException e) {

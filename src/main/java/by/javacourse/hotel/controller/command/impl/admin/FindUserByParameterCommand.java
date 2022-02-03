@@ -31,14 +31,15 @@ public class FindUserByParameterCommand implements Command {
     public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
         Map<String, String> searchParameters = new HashMap<>();
+
         updateSearchParametersFromRequest(request, searchParameters);
+
         ServiceProvider provider = ServiceProvider.getInstance();
         UserService userService = provider.getUserService();
 
-        List<User> users = new ArrayList<>();
         CommandResult commandResult = null;
         try {
-            users = userService.findUserByParameter(searchParameters);
+            List<User> users = userService.findUserByParameter(searchParameters);
             request.setAttribute(SEARCH_PARAMETER_ATR, searchParameters);
             request.setAttribute(USER_LIST_ATR, users);
             session.setAttribute(SessionAttribute.CURRENT_PAGE, CurrentPageExtractor.extract(request));

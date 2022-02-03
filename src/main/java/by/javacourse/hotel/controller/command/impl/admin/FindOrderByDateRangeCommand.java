@@ -38,6 +38,7 @@ public class FindOrderByDateRangeCommand implements Command {
 
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomOrderService service = provider.getRoomOrderService();
+
         CommandResult commandResult = null;
         try {
             List<RoomOrder> orders = service.findOrderByDateRange(searchParameters);

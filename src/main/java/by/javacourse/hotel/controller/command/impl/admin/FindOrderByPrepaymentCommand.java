@@ -29,12 +29,12 @@ public class FindOrderByPrepaymentCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
-
         Map<String, String> searchParameters = new HashMap<>();
         searchParameters.put(PREPAYMENT_ATR, request.getParameter(PREPAYMENT));
-        System.out.println("searchParameters 1" +searchParameters);
+
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomOrderService service = provider.getRoomOrderService();
+
         CommandResult commandResult = null;
         try {
             List<RoomOrder> orders = service.findOrderByPrepayment(searchParameters);

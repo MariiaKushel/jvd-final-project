@@ -46,8 +46,9 @@ public class GoToAccountPageCommand implements Command {
             Optional<User> optUser = userService.findUserById(userId);
             if (optUser.isPresent()) {
                 User user = optUser.get();
-                Optional<Discount> discount = discountService.findDiscountById(String.valueOf(user.getDiscountId()));
-                Map<String, String> userData = createToUserDataMap(user, discount);
+                String discountId = String.valueOf(user.getDiscountId());
+                Optional<Discount> discount = discountService.findDiscountById(discountId);
+                Map<String, String> userData = createUserDataMap(user, discount);
                 session.setAttribute(USER_DATA_SES, userData);
                 session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
             } else {
@@ -64,7 +65,7 @@ public class GoToAccountPageCommand implements Command {
         return commandResult;
     }
 
-    private Map<String, String> createToUserDataMap(User user, Optional<Discount> discount) {
+    private Map<String, String> createUserDataMap(User user, Optional<Discount> discount) {
         Map<String, String> userData = new HashMap<>();
         userData.put(USER_ID_SES, String.valueOf(user.getEntityId()));
         userData.put(EMAIL_SES, user.getEmail());

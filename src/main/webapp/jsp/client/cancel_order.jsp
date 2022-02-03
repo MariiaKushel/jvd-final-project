@@ -47,7 +47,7 @@
         <c:when test="${not empty update_order_result}">
             ${update_order_result eq true? complete: failed}
         </c:when>
-        <c:when test="${empty search_parameter_atr}">
+        <c:when test="${empty order_ses}">
             ${not_data}
         </c:when>
         <c:otherwise>

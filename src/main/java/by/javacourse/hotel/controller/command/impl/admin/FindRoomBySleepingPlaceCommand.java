@@ -34,14 +34,14 @@ public class FindRoomBySleepingPlaceCommand implements Command {
         HttpSession session = request.getSession();
         Map<String, String> searchParameters = new HashMap<>();
         searchParameters.put(SLEEPING_PLACES_ATR, request.getParameter(SLEEPING_PLACES));
-        System.out.println("searchParameters 1" +searchParameters);
+
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomService service = provider.getRoomService();
+
         CommandResult commandResult = null;
         try {
             List<Room> rooms = service.findRoomBySleepingPlace(searchParameters);
             request.setAttribute(ROOM_LIST_ATR, rooms);
-            System.out.println("searchParameters 2" +searchParameters);
             request.setAttribute(SEARCH_PARAMETER_ATR, searchParameters);
             session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
             commandResult = new CommandResult(PagePath.ROOM_MANAGEMENT_PAGE, FORWARD);
@@ -52,7 +52,4 @@ public class FindRoomBySleepingPlaceCommand implements Command {
         return commandResult;
     }
 
-    private void updateSearchParametersFromRequest(HttpServletRequest request, Map<String, String> searchParameters) {
-        searchParameters.put(ROOM_NUMBER_ATR, request.getParameter(ROOM_NUMBER));
-    }
 }

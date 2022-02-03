@@ -24,18 +24,22 @@ public class UpdateOrderCommand implements Command {
     public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
 
-        ServiceProvider provider = ServiceProvider.getInstance();
-        RoomOrderService roomOrderService = provider.getRoomOrderService();
         RoomOrder order = (RoomOrder) session.getAttribute(ORDER_SES);
         String role = session.getAttribute(CURRENT_ROLE).toString();
         RoomOrder.Status newStatus =  RoomOrder.Status.valueOf(request.getParameter(ORDER_STATUS));
+
+        ServiceProvider provider = ServiceProvider.getInstance();
+        RoomOrderService roomOrderService = provider.getRoomOrderService();
 
         CommandResult commandResult = null;
         try {
             boolean result = roomOrderService.updateStatus(role, newStatus, order);
             session.setAttribute(UPDATE_ORDER_RESULT, result);
-            session.setAttribute(CURRENT_PAGE, PagePath.CANCEL_ORDER_PAGE);
-            commandResult = new CommandResult(PagePath.CANCEL_ORDER_PAGE, REDIRECT);
+            session.removeAttribute(ORDER_SES);
+            session.removeAttribute(ROOM_SES);
+            session.removeAttribute(AVAILABLE_ORDER_STATUSES_SES);
+            session.setAttribute(CURRENT_PAGE, PagePath.UPDATE_ORDER_PAGE);
+            commandResult = new CommandResult(PagePath.UPDATE_ORDER_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute CancelOrderCommand was failed" + e);
              throw new CommandException("Try to execute CancelOrderCommand was failed", e);

@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * {@code UserValidatorImpl} class implements functional of {@link ServletContextListener}
+ * {@code ServletContextListenerImpl} class implements functional of {@link ServletContextListener}
  */
 @WebListener
 public class ServletContextListenerImpl implements ServletContextListener {

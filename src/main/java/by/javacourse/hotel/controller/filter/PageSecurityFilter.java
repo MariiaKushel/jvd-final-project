@@ -101,6 +101,7 @@ public class PageSecurityFilter implements Filter {
                 DISCOUNT_MANAGEMENT_PAGE,
                 CREATE_REVIEW_PAGE,
                 CREATE_DISCOUNT_PAGE,
+                CREATE_ROOM_PAGE,
                 ACCOUNT_ADMIN_PAGE);
 
         allPages = new HashSet<>();

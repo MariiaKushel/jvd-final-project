@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.FORWARD;
+import static by.javacourse.hotel.controller.command.CommandResult.SendingType.REDIRECT;
 import static by.javacourse.hotel.controller.command.RequestParameter.ORDER_ID;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
@@ -29,7 +30,7 @@ public class GoToUpdateOrderPageCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request) throws CommandException {
         HttpSession session = request.getSession();
-
+        session.removeAttribute(UPDATE_ORDER_RESULT);
         String orderId = request.getParameter(ORDER_ID);
 
         ServiceProvider provider = ServiceProvider.getInstance();
@@ -51,9 +52,8 @@ public class GoToUpdateOrderPageCommand implements Command {
             } else {
                 session.setAttribute(WRONG_ORDER_ID_SES, true);
             }
-            session.removeAttribute(UPDATE_ORDER_RESULT);
-            session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
-            commandResult = new CommandResult(PagePath.UPDATE_ORDER_PAGE, FORWARD);
+            session.setAttribute(CURRENT_PAGE, PagePath.UPDATE_ORDER_PAGE);
+            commandResult = new CommandResult(PagePath.UPDATE_ORDER_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToCancelOrderPageCommand was failed " + e);
             throw new CommandException("Try to execute GoToCancelOrderPageCommand was failed ", e);

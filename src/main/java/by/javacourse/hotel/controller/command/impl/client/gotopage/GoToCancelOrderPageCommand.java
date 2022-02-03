@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Optional;
 
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.FORWARD;
+import static by.javacourse.hotel.controller.command.CommandResult.SendingType.REDIRECT;
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
@@ -48,9 +49,8 @@ public class GoToCancelOrderPageCommand implements Command {
             } else {
                 session.setAttribute(WRONG_ORDER_ID_SES, true);
             }
-
-            session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
-            commandResult = new CommandResult(PagePath.CANCEL_ORDER_PAGE, FORWARD);
+            session.setAttribute(CURRENT_PAGE, PagePath.CANCEL_ORDER_PAGE);
+            commandResult = new CommandResult(PagePath.CANCEL_ORDER_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToCancelOrderPageCommand was failed " + e);
             throw new CommandException("Try to execute GoToCancelOrderPageCommand was failed", e);

@@ -44,6 +44,7 @@ public class CreateRoomCommand implements Command {
             int sizeAfter = roomData.size();
             if (sizeBefore == sizeAfter) {
                 session.setAttribute(CREATE_ROOM_RESULT, result);
+                session.removeAttribute(ROOM_DATA_SES);
             } else {
                 session.setAttribute(ROOM_DATA_SES, roomData);
             }

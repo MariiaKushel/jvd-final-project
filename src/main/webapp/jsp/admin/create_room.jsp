@@ -43,7 +43,6 @@
             ${create_room_result eq true? complete: failed}
         </c:when>
         <c:otherwise>
-
             <form method="post" action="${path}/controller" novalidate>
                 <input type="hidden" name="command" value="create_room"/>
                 <div class="row">

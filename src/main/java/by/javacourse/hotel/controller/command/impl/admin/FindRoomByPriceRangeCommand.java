@@ -34,14 +34,14 @@ public class FindRoomByPriceRangeCommand implements Command {
         Map<String, String> searchParameters = new HashMap<>();
         searchParameters.put(PRICE_FROM_ATR, request.getParameter(PRICE_FROM));
         searchParameters.put(PRICE_TO_ATR, request.getParameter(PRICE_TO));
-        System.out.println("searchParameters 1" +searchParameters);
+
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomService service = provider.getRoomService();
+
         CommandResult commandResult = null;
         try {
             List<Room> rooms = service.findRoomByPriceRange(searchParameters);
             request.setAttribute(ROOM_LIST_ATR, rooms);
-            System.out.println("searchParameters 2" +searchParameters);
             request.setAttribute(SEARCH_PARAMETER_ATR, searchParameters);
             session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
             commandResult = new CommandResult(PagePath.ROOM_MANAGEMENT_PAGE, FORWARD);
@@ -52,7 +52,4 @@ public class FindRoomByPriceRangeCommand implements Command {
         return commandResult;
     }
 
-    private void updateSearchParametersFromRequest(HttpServletRequest request, Map<String, String> searchParameters) {
-        searchParameters.put(ROOM_NUMBER_ATR, request.getParameter(ROOM_NUMBER));
-    }
 }

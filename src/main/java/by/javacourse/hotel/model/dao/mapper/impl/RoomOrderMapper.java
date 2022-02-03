@@ -39,8 +39,7 @@ public class RoomOrderMapper implements Mapper<RoomOrder> {
                     .setStatus(RoomOrder.Status.valueOf(resultSet.getString(ROOM_ORDER_STATUS).toUpperCase()))
                     .setAmount(resultSet.getBigDecimal(AMOUNT))
                     .setPrepayment(resultSet.getBoolean(PREPAYMENT))
-                    .build();
-            System.out.println("order" + order);
+                    .build();;
             orders.add(order);
         }
         return orders;
