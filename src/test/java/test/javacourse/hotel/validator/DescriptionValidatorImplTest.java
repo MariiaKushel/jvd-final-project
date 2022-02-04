@@ -11,7 +11,6 @@ import java.util.Map;
 
 import static by.javacourse.hotel.controller.command.SessionAttribute.DESCRIPTION_EN_SES;
 import static by.javacourse.hotel.controller.command.SessionAttribute.DESCRIPTION_RU_SES;
-import static org.testng.Assert.*;
 
 public class DescriptionValidatorImplTest {
 

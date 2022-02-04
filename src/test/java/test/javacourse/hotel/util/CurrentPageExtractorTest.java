@@ -17,6 +17,7 @@ public class CurrentPageExtractorTest {
     @BeforeMethod
     public void initialize() {
         requestMock = Mockito.mock(HttpServletRequest.class);
+
     }
 
     @Test

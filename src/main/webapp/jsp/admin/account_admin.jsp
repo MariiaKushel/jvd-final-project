@@ -149,3 +149,11 @@
 </footer>
 </body>
 </html>
+
+
+
+<select name="type">
+    <c:forEach var="element" items="${type_list}">
+        <option value="${element.type}">${element.type}</option>
+    </c:forEach>
+</select>

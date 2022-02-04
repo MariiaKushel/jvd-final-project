@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
-import static org.testng.Assert.*;
 
 public class RoomOrderValidatorImplTest {
 

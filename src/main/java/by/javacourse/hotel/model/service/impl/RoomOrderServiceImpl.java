@@ -12,16 +12,15 @@ import by.javacourse.hotel.validator.impl.RoomOrderValidatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static by.javacourse.hotel.controller.command.RequestAttribute.*;
-import static by.javacourse.hotel.controller.command.RequestParameter.*;
-import static by.javacourse.hotel.controller.command.SessionAttribute.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+
+import static by.javacourse.hotel.controller.command.RequestAttribute.*;
+import static by.javacourse.hotel.controller.command.RequestParameter.PREPAYMENT;
+import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
 public class RoomOrderServiceImpl implements RoomOrderService {
     static Logger logger = LogManager.getLogger();
@@ -81,7 +80,7 @@ public class RoomOrderServiceImpl implements RoomOrderService {
             LocalDate dateFrom = LocalDate.parse(from);
             LocalDate dateTo = LocalDate.parse(to);
             days = (int)ChronoUnit.DAYS.between(dateFrom, dateTo);
-            if (days < 1 && days > 180) {
+            if (days < 1 || days > 180) {
                 logger.error("Try to countDays was failed, wrong date range");
                 throw new ServiceException("Try to countDays  was failed, wrong date range");
             }

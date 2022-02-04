@@ -6,8 +6,6 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
-
 public class DiscountValidatorImplTest {
 
     private DiscountValidator validator = DiscountValidatorImpl.getInstance();
