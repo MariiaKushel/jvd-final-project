@@ -14,6 +14,7 @@
 <fmt:message key="message.discount_rules" var="discount_rules"/>
 <fmt:message key="message.failed" var="failed"/>
 <fmt:message key="message.incorrect_data" var="incorrect_data"/>
+<fmt:message key="message.not_data" var="not_data"/>
 <fmt:message key="message.not_found" var="not_found"/>
 <fmt:message key="title.update_discount" var="title"/>
 
@@ -40,6 +41,9 @@
         </c:when>
         <c:when test="${not empty update_discount_result}">
             ${update_discount_result eq true? complete: failed}
+        </c:when>
+        <c:when test="${empty discount_data_ses}">
+            ${not_data}
         </c:when>
         <c:otherwise>
             <form method="post" action="${path}/controller" novalidate>

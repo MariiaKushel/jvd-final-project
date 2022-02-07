@@ -9,13 +9,10 @@ import by.javacourse.hotel.model.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.sql.rowset.serial.SerialBlob;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static by.javacourse.hotel.model.dao.ColumnName.*;
 
 public class ImageDaoImpl implements ImageDao {
     static Logger logger = LogManager.getLogger();
@@ -39,7 +36,7 @@ public class ImageDaoImpl implements ImageDao {
     private static final String SQL_SELECT_IMAGE_BY_ROOM_ID = """
             SELECT image_id, room_id, image, preview
             FROM hotel.images
-            WHERE room_id=? LIMIT 1""";
+            WHERE room_id=?""";
     private static final String SQL_SELECT_IMAGE_BY_VISIBLE_ROOM = """
             SELECT image_id, hotel.images.room_id, image, preview
             FROM hotel.images

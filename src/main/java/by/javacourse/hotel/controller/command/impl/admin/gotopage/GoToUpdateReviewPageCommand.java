@@ -42,7 +42,7 @@ public class GoToUpdateReviewPageCommand implements Command {
                 session.setAttribute(WRONG_REVIEW_ID_SES, true);
             }
             session.setAttribute(CURRENT_PAGE, PagePath.UPDATE_REVIEW_PAGE);
-            commandResult = new CommandResult(PagePath.UPDATE_REVIEW_PAGE, FORWARD);
+            commandResult = new CommandResult(PagePath.UPDATE_REVIEW_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToUpdateReviewPageCommand was failed " + e);
              throw new CommandException("Try to execute GoToUpdateReviewPageCommand was failed ", e);

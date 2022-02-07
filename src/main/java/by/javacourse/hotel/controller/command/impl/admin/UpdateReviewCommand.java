@@ -4,22 +4,17 @@ import by.javacourse.hotel.controller.command.Command;
 import by.javacourse.hotel.controller.command.CommandResult;
 import by.javacourse.hotel.controller.command.PagePath;
 import by.javacourse.hotel.entity.Review;
-import by.javacourse.hotel.entity.RoomOrder;
 import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.ReviewService;
-import by.javacourse.hotel.model.service.RoomOrderService;
 import by.javacourse.hotel.model.service.ServiceProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.REDIRECT;
-import static by.javacourse.hotel.controller.command.RequestParameter.ORDER_STATUS;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
-import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class UpdateReviewCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -36,7 +31,7 @@ public class UpdateReviewCommand implements Command {
         CommandResult commandResult = null;
         try {
             boolean result = reviewService.updateHidden(reviewId, oldHiddenMark);
-            session.setAttribute(UPDATE_ORDER_RESULT, result);
+            session.setAttribute(UPDATE_REVIEW_RESULT, result);
             session.setAttribute(CURRENT_PAGE, PagePath.UPDATE_REVIEW_PAGE);
             commandResult = new CommandResult(PagePath.UPDATE_REVIEW_PAGE, REDIRECT);
         } catch (ServiceException e) {

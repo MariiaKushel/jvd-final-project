@@ -11,6 +11,7 @@
 <fmt:message key="button.make_show" var="make_show"/>
 <fmt:message key="message.complete" var="complete"/>
 <fmt:message key="message.failed" var="failed"/>
+<fmt:message key="message.not_data" var="not_data"/>
 <fmt:message key="message.not_found" var="not_found"/>
 <fmt:message key="review.author" var="author_table"/>
 <fmt:message key="review.content" var="content_table"/>
@@ -43,6 +44,9 @@
         <c:when test="${not empty update_review_result}">
             ${update_review_result eq true? complete: failed}
         </c:when>
+        <c:when test="${empty review_ses}">
+            ${not_data}
+        </c:when>
         <c:otherwise>
             <table class="table text-secondary border-secondary">
                 <thead>
@@ -68,7 +72,7 @@
                     <td>${review_ses.reviewContent}</td>
                 </tr>
                 <tr>
-                    <td>${author}</td>
+                    <td>${author_table}</td>
                     <td>${review_ses.author}</td>
                 </tr>
                 </tbody>

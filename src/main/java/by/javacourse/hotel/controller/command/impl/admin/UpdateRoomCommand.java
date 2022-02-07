@@ -14,11 +14,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.REDIRECT;
 import static by.javacourse.hotel.controller.command.RequestParameter.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
-import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class UpdateRoomCommand implements Command {
     static Logger logger = LogManager.getLogger();

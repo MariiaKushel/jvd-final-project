@@ -18,8 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-
-import static by.javacourse.hotel.controller.command.CommandResult.SendingType.FORWARD;
+import static by.javacourse.hotel.controller.command.CommandResult.SendingType.REDIRECT;
 import static by.javacourse.hotel.controller.command.RequestParameter.DISCOUNT_ID;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
@@ -47,7 +46,7 @@ public class GoToUpdateDiscountPageCommand implements Command {
                 session.setAttribute(WRONG_DISCOUNT_ID_SES, true);
             }
             session.setAttribute(CURRENT_PAGE, CurrentPageExtractor.extract(request));
-            commandResult = new CommandResult(PagePath.UPDATE_DISCOUNT_PAGE, FORWARD);
+            commandResult = new CommandResult(PagePath.UPDATE_DISCOUNT_PAGE, REDIRECT);
         } catch (ServiceException e) {
             logger.error("Try to execute GoToUpdateDiscountPageCommand was failed " + e);
              throw new CommandException("Try to execute GoToUpdateDiscountPageCommand was failed ", e);

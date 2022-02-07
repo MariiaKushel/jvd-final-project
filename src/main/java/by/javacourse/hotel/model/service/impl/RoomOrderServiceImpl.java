@@ -19,7 +19,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static by.javacourse.hotel.controller.command.RequestAttribute.*;
-import static by.javacourse.hotel.controller.command.RequestParameter.PREPAYMENT;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
 
 public class RoomOrderServiceImpl implements RoomOrderService {
@@ -49,7 +48,7 @@ public class RoomOrderServiceImpl implements RoomOrderService {
             LocalDate from = LocalDate.parse(orderData.get(DATE_FROM_SES));
             LocalDate to = LocalDate.parse(orderData.get(DATE_TO_SES));
             BigDecimal amount = new BigDecimal(orderData.get(TOTAL_AMOUNT_SES));
-            boolean prepayment = orderData.get(PREPAYMENT) != null ? true : false;
+            boolean prepayment = orderData.get(PREPAYMENT_SES) != null ? true : false;
             int days = Integer.parseInt(orderData.get(DAYS_SES));
 
             RoomOrder order = RoomOrder.newBuilder()

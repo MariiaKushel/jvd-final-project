@@ -42,7 +42,7 @@ public class RoomDaoImpl implements RoomDao {
             SELECT hotel.rooms.room_id, number, sleeping_place, price_per_day, rating, visible, image 
             FROM hotel.rooms
             LEFT JOIN hotel.images ON hotel.rooms.room_id=hotel.images.room_id AND preview=true
-            ORDER BY price_per_day""";
+            ORDER BY number""";
     private static final String SQL_SELECT_ROOM_BY_ID = """
             SELECT hotel.rooms.room_id, number, sleeping_place, price_per_day, rating, visible, image 
             FROM hotel.rooms

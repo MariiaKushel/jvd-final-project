@@ -26,6 +26,7 @@
 <fmt:message key="room.rating" var="rating_table"/>
 <fmt:message key="room.sleeping_place" var="sleeping_place_table"/>
 <fmt:message key="room.visible" var="visible_table"/>
+<fmt:message key="field.invisible" var="invisible_table"/>
 <fmt:message key="title.update_description" var="description_title"/>
 <fmt:message key="title.update_image" var="image_title"/>
 <fmt:message key="title.update_room" var="room_title"/>
@@ -47,13 +48,9 @@
 <div class="container text-secondary">
 
     <c:choose>
-        <c:when test="${not empty not_fount_ses}">
+        <c:when test="${not empty not_found_ses}">
             <div class="mb-3 fw-bold">${room_title}</div>
             ${not_found}
-        </c:when>
-        <c:when test="${empty room_data_ses}">
-            <div class="mb-3 fw-bold">${room_title}</div>
-            ${not_data}
         </c:when>
         <c:when test="${not empty update_room_result}">
             <div class="mb-3 fw-bold">${room_title}</div>
@@ -70,6 +67,10 @@
         <c:when test="${not empty upload_result}">
             <div class="mb-3 fw-bold">${upload_title}</div>
             ${upload_result eq true? complete: failed}
+        </c:when>
+        <c:when test="${empty room_data_ses}">
+            <div class="mb-3 fw-bold">${room_title}</div>
+            ${not_data}
         </c:when>
         <c:otherwise>
             <div class="mb-3 fw-bold">${room_title}</div>
@@ -151,9 +152,14 @@
                 </div>
 
                 <div class="mb-3">
-                    <input type="checkbox" class="form-check-input " name="visible"
+                    <input type="radio" class="form-check-input " name="visible"
                            value="true" ${room_data_ses['visible_ses'] eq 'true'?'checked':''}/>
                     <label class="form-label mb-3">${visible_table}</label>
+                </div>
+                <div class="mb-3">
+                    <input type="radio" class="form-check-input " name="visible"
+                           value="false" ${room_data_ses['visible_ses'] eq 'false'?'checked':''}/>
+                    <label class="form-label mb-3">${invisible_table}</label>
                 </div>
 
                 <div class="container text-center">
@@ -211,6 +217,7 @@
                 </div>
             </form>
 
+            <c:if test="${not empty image_data_ses}">
             <div class="mb-3 fw-bold">${image_title}</div>
             <form method="post" action="${path}/controller">
                 <input type="hidden" name="command" value="change_preview"/>
@@ -238,13 +245,6 @@
                     </div>
                 </div>
             </form>
-            <c:if test="${empty image_data_ses}">
-                <div class="row">
-                    <div class="col mb-3">
-                        //empty
-                            <%-- <img src="${path}/images/nophoto.jpg" class="figure-img mx-auto d-block" style="width: 600px">--%>
-                    </div>
-                </div>
             </c:if>
 
             <form method="post" action="${path}/controller" enctype="multipart/form-data">

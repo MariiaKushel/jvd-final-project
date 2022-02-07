@@ -46,7 +46,7 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
             SELECT room_order_id, user_id, room_id, date, hotel.room_orders.from, hotel.room_orders.to, amount, status, 
              prepayment
             FROM hotel.room_orders
-            ORDER BY date""";
+            ORDER BY date DESC""";
     private static final String SQL_SELECT_ROOM_ORDER_BY_ID = """
             SELECT room_order_id, user_id, room_id, date, hotel.room_orders.from, hotel.room_orders.to, amount, status, 
              prepayment
@@ -56,12 +56,14 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
             SELECT room_order_id, user_id, room_id, date, hotel.room_orders.from, hotel.room_orders.to, amount, status, 
              prepayment
             FROM hotel.room_orders
-            WHERE prepayment=?""";
+            WHERE prepayment=?
+            ORDER BY date DESC""";
     private static final String SQL_SELECT_ROOM_ORDER_BY_STATUS = """
             SELECT room_order_id, user_id, room_id, date, hotel.room_orders.from, hotel.room_orders.to, amount, status, 
              prepayment
             FROM hotel.room_orders
-            WHERE status=?""";
+            WHERE status=?
+            ORDER BY date DESC""";
     private static final String SQL_SELECT_ROOM_ORDER_BY_DATE_RANGE = """
             SELECT room_order_id, user_id, room_id, date, hotel.room_orders.from, hotel.room_orders.to, amount, status, 
              prepayment

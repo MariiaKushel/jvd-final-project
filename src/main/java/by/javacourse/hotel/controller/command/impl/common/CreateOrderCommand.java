@@ -1,6 +1,8 @@
 package by.javacourse.hotel.controller.command.impl.common;
 
-import by.javacourse.hotel.controller.command.*;
+import by.javacourse.hotel.controller.command.Command;
+import by.javacourse.hotel.controller.command.CommandResult;
+import by.javacourse.hotel.controller.command.PagePath;
 import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.RoomOrderService;
@@ -10,13 +12,11 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import static by.javacourse.hotel.controller.command.CommandResult.SendingType.*;
-import static by.javacourse.hotel.controller.command.RequestParameter.*;
+import static by.javacourse.hotel.controller.command.CommandResult.SendingType.REDIRECT;
+import static by.javacourse.hotel.controller.command.RequestParameter.PREPAYMENT;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
-import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class CreateOrderCommand implements Command {
     static Logger logger = LogManager.getLogger();
@@ -44,18 +44,5 @@ public class CreateOrderCommand implements Command {
              throw new CommandException("Try to execute CreateOrderCommand was failed ", e);
         }
         return commandResult;
-    }
-
-    private Map<String, String> extractOrderData (HttpServletRequest request, HttpSession session){
-        Map<String, String> orderData = new HashMap<>();
-        orderData.put(ROOM_ID, request.getParameter(ROOM_ID));
-        orderData.put(CURRENT_USER_ID, session.getAttribute(CURRENT_USER_ID).toString());
-        orderData.put(ORDER_DATE, session.getAttribute(TODAY).toString());//
-        orderData.put(DATE_FROM, request.getParameter(DATE_FROM));
-        orderData.put(DATE_TO, request.getParameter(DATE_TO));
-        orderData.put(TOTAL_AMOUNT, request.getParameter(TOTAL_AMOUNT));
-        orderData.put(PREPAYMENT, request.getParameter(PREPAYMENT));
-        orderData.put(DAYS, request.getParameter(DAYS));
-        return orderData;
     }
 }

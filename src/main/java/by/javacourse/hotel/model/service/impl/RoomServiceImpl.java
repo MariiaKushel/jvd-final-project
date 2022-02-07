@@ -271,6 +271,7 @@ public class RoomServiceImpl implements RoomService {
         boolean visible = roomData.get(VISIBLE_SES) != null
                 ? Boolean.parseBoolean(roomData.get(VISIBLE_SES))
                 : Boolean.FALSE;
+        logger.debug("visible" + visible);
         try {
             long roomId = Long.parseLong(roomData.get(ROOM_ID_SES));
             BigDecimal rating = new BigDecimal(roomData.get(RATING_SES));
