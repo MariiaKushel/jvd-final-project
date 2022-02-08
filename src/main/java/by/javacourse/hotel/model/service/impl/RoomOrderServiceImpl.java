@@ -46,6 +46,10 @@ public class RoomOrderServiceImpl implements RoomOrderService {
             long roomId = Long.parseLong(orderData.get(ROOM_ID_SES));
             LocalDate date = LocalDate.parse(orderData.get(DATE_SES));
             LocalDate from = LocalDate.parse(orderData.get(DATE_FROM_SES));
+            if(date.compareTo(from) > 0){
+                logger.info("Not valid data");
+                return result;
+            }
             LocalDate to = LocalDate.parse(orderData.get(DATE_TO_SES));
             BigDecimal amount = new BigDecimal(orderData.get(TOTAL_AMOUNT_SES));
             boolean prepayment = orderData.get(PREPAYMENT_SES) != null ? true : false;

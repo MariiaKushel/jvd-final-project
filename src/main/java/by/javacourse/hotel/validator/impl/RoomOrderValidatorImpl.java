@@ -9,8 +9,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
 
-import static by.javacourse.hotel.controller.command.RequestParameter.PREPAYMENT;
-import static by.javacourse.hotel.controller.command.RequestParameter.TOTAL_AMOUNT;
 import static by.javacourse.hotel.controller.command.SessionAttribute.PREPAYMENT_SES;
 import static by.javacourse.hotel.controller.command.SessionAttribute.TOTAL_AMOUNT_SES;
 import static by.javacourse.hotel.entity.RoomOrder.Status.*;

@@ -51,7 +51,6 @@ public class GoToOrderPageCommand implements Command {
 
         ServiceProvider provider = ServiceProvider.getInstance();
         RoomOrderService roomOrderService = provider.getRoomOrderService();
-        UserService userService = provider.getUserService();
         RoomService roomService = provider.getRoomService();
         DiscountService discountService = provider.getDiscountService();
 
