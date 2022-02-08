@@ -11,6 +11,7 @@ public final class RequestParameter {
     public static final String DATE_FROM = "date_from";
     public static final String DATE_TO = "date_to";
     public static final String DAYS = "days";
+    public static final String DIRECTION = "direction";
     public static final String DESCRIPTION_EN = "description_en";
     public static final String DESCRIPTION_RU = "description_ru";
     public static final String DISCOUNT_ID = "discount_id";

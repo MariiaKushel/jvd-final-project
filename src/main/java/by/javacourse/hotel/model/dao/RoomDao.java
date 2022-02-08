@@ -6,7 +6,6 @@ import by.javacourse.hotel.exception.DaoException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * {@code RoomDao} class implements functional of {@link BaseDao}
@@ -87,5 +86,28 @@ public interface RoomDao extends BaseDao<Long, Room> {
      * @throws DaoException - if request from database was failed
      */
     boolean refreshRating(long roomId) throws DaoException;
+
+    /**
+     * Find number of all visible rooms
+     * @return number of all visible rooms
+     * @throws DaoException - if request from database was failed
+     */
+    int findNumberOfVisibleRoom() throws DaoException;
+
+    /**
+     * Find room all visible rooms which have id more than beforeRoomId.
+     * @param beforeRoomId - low limit as room id
+     * @return list of room or empty list if room not found. List size <= default page capacity
+     * @throws DaoException - if request from database was failed
+     */
+    List<Room> findPrevious(long beforeRoomId) throws DaoException;
+
+    /**
+     * Find room all visible rooms which have id less than afterRoomId.
+     * @param afterRoomId - low limit as room id
+     * @return list of room or empty list if room not found. List size <= default page capacity
+     * @throws DaoException - if request from database was failed
+     */
+    List<Room> findNext(long afterRoomId) throws DaoException;
 
 }

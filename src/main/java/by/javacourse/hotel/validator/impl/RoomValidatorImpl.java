@@ -7,9 +7,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
 
-import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.SessionAttribute.*;
-import static by.javacourse.hotel.controller.command.SessionAttribute.WRONG_NUMBER_SES;
 
 /**
  * {@code RoomValidatorImpl} class implements functional of {@link RoomValidator}
@@ -116,5 +114,10 @@ public final class RoomValidatorImpl implements RoomValidator {
             isValid = false;
         }
         return isValid;
+    }
+
+    @Override
+    public boolean validateDirection(String direction) {
+        return direction.equals(PREVIOUS_SHEET) || direction.equals(NEXT_SHEET);
     }
 }

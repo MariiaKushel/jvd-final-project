@@ -55,6 +55,8 @@ public final class ColumnName {
     public static final String ROOM_ORDER_STATUS ="status";
     public static final String PREPAYMENT ="prepayment";
 
+    public static final String NUM ="num";
+
     private ColumnName() {
     }
 }

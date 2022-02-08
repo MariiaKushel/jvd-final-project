@@ -107,6 +107,11 @@ public final class SessionAttribute {
     public static final String WRONG_REPEAT_PASSWORD_SES = "wrong_repeat_password_ses";
     public static final String WRONG_REVIEW_ID_SES = "wrong_review_id_ses";
     public static final String WRONG_SLEEPING_PLACE_SES = "wrong_sleeping_place_ses";
+    public static final String CURRENT_SHEET_SES = "current_sheet_ses";
+    public static final String ALL_SHEET_SES = "all_sheet_ses";
+    public static final String FIRST_ID_SES = "first_id_ses";
+    public static final String LAST_ID_SES = "last_id_ses";
+    public static final String PAGINATION_SES = "pagination_ses";
 
     private SessionAttribute() {
 

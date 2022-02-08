@@ -41,11 +41,32 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<Room> findAllVisibleRooms() throws ServiceException {
+    public List<Room> findAllVisibleRooms(String direction, Map<String, Long> paginationData) throws ServiceException {
         List<Room> rooms = new ArrayList<>();
         try {
-            boolean visible = true;
-            rooms = roomDao.findRoomByVisible(visible);
+            if (paginationData.isEmpty()
+                    || direction == null
+                    || (paginationData.get(CURRENT_SHEET_SES) == 1 && RoomValidator.PREVIOUS_SHEET.equals(direction)
+                    || (paginationData.get(CURRENT_SHEET_SES) == paginationData.get(ALL_SHEET_SES)
+                    && RoomValidator.NEXT_SHEET.equals(direction)))) {
+                direction = RoomValidator.NEXT_SHEET;
+                preparePaginationData(paginationData);
+            }
+            RoomValidator validator = RoomValidatorImpl.getInstance();
+            if (!validator.validateDirection(direction)) {
+                paginationData.clear();
+                logger.info("Not valid direction");
+                return rooms;
+            }
+
+            if (direction.equals(RoomValidator.NEXT_SHEET)) {
+                long lastId = paginationData.get(LAST_ID_SES);
+                rooms = roomDao.findNext(lastId);
+            } else {
+                long firstId = paginationData.get(FIRST_ID_SES);
+                rooms = roomDao.findPrevious(firstId);
+            }
+            refreshPaginationData(direction, paginationData, rooms);
         } catch (DaoException e) {
             logger.error("Try to find all visible rooms was failed " + e);
             throw new ServiceException("Try to find all visible rooms was failed", e);
@@ -292,5 +313,24 @@ public class RoomServiceImpl implements RoomService {
             throw new ServiceException("Try to updateRoom  was failed", e);
         }
         return isUpdated;
+    }
+
+    private void preparePaginationData(Map<String, Long> paginationData) throws DaoException {
+        int num = roomDao.findNumberOfVisibleRoom();
+        paginationData.put(ALL_SHEET_SES, Long.valueOf(num));
+        paginationData.put(CURRENT_SHEET_SES, 0L);
+        paginationData.put(LAST_ID_SES, 0L);
+        paginationData.put(FIRST_ID_SES, 0L);
+    }
+
+    private void refreshPaginationData(String direction, Map<String, Long> paginationData, List<Room> rooms) {
+        if (!rooms.isEmpty()) {
+            long newFirst = rooms.get(0).getEntityId();
+            long newLast = rooms.get(rooms.size() - 1).getEntityId();
+            paginationData.put(FIRST_ID_SES, newFirst);
+            paginationData.put(LAST_ID_SES, newLast);
+            long currentSheet = paginationData.get(CURRENT_SHEET_SES);
+            paginationData.put(CURRENT_SHEET_SES, currentSheet + Long.parseLong(direction));
+        }
     }
 }

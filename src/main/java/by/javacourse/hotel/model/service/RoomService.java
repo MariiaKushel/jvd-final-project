@@ -1,8 +1,6 @@
 package by.javacourse.hotel.model.service;
 
 import by.javacourse.hotel.entity.Room;
-import by.javacourse.hotel.entity.RoomOrder;
-import by.javacourse.hotel.exception.DaoException;
 import by.javacourse.hotel.exception.ServiceException;
 
 import java.math.BigDecimal;
@@ -24,11 +22,11 @@ public interface RoomService {
     List<Room> findAllRooms() throws ServiceException;
 
     /**
-     * Find all rooms which have visible mark
-     * @return room list or empty list if room not found
+     * Find all rooms which have visible mark with pagination
+     * @return room list by current sheet or empty list if room not found
      * @throws ServiceException - if dao method throw {@link by.javacourse.hotel.exception.DaoException}
      */
-    List<Room> findAllVisibleRooms() throws ServiceException;
+    List<Room> findAllVisibleRooms(String direction, Map<String, Long> paginationData) throws ServiceException;
 
     /**
      * Find room by id

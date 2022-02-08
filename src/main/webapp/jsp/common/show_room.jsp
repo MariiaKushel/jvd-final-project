@@ -8,6 +8,8 @@
 <fmt:setBundle basename="properties.pagecontent"/>
 
 <fmt:message key="reference.back_to_main" var="back_to_main"/>
+<fmt:message key="reference.previous" var="previous"/>
+<fmt:message key="reference.next" var="next"/>
 <fmt:message key="room.number" var="number"/>
 <fmt:message key="room.price" var="price"/>
 <fmt:message key="room.rating" var="rating"/>
@@ -36,6 +38,27 @@
             ${not_found}
         </c:when>
         <c:otherwise>
+
+            <div class="row">
+                <div class="col mb-3">
+                    <c:if test="${pagination_ses['current_sheet_ses']>1}">
+                        <a class="link-secondary text-decoration-none"
+                           href="${path}/controller?command=find_all_visible_rooms&direction=-1">
+                            ${previous}</a>
+                    </c:if>
+                </div>
+                <div class="col mb-3">
+                    ${pagination_ses['current_sheet_ses']}
+                </div>
+                <div class="col-auto mb-3">
+                    <c:if test="${pagination_ses['current_sheet_ses']<pagination_ses['all_sheet_ses']}">
+                        <a class="link-secondary text-decoration-none"
+                           href="${path}/controller?command=find_all_visible_rooms&direction=1">
+                            ${next}</a>
+                    </c:if>
+                </div>
+            </div>
+
             <c:forEach var="room" items="${room_list_atr}">
                 <div class="card mb-3">
                     <div class="row g-0">

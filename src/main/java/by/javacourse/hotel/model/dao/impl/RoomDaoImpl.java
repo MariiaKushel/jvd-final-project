@@ -88,6 +88,24 @@ public class RoomDaoImpl implements RoomDao {
             SELECT DISTINCT sleeping_place FROM hotel.rooms
             WHERE visible=true
             ORDER BY sleeping_place""";
+    private static final int DEFAULT_PAGE_CAPACITY = 4;
+    private static final String SQL_SELECT_NUMBER_OF_VISIBLE_ROOM = """
+            SELECT count(visible) AS num
+            FROM hotel.rooms
+            WHERE visible=true""";
+    private static final String SQL_SELECT_PREVIOUS = """
+            SELECT * FROM (
+            SELECT hotel.rooms.room_id, number, sleeping_place, price_per_day, rating, visible, image
+            FROM hotel.rooms
+            LEFT JOIN hotel.images ON hotel.rooms.room_id=hotel.images.room_id AND preview=true
+            WHERE visible=true and hotel.rooms.room_id<?
+            ORDER BY hotel.rooms.room_id DESC LIMIT ?) AS revers_table
+            ORDER BY room_id""";
+    private static final String SQL_SELECT_NEXT = """
+            SELECT hotel.rooms.room_id, number, sleeping_place, price_per_day, rating, visible, image
+            FROM hotel.rooms
+            LEFT JOIN hotel.images ON hotel.rooms.room_id=hotel.images.room_id AND preview=true
+            WHERE visible=true and hotel.rooms.room_id>? LIMIT ?""";
 
     @Override
     public List<Room> findAll() throws DaoException {
@@ -321,6 +339,64 @@ public class RoomDaoImpl implements RoomDao {
             throw new DaoException("SQL request refreshRating from table hotel.rooms was failed", e);
         }
         return rowsUpdated == 1;
+    }
+
+    @Override
+    public int findNumberOfVisibleRoom() throws DaoException {
+        int num = 0;
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(SQL_SELECT_NUMBER_OF_VISIBLE_ROOM)) {
+            if (resultSet.next()) {
+                num = resultSet.getInt(NUM);
+                num = num % DEFAULT_PAGE_CAPACITY == 0
+                        ? num / DEFAULT_PAGE_CAPACITY
+                        : num / DEFAULT_PAGE_CAPACITY + 1;
+            }
+        } catch (SQLException e) {
+            logger.error("SQL request findNumberOfVisibleRoom from table hotel.rooms was failed" + e);
+            throw new DaoException("SQL request findNumberOfVisibleRoom from table hotel.rooms was failed", e);
+        }
+        return num;
+    }
+
+    @Override
+    public List<Room> findPrevious(long beforeRoomId) throws DaoException {
+        List<Room> rooms = new ArrayList<>();
+        Mapper mapper = RoomMapper.getInstance();
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_PREVIOUS)) {
+            statement.setLong(1, beforeRoomId);
+            statement.setInt(2, DEFAULT_PAGE_CAPACITY);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                rooms = mapper.retrieve(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.error("SQL request findPrevious from table hotel.rooms was failed " + e);
+            throw new DaoException("SQL request findPrevious from table hotel.rooms was failed", e);
+        }
+        return rooms;
+    }
+
+    @Override
+    public List<Room> findNext(long afterRoomId) throws DaoException {
+        List<Room> rooms = new ArrayList<>();
+        Mapper mapper = RoomMapper.getInstance();
+        ConnectionPool pool = ConnectionPool.getInstance();
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_NEXT)) {
+            statement.setLong(1, afterRoomId);
+            statement.setInt(2, DEFAULT_PAGE_CAPACITY);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                rooms = mapper.retrieve(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.error("SQL request findNext from table hotel.rooms was failed " + e);
+            throw new DaoException("SQL request findNext from table hotel.rooms was failed", e);
+        }
+        return rooms;
     }
 
     @Override

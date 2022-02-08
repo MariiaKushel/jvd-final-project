@@ -12,6 +12,8 @@ public interface RoomValidator {
      * {@code WRONG_DATA_MARKER} constant represent string to mark wrong data
      */
     String WRONG_DATA_MARKER = "Wrong data";
+    String PREVIOUS_SHEET = "-1";
+    String NEXT_SHEET = "1";
 
     /**
      * {@code validateDateRange} method to validate date range for room search
@@ -57,4 +59,10 @@ public interface RoomValidator {
      */
     boolean validateRoomData(Map<String, String> roomData);
 
+    /**
+     * {@code validateDirection} method to validate direction to flip sheets
+     * @param direction - "1"-next, "-1"-previous
+     * @return result of validation, true - valid, false - not valid
+     */
+    boolean validateDirection(String direction);
 }
