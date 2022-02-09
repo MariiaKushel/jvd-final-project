@@ -12,21 +12,21 @@ import java.sql.SQLException;
 
 public class ConnectionPoolTest {
     private ConnectionPool pool;
-    private Connection connection;
 
     @BeforeMethod
     public void init() {
         pool = ConnectionPool.getInstance();
-        connection = pool.getConnection();
     }
 
     @Test
     public void testGetConnection() {
+        Connection connection = pool.getConnection();
         Assert.assertTrue(connection != null);
     }
 
     @Test
     public void testReleaseConnection() {
+        Connection connection = pool.getConnection();
         pool.releaseConnection(connection);
     }
 
@@ -40,7 +40,6 @@ public class ConnectionPoolTest {
 
     @AfterMethod
     public void clean() {
-        pool.releaseConnection(connection);
         pool = null;
     }
 }
