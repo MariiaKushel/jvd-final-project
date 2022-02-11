@@ -87,21 +87,6 @@ public class RoomOrderDaoImpl implements RoomOrderDao {
             FROM hotel.daily_room_states
             WHERE room_id=? AND date BETWEEN ? and ?""";
 
-
-    private static final String SQL_SELECT_ROOM_ORDER = """
-            SELECT room_order_id, user_id, room_id, date, hotel.room_orders.from, hotel.room_orders.to, amount, status, 
-             prepayment
-            FROM hotel.room_orders""";
-
-    private static final String BY_PREPAYMENT = " WHERE prepayment=?";
-    private static final String BY_STATUS = " WHERE status=?";
-    private static final String BY_DATE_RANGE = "  WHERE date BETWEEN ? AND ? ORDER BY date DESC";
-    private static final String BY_USER_ID = " WHERE user_id=? ORDER BY date DESC";
-    private static final String BY_USER_ID_LAST = " WHERE user_id=? ORDER BY date DESC LIMIT ?";
-    private static final String BY_ID = " WHERE room_order_id=? LIMIT 1";
-
-
-
     @Override
     public List<RoomOrder> findAll() throws DaoException {
         List<RoomOrder> orders = new ArrayList<>();

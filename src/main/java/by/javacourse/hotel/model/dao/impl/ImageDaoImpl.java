@@ -45,14 +45,6 @@ public class ImageDaoImpl implements ImageDao {
             AND visible=true 
             AND preview=true""";
 
-    private static final String SQL_SELECT_IMAGE = """
-            SELECT image_id, room_id, image, preview
-            FROM hotel.images""";
-
-    private static final String BY_ID = " WHERE image_id=? LIMIT 1";
-    private static final String BY_ROOM_ID = " WHERE room_id=?";
-
-
     @Override
     public List<Image> findAll() throws DaoException {
         List<Image> images = new ArrayList<>();

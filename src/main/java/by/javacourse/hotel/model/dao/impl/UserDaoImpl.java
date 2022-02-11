@@ -1,11 +1,8 @@
 package by.javacourse.hotel.model.dao.impl;
 
-import by.javacourse.hotel.exception.DaoException;
-
-import static by.javacourse.hotel.model.dao.ColumnName.*;
-
-import by.javacourse.hotel.model.dao.UserDao;
 import by.javacourse.hotel.entity.User;
+import by.javacourse.hotel.exception.DaoException;
+import by.javacourse.hotel.model.dao.UserDao;
 import by.javacourse.hotel.model.dao.mapper.Mapper;
 import by.javacourse.hotel.model.dao.mapper.impl.UserMapper;
 import by.javacourse.hotel.model.pool.ConnectionPool;
@@ -14,7 +11,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static by.javacourse.hotel.model.dao.ColumnName.BALANCE;
 
 public class UserDaoImpl implements UserDao {
     static Logger logger = LogManager.getLogger();
@@ -58,13 +59,6 @@ public class UserDaoImpl implements UserDao {
     private static final String STATUS = " status=? ";
     private static final String AND = " AND ";
     private static final String PERSENT_SIGN = "%";
-
-    //fixme relocated to discount dao
-    private static final String SQL_SELECT_DISCOUNT_BY_USER_ID = """
-            SELECT rate
-            FROM hotel.users
-            JOIN hotel.discounts ON hotel.users.discount_id=hotel.discounts.discount_id
-            AND user_id=? LIMIT 1""";
 
     @Override
     public List<User> findAll() throws DaoException {

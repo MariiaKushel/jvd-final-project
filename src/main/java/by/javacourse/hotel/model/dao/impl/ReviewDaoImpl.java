@@ -55,7 +55,6 @@ public class ReviewDaoImpl implements ReviewDao {
             JOIN hotel.room_orders ON review_id=room_order_id AND review_id=?
             JOIN hotel.users ON hotel.room_orders.user_id=hotel.users.user_id""";
 
-    //FIXME
     private static final String SQL_SELECT_REVIEW_BY_USER_ID_FROM_DATE = """
             SELECT review_id, hotel.reviews.date, room_mark, review, hidden, hotel.users.name
             FROM hotel.reviews

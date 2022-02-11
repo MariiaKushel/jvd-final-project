@@ -1,10 +1,13 @@
 package by.javacourse.hotel.controller.command.impl.common;
 
-import by.javacourse.hotel.controller.command.*;
+import by.javacourse.hotel.controller.command.Command;
+import by.javacourse.hotel.controller.command.CommandResult;
+import by.javacourse.hotel.controller.command.PagePath;
+import by.javacourse.hotel.controller.command.RequestParameter;
+import by.javacourse.hotel.entity.Description;
 import by.javacourse.hotel.entity.Image;
 import by.javacourse.hotel.entity.Review;
 import by.javacourse.hotel.entity.Room;
-import by.javacourse.hotel.entity.Description;
 import by.javacourse.hotel.exception.CommandException;
 import by.javacourse.hotel.exception.ServiceException;
 import by.javacourse.hotel.model.service.*;
@@ -18,14 +21,12 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.Optional;
 
-
 import static by.javacourse.hotel.controller.command.CommandResult.SendingType.FORWARD;
 import static by.javacourse.hotel.controller.command.RequestAttribute.*;
 import static by.javacourse.hotel.controller.command.RequestParameter.DATE_FROM;
 import static by.javacourse.hotel.controller.command.RequestParameter.DATE_TO;
 import static by.javacourse.hotel.controller.command.SessionAttribute.CURRENT_PAGE;
 import static by.javacourse.hotel.controller.command.SessionAttribute.NOT_FOUND_SES;
-import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 public class FindRoomByIdCommand implements Command {
     static Logger logger = LogManager.getLogger();
